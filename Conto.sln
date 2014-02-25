@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conto.Wpf", "Conto.Wpf\Conto.Wpf.csproj", "{F3C26DC2-D800-4181-B0C3-02CE152437B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conto.Data", "Conto.Data\Conto.Data.csproj", "{9519862F-945D-4120-8DCE-E818A705001B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conto.Data.TestFixtures", "Conto.Data.TestFixtures\Conto.Data.TestFixtures.csproj", "{8CA99EC6-48AE-4C01-AF11-42A6C63D008B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3C26DC2-D800-4181-B0C3-02CE152437B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3C26DC2-D800-4181-B0C3-02CE152437B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3C26DC2-D800-4181-B0C3-02CE152437B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3C26DC2-D800-4181-B0C3-02CE152437B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9519862F-945D-4120-8DCE-E818A705001B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9519862F-945D-4120-8DCE-E818A705001B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9519862F-945D-4120-8DCE-E818A705001B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9519862F-945D-4120-8DCE-E818A705001B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CA99EC6-48AE-4C01-AF11-42A6C63D008B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CA99EC6-48AE-4C01-AF11-42A6C63D008B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CA99EC6-48AE-4C01-AF11-42A6C63D008B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CA99EC6-48AE-4C01-AF11-42A6C63D008B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
