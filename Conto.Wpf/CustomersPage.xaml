@@ -11,17 +11,43 @@
     <Page.Resources>
         <ObjectDataProvider x:Key="Customers" ObjectType="{x:Type local:CustomerObjectDataProvider}" MethodName="GetCustomers"/>
     </Page.Resources>
+
     <Grid>
-        <wpf:MainMenuUserControl Margin="10,10,10,266"/>
-        <DataGrid Name="DataGrid"
-            Margin="0,60,0,0" AutoGenerateColumns="False"
-                  ItemsSource="{Binding Source={StaticResource Customers}}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Nome" Binding="{Binding Path=Name}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Indirizzo" Binding="{Binding Path=Address}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Codice fiscale" Binding="{Binding Path=FiscalCode}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Partita iva" Binding="{Binding Path=VatCode}"></DataGridTextColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+        <DockPanel Margin="10,10,10,266">
+            <wpf:MainMenuUserControl DockPanel.Dock="Top"/>
+        </DockPanel>
+        <Grid Margin="0,55,0,220" MinHeight="90">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Content="Nome" Grid.Row="0" Grid.Column="0" />
+            <TextBox Name="TxtName" Width="150" Height="25" Grid.Row="0" Grid.Column="0"/>
+            <Label Content="Indirizzo" Grid.Row="0" Grid.Column="1"/>
+            <TextBox Name="TxtAddress"  Width="250"  Height="25" Grid.Row="0" Grid.Column="1"/>
+            <Label Content="Codice Fiscale" Grid.Row="1" Grid.Column="0" />
+            <TextBox Name="TxtFiscalCode" Width="150" Height="25" Grid.Row="1" Grid.Column="0" />
+            <Label Content="Partita Iva" Grid.Row="1" Grid.Column="1" />
+            <TextBox Name="TxtVatCode"  Height="25" Width="150" Grid.Row="1" Grid.Column="1" />
+            <Button Name="BtnAdd" Content="Aggiungi" Height="25" Width="60" Grid.Row="2" Grid.Column="1"/>
+        </Grid>
+        <DockPanel Margin="0,170,0,0" Dock="Bottom">
+            <DataGrid Name="DataGrid" CanUserAddRows="False"
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding Source={StaticResource Customers}}"
+                  DockPanel.Dock="Left">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="Nome" Binding="{Binding Path=Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Indirizzo" Binding="{Binding Path=Address}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Codice fiscale" Binding="{Binding Path=FiscalCode}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Partita iva" Binding="{Binding Path=VatCode}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
     </Grid>
 </Page>

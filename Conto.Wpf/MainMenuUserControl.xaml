@@ -34,7 +34,7 @@
             
             <TextBlock MouseDown="TitleBar_MouseDown">OsTrading - Conti</TextBlock>
         </DockPanel>-->
-        <Grid DockPanel.Dock="Bottom">
+        <Grid>
             <TextBlock>
             <Hyperlink NavigateUri="SelfInvoicePage.xaml" Style="{StaticResource LinkStyle}">
                 <TextBlock>Autofatture</TextBlock>

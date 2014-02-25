@@ -30,6 +30,11 @@ namespace Conto.Wpf.Customer
             return _customer;
         }
 
+        public int Id
+        {
+            get { return _customer.Id; }
+        }
+
         public string Name
         {
             get

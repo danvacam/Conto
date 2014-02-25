@@ -13,14 +13,14 @@
     </Page.Resources>
     <Grid>
         <wpf:MainMenuUserControl Margin="10,10,10,266"/>
-        <DataGrid Name="DataGrid"
+        <DataGrid Name="DataGrid" CanUserAddRows="False"
             Margin="0,60,0,0" AutoGenerateColumns="False"
                   AlternationCount="2"
                   ItemsSource="{Binding Source={StaticResource Materials}}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True" />
-                <DataGridTextColumn Header="Nome" Binding="{Binding Path=Name}" />
-                <DataGridTextColumn Header="Prezzo" Binding="{Binding Path=Price}" />
+                <DataGridTextColumn Width="*" Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True" />
+                <DataGridTextColumn Width="5*" Header="Nome" Binding="{Binding Path=Name}" />
+                <DataGridTextColumn Width="2*" Header="Prezzo" Binding="{Binding Path=Price}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
