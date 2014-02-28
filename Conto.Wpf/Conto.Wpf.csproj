@@ -63,6 +63,7 @@
     <Compile Include="CashFlowPage.xaml.cs">
       <DependentUpon>CashFlowPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CashFlow\CashFlowViewModel.cs" />
     <Compile Include="CustomersPage.xaml.cs">
       <DependentUpon>CustomersPage.xaml</DependentUpon>
     </Compile>
@@ -81,6 +82,7 @@
     <Compile Include="PrintPage.xaml.cs">
       <DependentUpon>PrintPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="SelfInvoicePage.xaml.cs">
       <DependentUpon>SelfInvoicePage.xaml</DependentUpon>
     </Compile>
