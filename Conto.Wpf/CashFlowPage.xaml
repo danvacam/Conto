@@ -5,11 +5,15 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:wpf="clr-namespace:Conto.Wpf"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:local="clr-namespace:Conto.Wpf.CashFlow"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="650"
 	Title="CashFlowPage">
 
     <Grid>
+        <Grid.DataContext>
+            <local:CashFlowViewModel />
+        </Grid.DataContext>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="30" />
@@ -25,7 +29,14 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Saldo Attuale € 2500" Grid.Column="0" />
+            <Label Grid.Column="0" >
+                <Label.Content>
+                    <Binding Path="Balance"/>
+                </Label.Content>
+                <Label.ContentStringFormat>
+                    Saldo Attuale € {0}
+                </Label.ContentStringFormat>
+            </Label>
             <Label Content="Autofatture non contabilizzate € 2500" Grid.Column="1" />
         </Grid>
         
@@ -46,22 +57,22 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Content="Prelievo per cassa" Grid.Row="0" Grid.Column="0" />
-            <TextBox  Grid.Row="0" Grid.Column="1" Height="20" Margin="10,4,0,3" />
+            <TextBox Text="{Binding Path=Withdraw}" Name="WithdrawTextBox" Grid.Row="0" Grid.Column="1" Height="20" Margin="10,4,0,3"/>
             <Label Content="Data prelievo" Grid.Row="0" Grid.Column="2" />
-            <DatePicker  Grid.Row="0" Grid.Column="3" Height="25" Margin="10,0,0,0" SelectedDate="{x:Static sys:DateTime.Now}"/>
-            <Button Content="Aggiungi" Grid.Row="0" Grid.Column="4" Margin="10,0" />
+            <DatePicker SelectedDate="{Binding CostDate}" Name="WithdrawDatePicker" Grid.Row="0" Grid.Column="3" Height="25" Margin="10,0,0,0"/>
+            <Button Name="WithdrawAddButton" Command="{Binding AddWithdrawCommand}" Content="Aggiungi" Grid.Row="0" Grid.Column="4" Margin="10,0" />
 
             <Label Content="Spesa su cassa" Grid.Row="1" Grid.Column="0" />
-            <TextBox  Grid.Row="1" Grid.Column="1" Height="20" Margin="10,4,0,3" />
+            <TextBox Name="CostTextBox" Text="{Binding Cost}" Grid.Row="1" Grid.Column="1" Height="20" Margin="10,4,0,3" />
             <Label Content="Data spesa" Grid.Row="1" Grid.Column="2" />
-            <DatePicker  Grid.Row="1" Grid.Column="3" Height="25" Margin="10,0,0,0" SelectedDate="{x:Static sys:DateTime.Now}"/>
+            <DatePicker SelectedDate="{Binding CostDate}" Name="CostDatePicker" Grid.Row="1" Grid.Column="3" Height="25" Margin="10,0,0,0" />
             <Label Content="Giustificativo" Grid.Row="1" Grid.Column="4" />
-            <TextBox  Grid.Row="1" Grid.Column="5" Height="20" Margin="10,4,0,3" />
-            <Button Content="Aggiungi" Grid.Row="1" Grid.Column="6" Margin="10,0" />
+            <TextBox Name="CostJustificationTextBox" Text="{Binding CostJustification}" Grid.Row="1" Grid.Column="5" Height="20" Margin="10,4,0,3" />
+            <Button Name="CostAddButton" Command="{Binding AddCostCommand}" Content="Aggiungi" Grid.Row="1" Grid.Column="6" Margin="10,0" />
 
             <Label Content="Autofatture" Grid.Row="2" Grid.Column="0" />
-            <ComboBox  Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Height="20" Margin="10,4,0,3" />
-            <Button Content="Aggiungi" Grid.Row="2" Grid.Column="4" Margin="10,0" />
+            <ComboBox ItemsSource="{Binding SelfInvoices}" Name="SelfInvoicesComboBox" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Height="20" Margin="10,4,0,3" />
+            <Button Command="{Binding AddSelfInvoice}" Name="SelfInvoicesAddButton" Content="Aggiungi" Grid.Row="2" Grid.Column="4" Margin="10,0" />
         </Grid>
 
         <DataGrid Grid.Row="3" Margin="10" 
