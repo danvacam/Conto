@@ -14,6 +14,20 @@ namespace Conto.Data.TestFixtures
     public class PopulateDatabase
     {
         [Test]
+        public void AddCashFlow()
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                var res =
+                    conn.Execute(
+                        "INSERT INTO CashFlow (Cash, Description, FlowDate) VALUES (@Cash, @Description, @FlowDate)",
+                        new {Cash = 50000, Description = "Prelievo pre cassa", FlowDate = DateTime.Now});
+            }
+        }
+
+        [Test]
         public void CustomerAddSampleData()
         {
             using (var conn = new SqlCeConnection(

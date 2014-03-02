@@ -5,11 +5,15 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:wpf="clr-namespace:Conto.Wpf"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:selfInvoice="clr-namespace:Conto.Wpf.SelfInvoice"
       mc:Ignorable="d" 
-      d:DesignHeight="300"  d:DesignWidth="500"
+      d:DesignHeight="300"  d:DesignWidth="600"
 	Title="SelfInvoicePage" >
 
     <Grid>
+        <Grid.DataContext>
+            <selfInvoice:SelfInvoiceViewModel />
+        </Grid.DataContext>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="*" />
@@ -36,7 +40,7 @@
                 <ComboBoxItem>Item 3</ComboBoxItem>
             </ComboBox>
             <Label Content="Quantità" Grid.Column="2" Grid.Row="0" />
-            <TextBox Grid.Column="3" Grid.Row="0" Margin="10,0,0,0" />
+            <TextBox Text="{Binding Quantity}" Grid.Column="3" Grid.Row="0" Margin="10,0,0,0" />
             
             <Label Content="Dat inizio" Grid.Column="0" Grid.Row="1" />
             <DatePicker Grid.Column="1" Grid.Row="1" Margin="10,0,0,0" SelectedDate="{x:Static sys:DateTime.Now}"/>
@@ -46,7 +50,7 @@
             <Label Content="Anno di riferimento" Grid.Column="0" Grid.Row="2" />
             <TextBox Text="2014" Grid.Column="1" Grid.Row="2" Margin="10,0,0,0" />
             <Label Content="Esente IVA" Grid.Column="2" Grid.Row="2" />
-            <CheckBox IsChecked="True" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Margin="10,7,0,7" />
+            <CheckBox IsChecked="{Binding VatExempt}" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Margin="10,7,0,7" />
             
             <Button Content="Inserisci" Grid.Column="3" Grid.Row="3" Height="30" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Grid>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Data.SqlServerCe;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,14 @@ namespace Conto.Data
 {
     public class ContoData
     {
+        private SqlCeConnection Connection
+        {
+            get
+            {
+                return new SqlCeConnection( ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString);
+            }
+        }
+
         #region CUSTOMERS
 
         public List<CustomerDataObject> GetCustomers()
@@ -108,5 +117,46 @@ namespace Conto.Data
         {
 
         }
+
+        #region CASHFLOW
+
+        public decimal CashFlowBalance()
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                try
+                {
+                    var ret = conn.Query<decimal>("SELECT SUM(Cash) FROM CashFlow");
+                    return ret != null ? ret.First() : 0;
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public IEnumerable<SelfInvoiceDataObject> CashFlowSelfInvoices()
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<SelfInvoiceDataObject>("SELECT TOP 50 * FROM SelfInvoice WHERE InCashFlow = 0 ORDER BY Invoicedate ASC").ToList();
+            }
+        }
+
+        public void CashFlowAdd(CashFlowDataObject cashFlow)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                var res = conn.Execute("INSERT INTO CashFlow (Cash, Description, FlowDate) VALUES (@Cash, @Description, @FlowDate)", new { Cash = cashFlow.Cash, Description = cashFlow.Description, FlowDate = cashFlow.FlowDate });
+            }
+        }
+
+        #endregion
     }
 }
