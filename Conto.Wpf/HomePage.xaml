@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:Conto.Wpf"
       xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
+      xmlns:system="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="1000"
 	Title="HomePage">
@@ -163,18 +164,40 @@
             </Grid>
         </Border>
 
-        <Border Height="105" Grid.Row="4">
+        <Border Style="{StaticResource PanelStyle}" Height="Auto" Grid.Row="4">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <DataGrid Name="DataGrid" CanUserAddRows="False" AutoGenerateColumns="False"
-                  AlternationCount="2" ItemsSource="{Binding Source={StaticResource Materials}}">
+
+                <Label Style="{StaticResource PanelTitleStyle}" Grid.Row="0">
+                    <TextBlock>Auto fatture da approvare</TextBlock>
+                </Label>
+
+                <DataGrid Name="DataGrid" CanUserAddRows="False" AutoGenerateColumns="False" IsReadOnly="True"
+                  AlternationCount="2" ItemsSource="{Binding UnconfirmedSelfInvoice}"
+                  Grid.Row="1">
+                    <DataGrid.Resources>
+                        <system:String x:Key="Generate">Genera</system:String>
+                    </DataGrid.Resources>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Width="*" Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True" />
-                        <DataGridTextColumn Width="5*" Header="Nome" Binding="{Binding Path=Name}" />
+                        <DataGridTextColumn Visibility="Hidden" Binding="{Binding Path=Id}" />
+                        <DataGridTextColumn Width="*" Header="Descrizione" Binding="{Binding Path=Description}" />
+                        <DataGridTextColumn Width="5*" Header="Quantità" Binding="{Binding Path=Quantity}" />
                         <DataGridTextColumn Width="2*" Header="Prezzo" Binding="{Binding Path=Price}" />
+                        <DataGridTextColumn Width="2*" Header="Importo" Binding="{Binding Path=Amount}" />
+                        <DataGridTextColumn Width="2*" Header="Data" Binding="{Binding Path=InvoiceDate}" />
+                        <DataGridTemplateColumn Header="">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Genera" 
+                                            Command="{Binding Path=DataContext.GenerateInvoiceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                            CommandParameter="{Binding ElementName=DataGrid, Path=SelectedItem}"
+                                            />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
