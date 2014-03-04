@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace Conto.Wpf.ViewModels
 {
     public class UnconfirmedSelfInvoiceGridViewModel
     {
+        public long Id { get; set; }
         public string Description { get; set; }
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }
@@ -32,9 +34,34 @@ namespace Conto.Wpf.ViewModels
             AddWithdrawCommand = new RelayCommand(AddWithdrawCommand_Executed);
             AddCostCommand = new RelayCommand(AddCostCommand_Executed);
 
+            GenerateInvoiceCommand = new RelayCommand(GenerateInvoiceCommand_Executed);
+
             SelfInvoiceDateTime = DateTime.Now;
             CashFlowWithdrawDate = DateTime.Now;
             CashFlowCostDate = DateTime.Now;
+
+
+            UnconfirmedSelfInvoice = new ObservableCollection<UnconfirmedSelfInvoiceGridViewModel>
+            {
+                new UnconfirmedSelfInvoiceGridViewModel
+                {
+                    Id = 1,
+                    Description = "prova1",
+                    Quantity = 120,
+                    Price = 2500,
+                    Amount = 300000,
+                    InvoiceDate = DateTime.Now
+                },
+                new UnconfirmedSelfInvoiceGridViewModel
+                {
+                    Id = 2,
+                    Description = "prova2",
+                    Quantity = 80,
+                    Price = 1400,
+                    Amount = 112000,
+                    InvoiceDate = DateTime.Now
+                }
+            };
         }
 
         #region Properties
@@ -200,7 +227,8 @@ namespace Conto.Wpf.ViewModels
         #endregion
 
 
-        
+        public ObservableCollection<UnconfirmedSelfInvoiceGridViewModel> UnconfirmedSelfInvoice { get; set; }
+
         #endregion
 
         #region Commands
@@ -255,6 +283,15 @@ namespace Conto.Wpf.ViewModels
         }
 
         #endregion
+
+        public ICommand GenerateInvoiceCommand { get; set; }
+
+        public void GenerateInvoiceCommand_Executed(object sender)
+        {
+            var model = sender as UnconfirmedSelfInvoiceGridViewModel;
+
+            MessageBox.Show(model.Id.ToString());
+        }
 
         #endregion
 
