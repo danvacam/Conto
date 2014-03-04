@@ -32,12 +32,17 @@
             </Style.Resources>
         </Style>
     </Page.Resources>
+    <Grid Margin="1" Background="White">
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+        </Grid.Effect>
+    
     <Grid>
         <Grid.DataContext>
             <viewModels:ContoViewModel/>
         </Grid.DataContext>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
+            <RowDefinition Height="90" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -46,10 +51,11 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1000" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <local:MainMenuUserControl Margin="10,10,10,10" Grid.Row="0"/>
+        <local:MainMenuUserControl Grid.Row="0" Grid.ColumnSpan="2"/>
 
-        <Border Style="{StaticResource PanelStyle}" Height="105" Grid.Row="1">
+        <Border Style="{StaticResource PanelStyle}" Height="105" Grid.Row="1" Grid.Column="0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -91,7 +97,7 @@
             </Grid>
         </Border>
 
-        <Border Style="{StaticResource PanelStyle}" Height="70" Grid.Row="2">
+        <Border Style="{StaticResource PanelStyle}" Height="70" Grid.Row="2" Grid.Column="0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -138,7 +144,7 @@
             </Grid>
         </Border>
 
-        <Border Style="{StaticResource PanelStyle}" Height="105" Grid.Row="3">
+        <Border Style="{StaticResource PanelStyle}" Height="105" Grid.Row="3" Grid.Column="0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -164,7 +170,7 @@
             </Grid>
         </Border>
 
-        <Border Style="{StaticResource PanelStyle}" Height="Auto" Grid.Row="4">
+        <Border Style="{StaticResource PanelStyle}" Height="Auto" Grid.Row="4" Grid.Column="0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -202,5 +208,6 @@
                 </DataGrid>
             </Grid>
         </Border>
+    </Grid>
     </Grid>
 </Page>

@@ -1,0 +1,8 @@
+﻿<Window x:Class="Conto.Wpf.ContoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ContoWindow" Height="300" Width="300" WindowStyle="None">
+    <Grid>
+        
+    </Grid>
+</Window>

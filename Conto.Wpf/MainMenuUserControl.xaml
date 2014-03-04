@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="38" d:DesignWidth="540">
+             d:DesignHeight="70" d:DesignWidth="540">
     <UserControl.Resources>
         <Style x:Key="LinkStyle" TargetType="Hyperlink">
             <Style.Resources>
@@ -22,20 +22,57 @@
             <Setter Property="TextBlock.TextDecorations" Value="{x:Null}"></Setter>
         </Style>
     </UserControl.Resources>
-    <!--<Border x:Name="MainBorder"
-            BorderThickness="1"
-            CornerRadius="2">-->
-    <!--<DockPanel>-->
-
-    <!--<DockPanel x:Name="TitleBar" DockPanel.Dock="Top">
-            <Button x:Name="CloseButton" DockPanel.Dock="Right" Click="CloseButton_Click"/>
-            <Button x:Name="MaxButton" DockPanel.Dock="Right" Click="MaximizeButton_Click" />
-            <Button x:Name="MinButton" DockPanel.Dock="Right" Click="MaximizeButton_Click" />
-            
-            <TextBlock MouseDown="TitleBar_MouseDown">OsTrading - Conti</TextBlock>
-        </DockPanel>-->
     <Grid>
-        <TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0"  MouseDown="TitleBar_MouseDown" />
+            <Image Stretch="None" Grid.Column="1" MouseUp="MinimizeButton_Click">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source" Value="img/minimize.png"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Source" Value="img/minimize_hover.png"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <Image Stretch="None" Grid.Column="2" MouseUp="MaximizeButton_Click">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source" Value="img/maximize.png"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Source" Value="img/maximize_hover.png"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <Image Stretch="None" Grid.Column="3" MouseUp="CloseButton_Click">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source" Value="img/close.png"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Source" Value="img/close_hover.png"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+        </Grid>
+        <TextBlock Grid.Row="1" Margin="10,0,0,0">
             <Hyperlink NavigateUri="SelfInvoicePage.xaml" Style="{StaticResource LinkStyle}">
                 <TextBlock>Autofatture</TextBlock>
             </Hyperlink>
