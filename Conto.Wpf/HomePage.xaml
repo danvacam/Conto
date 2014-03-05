@@ -5,32 +5,11 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:Conto.Wpf"
       xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
-      xmlns:system="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="1000"
 	Title="HomePage">
     <Page.Resources>
-        <Style x:Key="PanelStyle" TargetType="Border">
-            <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="Margin" Value="5" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="Gray"></Setter>
-                    <Setter Property="Background" Value="DarkGray"></Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="PanelTitleStyle" TargetType="Label">
-            <Style.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="FontSize" Value="20" />
-                    <Setter Property="FontWeight" Value="Bold" />
-                    <Setter Property="FontFamily" Value="Calibri" />
-                    <Setter Property="Foreground" Value="DarkOliveGreen" />
-                </Style>
-            </Style.Resources>
-        </Style>
+        <ResourceDictionary Source="Resources/ContoStyles.xaml" />
     </Page.Resources>
     <Grid Margin="1" Background="White">
         <Grid.Effect>
@@ -92,7 +71,8 @@
                 <DatePicker SelectedDate="{Binding CashFlowCostDate}" Grid.Row="2" Grid.Column="3" Margin="10,0,0,0" />
                 <Label Content="Giustificativo" Grid.Row="2" Grid.Column="4" />
                 <TextBox Name="CostJustificationTextBox" Text="{Binding CashFlowCostJustification}" Grid.Row="2" Grid.Column="5" Margin="10,0,0,0" />
-                <Button Name="CostAddButton" Command="{Binding AddCostCommand}" Content="Aggiungi" Grid.Row="2" Grid.Column="6" Margin="10,0" />
+                <Button Name="CostAddButton" Command="{Binding AddCostCommand}" Style="{StaticResource MainMenuButtonStyle}"
+                        Content="Aggiungi" Grid.Row="2" Grid.Column="6" Margin="10,0" />
 
             </Grid>
         </Border>
@@ -184,9 +164,6 @@
                 <DataGrid Name="DataGrid" CanUserAddRows="False" AutoGenerateColumns="False" IsReadOnly="True"
                   AlternationCount="2" ItemsSource="{Binding UnconfirmedSelfInvoice}"
                   Grid.Row="1">
-                    <DataGrid.Resources>
-                        <system:String x:Key="Generate">Genera</system:String>
-                    </DataGrid.Resources>
                     <DataGrid.Columns>
                         <DataGridTextColumn Visibility="Hidden" Binding="{Binding Path=Id}" />
                         <DataGridTextColumn Width="*" Header="Descrizione" Binding="{Binding Path=Description}" />
@@ -206,8 +183,10 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+                
             </Grid>
         </Border>
+        
     </Grid>
     </Grid>
 </Page>
