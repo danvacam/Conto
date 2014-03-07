@@ -4,9 +4,6 @@
         xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
         xmlns:wpf="clr-namespace:Conto.Wpf"
         Title="ContoWindow" MinHeight="800"  Height="800" MinWidth="1010" Width="1010" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
-    <Window.Resources>
-        <ResourceDictionary Source="Resources/ContoStyles.xaml" />
-    </Window.Resources>
     <Grid Margin="4" Background="White">
         <Grid.Effect>
             <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
@@ -14,7 +11,7 @@
         
         <Grid>
             <Grid.DataContext>
-                <viewModels:ContoViewModel/>
+                <viewModels:MainViewModel/>
             </Grid.DataContext>
             <Grid.RowDefinitions>
                 <RowDefinition Height="90" />
@@ -32,9 +29,33 @@
             <wpf:MainMenuUserControl Grid.Row="0" Grid.ColumnSpan="2"/>
             
             <StackPanel Grid.Row="1" Grid.Column="0">
-                <Button Style="{StaticResource MainMenuButtonStyle}">Autofatture
+                <Button Style="{DynamicResource MainMenuButtonStyle}"
+                        Command="{Binding SelfInvoiceCommand}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0">Autofatture</TextBlock>
+                        <Image Grid.Column="1" Source="/img/self-invoice.png" Stretch="None" />
+                    </Grid>
+                </Button>
+                <Button Style="{StaticResource CashMenuButtonStyle}"
+                        Command="{Binding CashFlowCommand}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0">Operazioni di cassa</TextBlock>
+                        <Image Grid.Column="1" Source="/img/cash-register.png" Stretch="None" />
+                    </Grid>
                 </Button>
             </StackPanel>
+            
+            <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+                <ContentControl Content="{Binding SelectedControl}"></ContentControl>
+            </Grid>
             
         </Grid>
         
