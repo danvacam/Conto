@@ -23,6 +23,13 @@
         </Style.Resources>
     </Style>
 
+    <LinearGradientBrush x:Key="TealGradientBrush"  
+    StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="Teal" Offset="0" />
+        <GradientStop Color="SteelBlue" Offset="0.5" />
+        <GradientStop Color="Teal" Offset="1" />
+    </LinearGradientBrush>
+    
     <LinearGradientBrush x:Key="TomatoGradientBrush"  
     StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="Tomato" Offset="0" />
@@ -30,13 +37,67 @@
         <GradientStop Color="Tomato" Offset="1" />
     </LinearGradientBrush>
 
+    <LinearGradientBrush x:Key="SandyGradientBrush"  
+    StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="SandyBrown" Offset="0" />
+        <GradientStop Color="#FFBB22" Offset="0.5" />
+        <GradientStop Color="SandyBrown" Offset="1" />
+    </LinearGradientBrush>
 
-    <Style x:Key="MainMenuButtonStyle" TargetType="Button">
+    <Style x:Key="ActionButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="Cornsilk" />
-        <Setter Property="Background" Value="{StaticResource TomatoGradientBrush}" />
+        <Setter Property="Background" Value="{StaticResource TealGradientBrush}" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Width="{TemplateBinding Width}"
+                          Height="{TemplateBinding Height}"
+                          ClipToBounds="True">
+                        <!-- Outer rectangle -->
+                        <Rectangle x:Name="outerRectangle" 
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Stroke="Transparent"
+                                   Fill="{TemplateBinding Background}"/>
+                        <!-- Content -->
+                        <DockPanel>
+                            <ContentPresenter x:Name="myContentPresenter"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              Content="{TemplateBinding Content}" />
+                        </DockPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Rectangle.Fill" TargetName="outerRectangle"
+                                    Value="SteelBlue" />
+                            <!-- Blur content text -->
+                            <Setter Property="ContentPresenter.Effect" TargetName="myContentPresenter">
+                                <Setter.Value>
+                                    <BlurEffect Radius="1"></BlurEffect>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SelectedMenuButtonStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="Cornsilk" />
+        <Setter Property="Background" Value="Teal" />
         <Setter Property="Width" Value="250" />
-        <Setter Property="Height" Value="60" />
-       
+        <Setter Property="Height" Value="70" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Margin" Value="0,0,0,10"></Setter>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <BlurEffect Radius="1" />
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -53,8 +114,38 @@
                         <!-- Content -->
                         <DockPanel>
                             <ContentPresenter x:Name="myContentPresenter" Margin="20" 
-                                              Content="{TemplateBinding Content}"
-                                              TextBlock.Foreground="Cornsilk" />
+                                              Content="{TemplateBinding Content}" />
+                        </DockPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MainMenuButtonStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="Cornsilk" />
+        <Setter Property="Background" Value="{StaticResource TomatoGradientBrush}" />
+        <Setter Property="Width" Value="250" />
+        <Setter Property="Height" Value="70" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Margin" Value="0,0,0,10"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Width="{TemplateBinding Width}"
+                          Height="{TemplateBinding Height}"
+                          ClipToBounds="True">
+                        <!-- Outer rectangle -->
+                        <Rectangle x:Name="outerRectangle" 
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Stroke="Transparent"
+                                   Fill="{TemplateBinding Background}"/>
+
+                        <!-- Content -->
+                        <DockPanel>
+                            <ContentPresenter x:Name="myContentPresenter" Margin="20" 
+                                              Content="{TemplateBinding Content}" />
                         </DockPanel>
                     </Grid>
                     
@@ -74,15 +165,11 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        
-        <!--<Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="Gray"></Setter>
-                <Setter Property="Background" Value="CornflowerBlue"></Setter>
-            </Trigger>
-        </Style.Triggers>-->
     </Style>
-    
+
+    <Style x:Key="CashMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MainMenuButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource SandyGradientBrush}" />
+    </Style>
     
     
     
