@@ -89,6 +89,9 @@
     <Compile Include="SelfInvoicePage.xaml.cs">
       <DependentUpon>SelfInvoicePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SelfInvoiceUserControl.xaml.cs">
+      <DependentUpon>SelfInvoiceUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SelfInvoice\SelfInvoiceViewModel.cs" />
     <Compile Include="SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
@@ -96,6 +99,8 @@
     <Compile Include="Settings\SettingsObjectDataProvider.cs" />
     <Compile Include="Settings\SettingUIObject.cs" />
     <Compile Include="ViewModels\ContoViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\SelfInvoiceViewModel.cs" />
     <Page Include="CashFlowPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -151,6 +156,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SelfInvoiceUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -196,6 +205,15 @@
     <Resource Include="img\maximize_hover.png" />
     <Resource Include="img\minimize.png" />
     <Resource Include="img\minimize_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\self-invoice.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\cash-register.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
