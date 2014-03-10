@@ -4,9 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:selfInvoice="clr-namespace:Conto.Wpf.ViewModels"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="UserControl.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <!--<DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />-->
+                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="650" Duration="0:0:0.3" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
     <Grid>
         <Grid.DataContext>
             <selfInvoice:SelfInvoiceViewModel />
@@ -15,41 +24,29 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Label Content="Materiale" Grid.Column="0" Grid.Row="0" />
-            <ComboBox Grid.Column="1" Grid.Row="0" IsEditable="True" Margin="10,0,0,0">
+        <ItemsControl Style="{StaticResource GridItemsStyle}" Grid.Row="0">
+            <Label Content="Materiale" Grid.Column="0" Grid.Row="0" Style="{StaticResource FormLabelStyle}"/>
+            <ComboBox Grid.Column="1" Grid.Row="0" IsEditable="True" Margin="10,0,10,0" Height="25">
                 <ComboBoxItem>Item 1</ComboBoxItem>
                 <ComboBoxItem>Item 2</ComboBoxItem>
                 <ComboBoxItem>Item 3</ComboBoxItem>
             </ComboBox>
-            <Label Content="Quantità" Grid.Column="2" Grid.Row="0" />
-            <TextBox Text="{Binding Quantity}" Grid.Column="3" Grid.Row="0" Margin="10,0,0,0" />
+            <Label Content="Quantità" Grid.Column="2" Grid.Row="0" Style="{StaticResource FormLabelStyle}"/>
+            <TextBox Text="{Binding Quantity}" Grid.Column="3" Grid.Row="0" Style="{StaticResource QuantityStyle}"/>
 
-            <Label Content="Dat inizio" Grid.Column="0" Grid.Row="1" />
-            <DatePicker Grid.Column="1" Grid.Row="1" Margin="10,0,0,0" SelectedDate="{x:Static sys:DateTime.Now}"/>
-            <Label Content="Dat fine" Grid.Column="2" Grid.Row="1" />
-            <DatePicker Grid.Column="3" Grid.Row="1" Margin="10,0,0,0" SelectedDate="{x:Static sys:DateTime.Now }"/>
+            <Label Content="Dat inizio" Grid.Column="0" Grid.Row="1" Style="{StaticResource FormLabelStyle}"/>
+            <DatePicker SelectedDate="{Binding InvoiceStartDate}" Grid.Column="1" Grid.Row="1" Style="{StaticResource DateTextStyle}"/>
+            <Label Content="Dat fine" Grid.Column="2" Grid.Row="1" Style="{StaticResource FormLabelStyle}"/>
+            <DatePicker SelectedDate="{Binding InvoiceEndDate}" Grid.Column="3" Grid.Row="1"  Style="{StaticResource DateTextStyle}"/>
 
-            <Label Content="Anno di riferimento" Grid.Column="0" Grid.Row="2" />
-            <TextBox Text="2014" Grid.Column="1" Grid.Row="2" Margin="10,0,0,0" />
-            <Label Content="Esente IVA" Grid.Column="2" Grid.Row="2" />
-            <CheckBox IsChecked="{Binding VatExempt}" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Margin="10,7,0,7" />
+            <Label Content="Anno di riferimento" Grid.Column="0" Grid.Row="2" Style="{StaticResource FormLabelStyle}" />
+            <TextBox Text="{Binding InvoiceYear}" Grid.Column="1" Grid.Row="2" Style="{StaticResource YearTextStyle}" />
+            <Label Content="Esente IVA" Grid.Column="2" Grid.Row="2" Style="{StaticResource FormLabelStyle}" />
+            <CheckBox IsChecked="{Binding VatExempt}" Grid.Column="3" Grid.Row="2" VerticalAlignment="Center" Margin="10,0,0,0" />
 
-            <Button Style="{StaticResource ActionButtonStyle}" Grid.Column="3" Grid.Row="3" Height="30" Width="80">
-                    <TextBlock >Aggiungi</TextBlock>                
+            <Button Command="{Binding AddSelfInvoice}" Style="{StaticResource ActionButtonStyle}" Grid.Column="3" Grid.Row="3" Height="30" Width="80" HorizontalAlignment="Left" Margin="30,0,0,0">
+                    <TextBlock>Aggiungi</TextBlock>                
             </Button>
-        </Grid>
+        </ItemsControl>
     </Grid>
 </UserControl>
