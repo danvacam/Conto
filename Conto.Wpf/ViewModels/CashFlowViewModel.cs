@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Conto.Wpf.Resources;
 
 namespace Conto.Wpf.ViewModels
 {
@@ -125,8 +126,10 @@ namespace Conto.Wpf.ViewModels
         private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
-                PropertyChanged(this,
-                    new PropertyChangedEventArgs(propertyName));
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                AppProperties.FormHaveModifications = true;
+            }
         }
 
         #endregion
