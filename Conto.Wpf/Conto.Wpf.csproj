@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -63,6 +63,9 @@
     <Compile Include="CashFlowPage.xaml.cs">
       <DependentUpon>CashFlowPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CashFlowUserControl.xaml.cs">
+      <DependentUpon>CashFlowUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CashFlow\CashFlowViewModel.cs" />
     <Compile Include="ContoWindow.xaml.cs">
       <DependentUpon>ContoWindow.xaml</DependentUpon>
@@ -82,6 +85,9 @@
     <Compile Include="Materials\MaterialsObjectDataProvider.cs" />
     <Compile Include="Materials\MaterialUIObject.cs" />
     <Compile Include="Materials\MaterialUIObjects.cs" />
+    <Compile Include="OptionsUserControl.xaml.cs">
+      <DependentUpon>OptionsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PrintPage.xaml.cs">
       <DependentUpon>PrintPage.xaml</DependentUpon>
     </Compile>
@@ -98,10 +104,15 @@
     </Compile>
     <Compile Include="Settings\SettingsObjectDataProvider.cs" />
     <Compile Include="Settings\SettingUIObject.cs" />
+    <Compile Include="ViewModels\CashFlowViewModel.cs" />
     <Compile Include="ViewModels\ContoViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SelfInvoiceViewModel.cs" />
     <Page Include="CashFlowPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CashFlowUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -137,6 +148,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MaterialsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,7 +228,8 @@
     <Resource Include="img\cash-register.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\Readme.txt" />
+    <Resource Include="img\settings.png" />
+    <Resource Include="img\settings_hover.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

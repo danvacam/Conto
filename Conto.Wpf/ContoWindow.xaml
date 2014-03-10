@@ -14,8 +14,8 @@
                 <viewModels:MainViewModel/>
             </Grid.DataContext>
             <Grid.RowDefinitions>
-                <RowDefinition Height="90" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -26,10 +26,23 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             
-            <wpf:MainMenuUserControl Grid.Row="0" Grid.ColumnSpan="2"/>
+            <wpf:OptionsUserControl Grid.Row="0" Grid.ColumnSpan="2" />
             
-            <StackPanel Grid.Row="1" Grid.Column="0">
-                <Button Style="{DynamicResource MainMenuButtonStyle}"
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <Label>
+                    <Label.Content>
+                        Saldo Cassa 5000
+                    </Label.Content>
+                </Label>
+                <Label>
+                    <Label.Content>
+                        Autofatture non contabilizzate 75000
+                    </Label.Content>
+                </Label>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2" Grid.Column="0">
+                <Button Style="{Binding InvoceButtonStyle}"
                         Command="{Binding SelfInvoiceCommand}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -40,7 +53,7 @@
                         <Image Grid.Column="1" Source="/img/self-invoice.png" Stretch="None" />
                     </Grid>
                 </Button>
-                <Button Style="{StaticResource CashMenuButtonStyle}"
+                <Button Style="{Binding CashButtonStyle}"
                         Command="{Binding CashFlowCommand}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -53,7 +66,7 @@
                 </Button>
             </StackPanel>
             
-            <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+            <Grid Grid.Row="2" Grid.Column="1" Grid.RowSpan="2">
                 <ContentControl Content="{Binding SelectedControl}"></ContentControl>
             </Grid>
             

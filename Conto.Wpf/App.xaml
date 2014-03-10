@@ -1,8 +1,8 @@
 ﻿<Application x:Class="Conto.Wpf.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+             StartupUri="ContoWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="Resources/ContoStyles.xaml" />
     </Application.Resources>
 </Application>

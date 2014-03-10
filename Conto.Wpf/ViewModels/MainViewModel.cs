@@ -21,8 +21,38 @@ namespace Conto.Wpf.ViewModels
         {
             _contoData = new ContoData();
 
+            InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
+            CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
+
             SelfInvoiceCommand = new RelayCommand(SelfInvoice_Executed);
             CashFlowCommand = new RelayCommand(CashFlowCommand_Executed);
+        }
+
+        private Style _invoiceButtonStyle;
+
+        public Style InvoceButtonStyle
+        {
+            get
+            {
+                return _invoiceButtonStyle;
+            }
+            set
+            {
+                _invoiceButtonStyle = value;
+                OnPropertyChanged("InvoceButtonStyle");
+            }
+        }
+
+        private Style _cashButtonStyle;
+
+        public Style CashButtonStyle
+        {
+            get { return _cashButtonStyle; }
+            set
+            {
+                _cashButtonStyle = value;
+                OnPropertyChanged("CashButtonStyle");
+            }
         }
 
         private Control _selectedControl;
@@ -43,7 +73,9 @@ namespace Conto.Wpf.ViewModels
         public ICommand SelfInvoiceCommand { get; set; }
 
         public void SelfInvoice_Executed(object sender)
-        {           
+        {
+            InvoceButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
+            CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
             SelectedControl = new SelfInvoiceUserControl();
         }
 
@@ -51,7 +83,9 @@ namespace Conto.Wpf.ViewModels
 
         public void CashFlowCommand_Executed(object sender)
         {
-            MessageBox.Show("oki");
+            InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
+            CashButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
+            SelectedControl = new CashFlowUserControl();
         }
 
         #endregion
