@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Conto.Data;
+using Conto.Wpf.Resources;
 
 namespace Conto.Wpf.ViewModels
 {
@@ -19,8 +20,10 @@ namespace Conto.Wpf.ViewModels
         {
             _contoData = new ContoData();
 
-            //AddWithdrawCommand = new RelayCommand(AddWithdrawCommand_Executed);
-            //AddCostCommand = new RelayCommand(AddCostCommand_Executed);
+            AddSelfInvoice = new RelayCommand(AddSelfInvoice_Executed);
+
+            InvoiceStartDate = DateTime.Now;
+            InvoiceEndDate = DateTime.Now;
 
             VatExempt = true;
         }
@@ -40,20 +43,45 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        private DateTime _invoiceDate;
-        public DateTime InvoiceDate
+        private DateTime _invoiceStartDate;
+        public DateTime InvoiceStartDate
         {
             get
             {
-                return _invoiceDate;
+                return _invoiceStartDate;
             }
             set
             {
-                _invoiceDate = value;
-                OnPropertyChanged("InvoiceDate");
+                _invoiceStartDate = value;
+                OnPropertyChanged("InvoiceStartDate");
             }
         }
 
+        private DateTime _invoiceEndDate;
+        public DateTime InvoiceEndDate
+        {
+            get
+            {
+                return _invoiceEndDate;
+            }
+            set
+            {
+                _invoiceEndDate = value;
+                OnPropertyChanged("InvoiceEndDate");
+            }
+        }
+
+        private int _invoiceYear;
+
+        public int InvoiceYear
+        {
+            get { return _invoiceYear; }
+            set
+            {
+                _invoiceYear = value;
+                OnPropertyChanged("InvoiceYear");
+            }
+        }
 
         private CollectionView _materials;
         public CollectionView Materials
@@ -88,7 +116,14 @@ namespace Conto.Wpf.ViewModels
 
         public void AddSelfInvoice_Executed(object sender)
         {
-            MessageBox.Show("AddSelfInvoice");
+            if (AppProperties.FormHaveModifications)
+            {
+                MessageBox.Show("AddSelfInvoice MODIFIED");
+            }
+            else
+            {
+                MessageBox.Show("AddSelfInvoice");
+            }
         }
 
 
@@ -97,8 +132,10 @@ namespace Conto.Wpf.ViewModels
         private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
-                PropertyChanged(this,
-                    new PropertyChangedEventArgs(propertyName));
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                AppProperties.FormHaveModifications = true;
+            }
         }
 
     }
