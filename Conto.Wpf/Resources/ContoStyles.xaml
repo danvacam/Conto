@@ -23,6 +23,63 @@
         </Style.Resources>
     </Style>
 
+
+    <Style x:Key="GridItemsStyle" TargetType="ItemsControl">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
+
+    <Style x:Key="FormLabelStyle" TargetType="Label">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="DimGray" />
+    </Style>
+   
+    <Style x:Key="DateTextStyle" TargetType="DatePicker">
+        <Setter Property="Width" Value="100" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+
+    <Style x:Key="QuantityStyle" TargetType="TextBox">
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="50" />
+        <Setter Property="TextAlignment" Value="Right" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+    
+    <Style x:Key="YearTextStyle" TargetType="TextBox">
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="35" />
+        <Setter Property="TextAlignment" Value="Right" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+    
+
     <LinearGradientBrush x:Key="TealGradientBrush"  
     StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="Teal" Offset="0" />
@@ -49,6 +106,7 @@
         <Setter Property="Background" Value="{StaticResource TealGradientBrush}" />
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Height" Value="Auto" />
+        <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
