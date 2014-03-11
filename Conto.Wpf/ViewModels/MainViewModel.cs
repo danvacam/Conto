@@ -9,13 +9,22 @@ namespace Conto.Wpf.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly CommonDataObject _settings;
-
         public MainViewModel()
         {
             var contoData = new ContoData();
 
-            _settings = contoData.GetCommonData();
+            var settings = contoData.GetSettings();
+
+            if (settings != null)
+            {
+                InvoiceOwnerAddress = settings.InvoiceOwnerAddress;
+                InvoiceOwnerCity = settings.InvoiceOwnerCity;
+                InvoiceOwnerFiscalCode = settings.InvoiceOwnerFiscalCode;
+                InvoiceOwnerName = settings.InvoiceOwnerName;
+                InvoiceOwnerPostalCode = settings.InvoiceOwnerPostalCode;
+                InvoiceOwnerVatCode = settings.InvoiceOwnerVatCode;
+                InvoiceMaxCost = settings.MaxInvoiceValue;
+            }
 
             InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
             CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
@@ -75,7 +84,7 @@ namespace Conto.Wpf.ViewModels
                 OnPropertyChanged("InvoiceOwnerName");
             }
         }
-        
+
         private string _invoiceOwnerAddress;
         public string InvoiceOwnerAddress
         {
@@ -131,16 +140,16 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        //private decimal? _invoiceMaxCost;
+        private decimal? _invoiceMaxCost;
         public decimal? InvoiceMaxCost
         {
             get
             {
-                return _settings.Max_Self_Invoice_cost; //_invoiceMaxCost; 
+                return _invoiceMaxCost; 
             }
             set
             {
-                _settings.Max_Self_Invoice_cost = value.HasValue ? value.Value : 0;
+                _invoiceMaxCost = value;
                 OnPropertyChanged("InvoiceMaxCost");
             }
         }

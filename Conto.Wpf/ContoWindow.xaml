@@ -147,7 +147,7 @@
                             <Label Content="Importo massimo autofattura :"/>
                             <TextBox Text="{Binding InvoiceMaxCost}" Margin="10,0" />
                             <Button Content="Conferma" Style="{StaticResource ActionButtonStyle}" Width="80" Height="30" Margin="10" HorizontalAlignment="Right"
-                                    Command="{x:Static wpf:ContoWindow.SettingsConfirmCommand}"/>
+                                    Command="{x:Static wpf:ContoWindow.SettingsConfirmCommand}" CommandParameter="{Binding}"/>
                         </StackPanel>
                     </Grid>
                 </Grid>
