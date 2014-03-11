@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Conto.Wpf.Resources;
 
 namespace Conto.Wpf
 {
@@ -23,6 +24,8 @@ namespace Conto.Wpf
         public SelfInvoiceUserControl()
         {
             InitializeComponent();
+
+            AppProperties.FormHaveModifications = false;
         }
     }
 }

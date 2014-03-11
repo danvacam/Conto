@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Data.SqlServerCe;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dapper;
 
 namespace Conto.Data
@@ -19,6 +16,34 @@ namespace Conto.Data
                 return new SqlCeConnection( ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString);
             }
         }
+
+        #region SETTINGS
+
+        public Settings GetSettings()
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<Settings>("SELECT * FROM Settings").FirstOrDefault();
+            }
+        }
+
+        public void SetSettings(Settings settings)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                conn.Execute(
+                    "DELETE * FROM Settings; INSERT INTO Settings (InvoiceOwnerName, InvoiceOwnerAddress, InvoiceOwnerCity, InvoiceOwnerPostalCode, InvoiceOwnerFiscalCode, InvoiceOwnerVatCode, MaxInvoiceValue) VALUES (@InvoiceOwnerName, @InvoiceOwnerAddress, @InvoiceOwnerCity, @InvoiceOwnerPostalCode, @InvoiceOwnerFiscalCode, @InvoiceOwnerVatCode, @MaxInvoiceValue)",
+                    new { settings.InvoiceOwnerName, settings.InvoiceOwnerAddress, settings.InvoiceOwnerCity, settings.InvoiceOwnerPostalCode, settings.InvoiceOwnerFiscalCode, settings.InvoiceOwnerVatCode, settings.MaxInvoiceValue });
+            }
+        }
+
+        #endregion
+
+
 
         #region CUSTOMERS
 
