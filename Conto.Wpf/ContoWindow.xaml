@@ -4,73 +4,153 @@
         xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
         xmlns:wpf="clr-namespace:Conto.Wpf"
         Title="ContoWindow" MinHeight="800"  Height="800" MinWidth="1010" Width="1010" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
-    <Grid Margin="4" Background="White">
+    <Grid Margin="4" Background="White" >
+        <Grid.DataContext>
+            <viewModels:MainViewModel/>
+        </Grid.DataContext>
         <Grid.Effect>
             <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
         </Grid.Effect>
-        
         <Grid>
-            <Grid.DataContext>
-                <viewModels:MainViewModel/>
-            </Grid.DataContext>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            
-            <wpf:OptionsUserControl Grid.Row="0" Grid.ColumnSpan="2" />
-            
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                <Label>
-                    <Label.Content>
-                        Saldo Cassa 5000
-                    </Label.Content>
-                </Label>
-                <Label>
-                    <Label.Content>
-                        Autofatture non contabilizzate 75000
-                    </Label.Content>
-                </Label>
-            </StackPanel>
-            
-            <StackPanel Grid.Row="2" Grid.Column="0">
-                <Button Style="{Binding InvoceButtonStyle}"
+            <wpf:OptionsUserControl x:Name="OptionsUserControl" Grid.Row="0" />
+
+            <Grid Grid.ZIndex="0" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--<wpf:OptionsUserControl x:Name="OptionsUserControl" Grid.Row="0" Grid.ColumnSpan="2" />-->
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                    <Label>
+                        <Label.Content>
+                            Saldo Cassa 5000
+                        </Label.Content>
+                    </Label>
+                    <Label>
+                        <Label.Content>
+                            Autofatture non contabilizzate 75000
+                        </Label.Content>
+                    </Label>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0">
+                    <Button Style="{Binding InvoceButtonStyle}"
                         Command="{Binding SelfInvoiceCommand}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0">Autofatture</TextBlock>
-                        <Image Grid.Column="1" Source="/img/self-invoice.png" Stretch="None" />
-                    </Grid>
-                </Button>
-                <Button Style="{Binding CashButtonStyle}"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0">Autofatture</TextBlock>
+                            <Image Grid.Column="1" Source="/img/self-invoice.png" Stretch="None" />
+                        </Grid>
+                    </Button>
+                    <Button Style="{Binding CashButtonStyle}"
                         Command="{Binding CashFlowCommand}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0">Operazioni di cassa</TextBlock>
-                        <Image Grid.Column="1" Source="/img/cash-register.png" Stretch="None" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0">Operazioni di cassa</TextBlock>
+                            <Image Grid.Column="1" Source="/img/cash-register.png" Stretch="None" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+
+                <Grid Grid.Row="2" Grid.Column="1" Grid.RowSpan="2">
+                    <ContentControl Content="{Binding SelectedControl}"></ContentControl>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.ZIndex="1" Visibility="Collapsed" x:Name="SettingsGrid">
+
+                <Grid.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <Trigger Property="Grid.Visibility" Value="Visible">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                
+                <Rectangle Opacity=".5" Fill="White" />
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="10" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="6" />
+                        <RowDefinition Height="280" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Polygon Grid.Row="0" Grid.Column="1" 
+                             Points="98,10 105,0 105,0 112,10" Fill="LightBlue"></Polygon>
+
+                    <Border CornerRadius="10" Grid.Column="1" Grid.Row="1" BorderBrush="LightBlue" Background="LightBlue" />
+                    <Grid Grid.Column="1" Grid.Row="1" >
+                        <StackPanel>
+                            <Label Content="Titolare :" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Label Content="Nome :" Grid.Column="0" Grid.Row="0" />
+                                <Label Content="Indirizzo :" Grid.Column="0" Grid.Row="1" />
+                                <Label Content="Citta :" Grid.Column="0" Grid.Row="2" />
+                                <Label Content="Cap :" Grid.Column="0" Grid.Row="3" />
+                                <Label Content="Codice Fiscale :" Grid.Column="0" Grid.Row="4" />
+                                <Label Content="Partita Iva :" Grid.Column="0" Grid.Row="5" />
+
+                                <TextBox Text="{Binding InvoiceOwnerName}" Grid.Column="1" Grid.Row="0" Margin="0,0,10,0" />
+                                <TextBox Text="{Binding InvoiceOwnerAddress}" Grid.Column="1" Grid.Row="1" Margin="0,0,10,0" />
+                                <TextBox Text="{Binding InvoiceOwnerCity}" Grid.Column="1" Grid.Row="2" Margin="0,0,10,0" />
+                                <TextBox Text="{Binding InvoiceOwnerPostalCode}" Grid.Column="1" Grid.Row="3" Margin="0,0,10,0" />
+                                <TextBox Text="{Binding InvoiceOwnerFiscalCode}" Grid.Column="1" Grid.Row="4" Margin="0,0,10,0" />
+                                <TextBox Text="{Binding InvoiceOwnerVatCode}" Grid.Column="1" Grid.Row="5" Margin="0,0,10,0" />
+                            </Grid>
+                            <Label Content="Importo massimo autofattura :"/>
+                            <TextBox Text="{Binding InvoiceMaxCost}" Margin="10,0" />
+                            <Button Content="Conferma" Style="{StaticResource ActionButtonStyle}" Width="80" Height="30" Margin="10" HorizontalAlignment="Right"
+                                    Command="{x:Static wpf:ContoWindow.SettingsConfirmCommand}"/>
+                        </StackPanel>
                     </Grid>
-                </Button>
-            </StackPanel>
-            
-            <Grid Grid.Row="2" Grid.Column="1" Grid.RowSpan="2">
-                <ContentControl Content="{Binding SelectedControl}"></ContentControl>
+                </Grid>
             </Grid>
             
         </Grid>
-        
     </Grid>
 </Window>
