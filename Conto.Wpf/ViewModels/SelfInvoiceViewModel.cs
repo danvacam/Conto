@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -72,7 +68,6 @@ namespace Conto.Wpf.ViewModels
         }
 
         private int _invoiceYear;
-
         public int InvoiceYear
         {
             get { return _invoiceYear; }
@@ -111,9 +106,7 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-
         public ICommand AddSelfInvoice { get; set; }
-
         public void AddSelfInvoice_Executed(object sender)
         {
             if (AppProperties.FormHaveModifications)
@@ -128,7 +121,6 @@ namespace Conto.Wpf.ViewModels
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
@@ -137,6 +129,5 @@ namespace Conto.Wpf.ViewModels
                 AppProperties.FormHaveModifications = true;
             }
         }
-
     }
 }
