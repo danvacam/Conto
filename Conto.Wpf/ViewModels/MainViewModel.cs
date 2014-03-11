@@ -1,25 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using Conto.Data;
+using Conto.Wpf.Resources;
 
 namespace Conto.Wpf.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        ContoData _contoData;
+        private readonly CommonDataObject _settings;
 
         public MainViewModel()
         {
-            _contoData = new ContoData();
+            var contoData = new ContoData();
+
+            _settings = contoData.GetCommonData();
 
             InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
             CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
@@ -67,25 +63,113 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
+        #region Settings Properties
+
+        private string _invoiceOwnerName;
+        public string InvoiceOwnerName
+        {
+            get { return _invoiceOwnerName; }
+            set
+            {
+                _invoiceOwnerName = value;
+                OnPropertyChanged("InvoiceOwnerName");
+            }
+        }
+        
+        private string _invoiceOwnerAddress;
+        public string InvoiceOwnerAddress
+        {
+            get { return _invoiceOwnerAddress; }
+            set
+            {
+                _invoiceOwnerAddress = value;
+                OnPropertyChanged("InvoiceOwnerAddress");
+            }
+        }
+
+        private string _invoiceOwnerCity;
+        public string InvoiceOwnerCity
+        {
+            get { return _invoiceOwnerCity; }
+            set
+            {
+                _invoiceOwnerCity = value;
+                OnPropertyChanged("InvoiceOwnerCity");
+            }
+        }
+
+        private string _invoiceOwnerPostalCode;
+        public string InvoiceOwnerPostalCode
+        {
+            get { return _invoiceOwnerPostalCode; }
+            set
+            {
+                _invoiceOwnerPostalCode = value;
+                OnPropertyChanged("InvoiceOwnerPostalCode");
+            }
+        }
+
+        private string _invoiceOwnerFiscalCode;
+        public string InvoiceOwnerFiscalCode
+        {
+            get { return _invoiceOwnerFiscalCode; }
+            set
+            {
+                _invoiceOwnerFiscalCode = value;
+                OnPropertyChanged("InvoiceOwnerFiscalCode");
+            }
+        }
+
+        private string _invoiceOwnerVatCode;
+        public string InvoiceOwnerVatCode
+        {
+            get { return _invoiceOwnerVatCode; }
+            set
+            {
+                _invoiceOwnerVatCode = value;
+                OnPropertyChanged("InvoiceOwnerVatCode");
+            }
+        }
+
+        //private decimal? _invoiceMaxCost;
+        public decimal? InvoiceMaxCost
+        {
+            get
+            {
+                return _settings.Max_Self_Invoice_cost; //_invoiceMaxCost; 
+            }
+            set
+            {
+                _settings.Max_Self_Invoice_cost = value.HasValue ? value.Value : 0;
+                OnPropertyChanged("InvoiceMaxCost");
+            }
+        }
+
+        #endregion
+
         #region Commands
 
 
         public ICommand SelfInvoiceCommand { get; set; }
-
         public void SelfInvoice_Executed(object sender)
         {
-            InvoceButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
-            CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
-            SelectedControl = new SelfInvoiceUserControl();
+            if (!AppProperties.FormHaveModifications)
+            {
+                InvoceButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
+                CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
+                SelectedControl = new SelfInvoiceUserControl();
+            }
         }
 
         public ICommand CashFlowCommand { get; set; }
-
         public void CashFlowCommand_Executed(object sender)
         {
-            InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
-            CashButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
-            SelectedControl = new CashFlowUserControl();
+            if (!AppProperties.FormHaveModifications)
+            {
+                InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
+                CashButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
+                SelectedControl = new CashFlowUserControl();
+            }
         }
 
         #endregion
