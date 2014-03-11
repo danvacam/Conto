@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace Conto.Wpf
 {
@@ -21,7 +11,23 @@ namespace Conto.Wpf
     {
         public ContoWindow()
         {
+            SettingsConfirmCommand = new RelayCommand(SettingsConfirmCommand_Executed);
+
             InitializeComponent();
+
+            OptionsUserControl.SettingsButton.MouseUp += SettingsButtonOnMouseUp;
         }
+
+        private void SettingsButtonOnMouseUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            SettingsGrid.Visibility = SettingsGrid.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public static ICommand SettingsConfirmCommand { get; set; }
+        public void SettingsConfirmCommand_Executed(object sender)
+        {
+            SettingsGrid.Visibility = Visibility.Collapsed;
+        }
+
     }
 }
