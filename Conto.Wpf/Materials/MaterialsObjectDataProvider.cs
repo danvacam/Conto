@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -25,14 +25,14 @@ namespace Conto.Wpf.Materials
         public MaterialUIObjects GetMaterials()
         {
             var materials = new MaterialUIObjects();
-            List<MaterialDataObject> materialData = _dataAccessLayer.GetMaterials();
-            foreach (var materialDataObject in materialData)
-            {
-                materials.Add(new MaterialUIObject(materialDataObject));
-            }
+            //List<MaterialDataObject> materialData = _dataAccessLayer.GetMaterials();
+            //foreach (var materialDataObject in materialData)
+            //{
+            //    materials.Add(new MaterialUIObject(materialDataObject));
+            //}
 
-            materials.ItemEndEdit += MaterialsOnItemEndEdit;
-            materials.CollectionChanged += MaterialsOnCollectionChanged;
+            //materials.ItemEndEdit += MaterialsOnItemEndEdit;
+            //materials.CollectionChanged += MaterialsOnCollectionChanged;
 
             return materials;
         }
@@ -46,7 +46,7 @@ namespace Conto.Wpf.Materials
                     var materialObject = item as MaterialUIObject;
 
                     // use the data access layer to delete the wrapped data object
-                    _dataAccessLayer.DeleteMaterial(materialObject.GetDataObject());
+                    //_dataAccessLayer.DeleteMaterial(materialObject.GetDataObject());
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace Conto.Wpf.Materials
             try
             {
                 // use the data access layer to update the wrapped data object
-                _dataAccessLayer.UpdateMaterial(materialObject.GetDataObject());
+                //_dataAccessLayer.UpdateMaterial(materialObject.GetDataObject());
             }
             catch (Exception ex)
             {
