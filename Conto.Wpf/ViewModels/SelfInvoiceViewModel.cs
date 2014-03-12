@@ -20,10 +20,52 @@ namespace Conto.Wpf.ViewModels
 
             InvoiceStartDate = DateTime.Now;
             InvoiceEndDate = DateTime.Now;
+            InvoiceYear = DateTime.Now.Year;
 
             VatExempt = true;
         }
 
+        private CollectionView _materials;
+        public CollectionView Materials
+        {
+            get
+            {
+                return _materials;
+            }
+            set
+            {
+                _materials = value;
+                OnPropertyChanged("Materials");
+            }
+        }
+
+        private decimal? _materialPrice;
+        public decimal? MaterialPrice
+        {
+            get
+            {
+                return _materialPrice;
+            }
+            set
+            {
+                _materialPrice = value;
+                OnPropertyChanged("MaterialPrice");
+            }
+        }
+
+        private CollectionView _measures;
+        public CollectionView Measures
+        {
+            get
+            {
+                return _measures;
+            }
+            set
+            {
+                _measures = value;
+                OnPropertyChanged("Measures");
+            }
+        }
 
         private int? _quantity;
         public int? Quantity
@@ -77,21 +119,7 @@ namespace Conto.Wpf.ViewModels
                 OnPropertyChanged("InvoiceYear");
             }
         }
-
-        private CollectionView _materials;
-        public CollectionView Materials
-        {
-            get
-            {
-                return _materials;
-            }
-            set
-            {
-                _materials = value;
-                OnPropertyChanged("Materials");
-            }
-        }
-
+        
         private bool _vatExempt;
         public bool VatExempt
         {
