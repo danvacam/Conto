@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlServerCe;
@@ -43,6 +42,72 @@ namespace Conto.Data
         }
 
         #endregion
+
+        #region MATERIALS
+
+        public List<Material> MaterialsGet()
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<Material>("SELECT * FROM Material").ToList();
+            }
+        }
+
+        public void MaterialAdd(Material material)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                conn.Execute(
+                    "INSERT INTO Materials (Description, Price, MeasureId) VALUES (@Description, @Price, @MeasureId)",
+                    new
+                    {
+                        material.Description,
+                        material.Price,
+                        material.MeasureId
+                    });
+            }
+        }
+
+        public void MaterialUpdate(Material material)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                conn.Execute(
+                    "UPDATE Materials SET Description = @Description, Price = @Price, MeasureId = @MeasureId WHERE Id = @Id",
+                    new
+                    {
+                        material.Description,
+                        material.Price,
+                        material.MeasureId,
+                        material.Id
+                    });
+            }
+        }
+
+        public void MaterialDelete(Material material)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                conn.Execute(
+                    "DELETE Materials WHERE Id = @Id);",
+                    new
+                    {
+                        material.Id
+                    });
+            }
+        }
+
+        #endregion
+
+
 
 
 
@@ -123,26 +188,7 @@ namespace Conto.Data
             }
         }
         
-
-        public List<MaterialDataObject> GetMaterials()
-        {
-            using (var conn = new SqlCeConnection(
-                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
-            {
-                conn.Open();
-                return conn.Query<MaterialDataObject>("SELECT * FROM Material").ToList();
-            }
-        }
-
-        public void UpdateMaterial(MaterialDataObject material)
-        {
-
-        }
-
-        public void DeleteMaterial(MaterialDataObject material)
-        {
-
-        }
+        
 
         #region CASHFLOW
 
