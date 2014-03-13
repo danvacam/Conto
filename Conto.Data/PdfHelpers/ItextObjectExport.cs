@@ -1,6 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
+using System.Threading;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 
@@ -15,7 +18,7 @@ namespace Conto.Data.PdfHelpers
 
         //ITC Avant Garde Gothic
         // Print with acrobat reader snippet
-        // http://aspalliance.com/514_CodeSnip_Printing_PDF_from_NET.all
+        // http://www.codeproject.com/Tips/598424/How-to-Silently-Print-PDFs-using-Adobe-Reader-and
 
 
         public static void CreateFirstPdf()
@@ -66,6 +69,10 @@ namespace Conto.Data.PdfHelpers
                 doc.Close();
                 writer.Close();
                 fs.Close();
+
+                string path = Environment.ExpandEnvironmentVariables(@"%ProgramFiles(x86)%");
+                string pathToExecutable = @"\Adobe\Adobe Reader\Reader\AcroRd32.exe";
+                RunExecutable(string.Concat(path, pathToExecutable), @"/p ""Chapter1_example.pdf""");
             }
         }
 
@@ -166,5 +173,36 @@ namespace Conto.Data.PdfHelpers
                 //Response.OutputStream.Write(ms.GetBuffer(), 0, ms.GetBuffer().Length);
             }
         }
+
+
+
+        private static void RunExecutable(string executable, string arguments)
+        {
+            ProcessStartInfo starter = new ProcessStartInfo(executable, arguments);
+            starter.CreateNoWindow = true;
+            starter.RedirectStandardOutput = true;
+            starter.UseShellExecute = false;
+            Process process = new Process();
+            process.StartInfo = starter;
+            process.Start();
+            StringBuilder buffer = new StringBuilder();
+            using (StreamReader reader = process.StandardOutput)
+            {
+                string line = reader.ReadLine();
+                while (line != null)
+                {
+                    buffer.Append(line);
+                    buffer.Append(Environment.NewLine);
+                    line = reader.ReadLine();
+                    Thread.Sleep(100);
+                }
+            }
+            if (process.ExitCode != 0)
+            {
+                throw new Exception(string.Format(@"""{0}"" exited with ExitCode {1}. Output: {2}",
+                    executable, process.ExitCode, buffer.ToString()));
+            }
+        }
+
     }
 }
