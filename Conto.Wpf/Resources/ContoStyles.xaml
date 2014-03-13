@@ -64,6 +64,14 @@
         <Setter Property="Margin" Value="10,0,0,0" />
     </Style>
 
+    <Style x:Key="DescriptionTextStyle" TargetType="TextBox">
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="50" />
+        <Setter Property="TextAlignment" Value="Right" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+    
     <Style x:Key="QuantityStyle" TargetType="TextBox">
         <Setter Property="Height" Value="25" />
         <Setter Property="Width" Value="50" />
@@ -100,6 +108,13 @@
         <GradientStop Color="SandyBrown" Offset="0" />
         <GradientStop Color="#FFBB22" Offset="0.5" />
         <GradientStop Color="SandyBrown" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="LightGreenGradientBrush"
+    StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="LightGreen" Offset="0" />
+        <GradientStop Color="GreenYellow" Offset="0.5" />
+        <GradientStop Color="LightGreen" Offset="1" />
     </LinearGradientBrush>
 
     <Style x:Key="ActionButtonStyle" TargetType="Button">
@@ -229,9 +244,13 @@
     <Style x:Key="CashMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MainMenuButtonStyle}">
         <Setter Property="Background" Value="{StaticResource SandyGradientBrush}" />
     </Style>
-    
-    
-    
+
+    <Style x:Key="MaterialsMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MainMenuButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource LightGreenGradientBrush}" />
+    </Style>
+
+
+
     <ControlTemplate x:Key="ButtonControlTemplate" TargetType="{x:Type ButtonBase}">
         <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
                     Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
