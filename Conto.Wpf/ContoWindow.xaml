@@ -69,6 +69,18 @@
                             <Image Grid.Column="1" Source="/img/cash-register.png" Stretch="None" />
                         </Grid>
                     </Button>
+
+                    <Button Style="{Binding MaterialsButtonStyle}"
+                        Command="{Binding MaterialsCommand}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0">Materiali</TextBlock>
+                            <Image Grid.Column="1" Source="/img/cash-register.png" Stretch="None" />
+                        </Grid>
+                    </Button>
                 </StackPanel>
 
                 <Grid Grid.Row="2" Grid.Column="1" Grid.RowSpan="2">
