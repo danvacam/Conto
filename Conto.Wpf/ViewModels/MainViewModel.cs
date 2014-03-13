@@ -28,9 +28,11 @@ namespace Conto.Wpf.ViewModels
 
             InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
             CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
+            MaterialsButtonStyle = Application.Current.Resources["MaterialsMenuButtonStyle"] as Style;
 
             SelfInvoiceCommand = new RelayCommand(SelfInvoice_Executed);
             CashFlowCommand = new RelayCommand(CashFlowCommand_Executed);
+            MaterialsCommand = new RelayCommand(MaterialsCommand_Executed);
         }
 
         private Style _invoiceButtonStyle;
@@ -57,6 +59,18 @@ namespace Conto.Wpf.ViewModels
             {
                 _cashButtonStyle = value;
                 OnPropertyChanged("CashButtonStyle");
+            }
+        }
+
+        private Style _materialsButtonStyle;
+
+        public Style MaterialsButtonStyle
+        {
+            get { return _materialsButtonStyle; }
+            set
+            {
+                _materialsButtonStyle = value;
+                OnPropertyChanged("MaterialsButtonStyle");
             }
         }
 
@@ -166,6 +180,7 @@ namespace Conto.Wpf.ViewModels
             {
                 InvoceButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
+                MaterialsButtonStyle = Application.Current.Resources["MaterialsMenuButtonStyle"] as Style;
                 SelectedControl = new SelfInvoiceUserControl();
             }
         }
@@ -177,7 +192,20 @@ namespace Conto.Wpf.ViewModels
             {
                 InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
+                MaterialsButtonStyle = Application.Current.Resources["MaterialsMenuButtonStyle"] as Style;
                 SelectedControl = new CashFlowUserControl();
+            }
+        }
+
+        public ICommand MaterialsCommand { get; set; }
+        public void MaterialsCommand_Executed(object sender)
+        {
+            if (!AppProperties.FormHaveModifications)
+            {
+                InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
+                CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
+                MaterialsButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
+                SelectedControl = new MaterialsUserControl();
             }
         }
 
