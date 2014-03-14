@@ -11,7 +11,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <Style x:Key="PanelTitleStyle" TargetType="Label">
         <Style.Resources>
             <Style TargetType="TextBlock">
@@ -49,14 +49,11 @@
     </Style>
 
 
-
-
-
     <Style x:Key="FormLabelStyle" TargetType="Label">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="DimGray" />
     </Style>
-   
+
     <Style x:Key="DateTextStyle" TargetType="DatePicker">
         <Setter Property="Width" Value="100" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -71,7 +68,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Margin" Value="10,0,0,0" />
     </Style>
-    
+
     <Style x:Key="QuantityStyle" TargetType="TextBox">
         <Setter Property="Height" Value="25" />
         <Setter Property="Width" Value="50" />
@@ -79,7 +76,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Margin" Value="10,0,0,0" />
     </Style>
-    
+
     <Style x:Key="YearTextStyle" TargetType="TextBox">
         <Setter Property="Height" Value="25" />
         <Setter Property="Width" Value="35" />
@@ -87,7 +84,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Margin" Value="10,0,0,0" />
     </Style>
-    
+
 
     <LinearGradientBrush x:Key="TealGradientBrush"  
     StartPoint="0,0" EndPoint="1,1">
@@ -95,7 +92,7 @@
         <GradientStop Color="SteelBlue" Offset="0.5" />
         <GradientStop Color="Teal" Offset="1" />
     </LinearGradientBrush>
-    
+
     <LinearGradientBrush x:Key="TomatoGradientBrush"  
     StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="Tomato" Offset="0" />
@@ -116,6 +113,82 @@
         <GradientStop Color="GreenYellow" Offset="0.5" />
         <GradientStop Color="LightGreen" Offset="1" />
     </LinearGradientBrush>
+
+    <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Foreground" Value="Cornsilk"/>
+        <Setter Property="SeparatorBrush" Value="Cornsilk" />
+        <Setter Property="FontWeight" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <Border BorderThickness="1" Padding="5,0,5,0" Background="{StaticResource TealGradientBrush}">
+                            <Border.BorderBrush>
+                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Offset="0" Color="#A5A5A5" />
+                                    <GradientStop Offset="1" Color="#4B4B4B" />
+                                </LinearGradientBrush>
+                            </Border.BorderBrush>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+			     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+				SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+        <Setter Property="Background" Value="Cornsilk" />
+        <Setter Property="Validation.ErrorTemplate" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridRow}">
+                    <Border x:Name="DGR_Border"
+			BorderBrush="{TemplateBinding BorderBrush}"
+			BorderThickness="{TemplateBinding BorderThickness}"
+		        SnapsToDevicePixels="True">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                <GradientStop Offset="0" Color="#AAFFFFAA" />
+                                <GradientStop Offset="1" Color="#AAFFD455" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <SelectiveScrollingGrid>
+                            <SelectiveScrollingGrid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </SelectiveScrollingGrid.ColumnDefinitions>
+                            <SelectiveScrollingGrid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </SelectiveScrollingGrid.RowDefinitions>
+                            <DataGridCellsPresenter Grid.Column="1"
+			ItemsPanel="{TemplateBinding ItemsPanel}"
+			SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <DataGridDetailsPresenter Grid.Row="1"
+			Grid.Column="1"
+			SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding 
+ AreRowDetailsFrozen,
+  ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical},
+			  Converter={x:Static DataGrid.RowDetailsScrollingConverter},
+			  RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+			Visibility="{TemplateBinding DetailsVisibility}" />
+                            <DataGridRowHeader Grid.RowSpan="2"
+			SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
+			Visibility="{Binding HeadersVisibility,
+ConverterParameter={x:Static DataGridHeadersVisibility.Row},
+   Converter={x:Static DataGrid.HeadersVisibilityConverter},
+    RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                        </SelectiveScrollingGrid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <Style x:Key="ActionButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="Cornsilk" />
@@ -222,7 +295,7 @@
                                               Content="{TemplateBinding Content}" />
                         </DockPanel>
                     </Grid>
-                    
+
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Rectangle.Fill" TargetName="outerRectangle"
@@ -235,7 +308,7 @@
                             </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
-                    
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
