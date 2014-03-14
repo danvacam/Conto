@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using Conto.Data;
 using Conto.Wpf.Resources;
@@ -15,6 +13,7 @@ namespace Conto.Wpf.ViewModels
         {
             var contoData = new ContoData();
             Materials = new List<Material>(contoData.MaterialsGet());
+            Measures = new List<Measures>(contoData.MeasuresGet());
             AddMaterialCommand = new RelayCommand(AddMaterial_Executed);
         }
 
@@ -60,8 +59,20 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        private CollectionView _measures;
-        public CollectionView Measures
+        private int? _selectedMeasure;
+
+        public int? SelectedMeasure
+        {
+            get { return _selectedMeasure; }
+            set
+            {
+                _selectedMeasure = value;
+                OnPropertyChanged("SelectedMeasure");
+            }
+        }
+
+        private List<Measures> _measures;
+        public List<Measures> Measures
         {
             get
             {
