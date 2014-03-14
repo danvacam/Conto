@@ -176,7 +176,7 @@ namespace Conto.Wpf.ViewModels
         public ICommand SelfInvoiceCommand { get; set; }
         public void SelfInvoice_Executed(object sender)
         {
-            if (!AppProperties.FormHaveModifications)
+            if (!AppProperties.FormHaveModifications || DiscardFormModifications())
             {
                 InvoceButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
@@ -188,7 +188,7 @@ namespace Conto.Wpf.ViewModels
         public ICommand CashFlowCommand { get; set; }
         public void CashFlowCommand_Executed(object sender)
         {
-            if (!AppProperties.FormHaveModifications)
+            if (!AppProperties.FormHaveModifications || DiscardFormModifications())
             {
                 InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
@@ -200,13 +200,19 @@ namespace Conto.Wpf.ViewModels
         public ICommand MaterialsCommand { get; set; }
         public void MaterialsCommand_Executed(object sender)
         {
-            if (!AppProperties.FormHaveModifications)
+            if (!AppProperties.FormHaveModifications || DiscardFormModifications())
             {
                 InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
                 MaterialsButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
                 SelectedControl = new MaterialsUserControl();
             }
+        }
+
+        public bool DiscardFormModifications()
+        {
+            var result = MessageBox.Show("Proseguire perdendo le modifiche?", "Conferma", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            return result == MessageBoxResult.Yes;
         }
 
         #endregion

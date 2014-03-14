@@ -9,11 +9,12 @@ namespace Conto.Wpf.ViewModels
 {
     public class MaterialsViewModel : INotifyPropertyChanged
     {
+        private readonly ContoData _contoData;
         public MaterialsViewModel()
         {
-            var contoData = new ContoData();
-            Materials = new List<Material>(contoData.MaterialsGet());
-            Measures = new List<Measures>(contoData.MeasuresGet());
+            _contoData = new ContoData();
+            Materials = new List<Material>(_contoData.MaterialsGet());
+            Measures = new List<Measures>(_contoData.MeasuresGet());
             AddMaterialCommand = new RelayCommand(AddMaterial_Executed);
         }
 
@@ -104,11 +105,33 @@ namespace Conto.Wpf.ViewModels
         {
             if (AppProperties.FormHaveModifications)
             {
-                MessageBox.Show("AddMaterial MODIFIED");
-            }
-            else
-            {
-                MessageBox.Show("AddMaterial");
+                if (string.IsNullOrEmpty(Description))
+                {
+                    MessageBox.Show("Manca la descrizione");
+                    return;
+                }
+                if (!Price.HasValue)
+                {
+                    MessageBox.Show("Manca il prezzo");
+                    return;
+                }
+                if (!SelectedMeasure.HasValue)
+                {
+                    MessageBox.Show("Nessuna unità di misura selezionata");
+                    return;
+                }
+                _contoData.MaterialAdd(new Material
+                {
+                    Description = Description,
+                    Price = Price,
+                    MeasureId = SelectedMeasure.Value
+                });
+                Materials = new List<Material>(_contoData.MaterialsGet());
+                
+                Description = string.Empty;
+                Price = null;
+                SelectedMeasure = null;
+                AppProperties.FormHaveModifications = false;
             }
         }
 

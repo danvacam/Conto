@@ -35,7 +35,7 @@ namespace Conto.Data.PdfHelpers
 
                 doc.Open();
 
-                PdfReader templateReader = new PdfReader("Autofattura_Template.pdf");
+                PdfReader templateReader = new PdfReader(PdfResources.Autofattura_Template);
                 PdfTemplate background = writer.GetImportedPage(templateReader, 1);
 
                 doc.NewPage();
