@@ -51,7 +51,7 @@ namespace Conto.Data
                 ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
             {
                 conn.Open();
-                return conn.Query<Material>("SELECT * FROM Material").ToList();
+                return conn.Query<Material>("SELECT * FROM Materials").ToList();
             }
         }
 
@@ -107,7 +107,19 @@ namespace Conto.Data
 
         #endregion
 
+        #region MEASURES
 
+        public List<Measures> MeasuresGet()
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<Measures>("SELECT * FROM Measures").ToList();
+            }
+        }
+
+        #endregion
 
 
 
