@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -43,8 +43,8 @@
             <TextBox Text="{Binding Price}" Grid.Column="3" Style="{StaticResource QuantityStyle}" />
 
             <Label Content="Unita di misura" Grid.Column="4" Style="{StaticResource FormLabelStyle}"/>
-            <TextBox Text="{Binding Price}" Grid.Column="5" Style="{StaticResource QuantityStyle}" />
-
+            <ComboBox ItemsSource="{Binding Measures}" SelectedValue="{Binding SelectedMeasure}" DisplayMemberPath="Description" SelectedValuePath="Id" Grid.Column="5"/>
+            
             <Button Command="{Binding AddMaterialCommand}" Style="{StaticResource ActionButtonStyle}" 
                     Grid.Column="6" Height="30" Width="80" Margin="10,0,0,0">
                 <TextBlock>Aggiungi</TextBlock>
@@ -52,17 +52,18 @@
 
         </Grid>
 
-        <Grid Grid.Row="1">
-            <DataGrid CanUserAddRows="False" AutoGenerateColumns="False"
-                      ItemsSource="{Binding Materials}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id" Visibility="Hidden" Binding="{Binding Path=Id}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Descrizione" Width="*" Binding="{Binding Path=Description}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Prezzo" Width="Auto" Binding="{Binding Path=Price}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Misura" Width="Auto" Binding="{Binding Path=MeasureId}"></DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
+        <DataGrid CanUserAddRows="False" AutoGenerateColumns="False" Grid.Row="1" Margin="0,20,0,0"
+                      ItemsSource="{Binding Materials}"
+                      AlternationCount="2"
+                      RowStyle="{StaticResource DataGridRowStyle}">
+            <DataGrid.Columns>
+                <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Id" Visibility="Hidden" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Descrizione" Width="*" Binding="{Binding Path=Description}"></DataGridTextColumn>
+                <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Prezzo" Width="Auto" Binding="{Binding Path=Price}"></DataGridTextColumn>
+                <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Misura" Width="Auto" Binding="{Binding Path=MeasureId}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
 
     </Grid>
 </UserControl>
