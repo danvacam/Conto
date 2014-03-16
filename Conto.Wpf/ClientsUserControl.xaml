@@ -6,6 +6,41 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            
+            <Button>
+                <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Foreground" Value="#CCCCC6BA" />
+                    <Setter Property="Background" Value="#444444" />
+                    <Setter Property="FontSize" Value="18" />
+                    <Setter Property="Margin" Value="0,0,0,10"></Setter>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="1" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Grid Width="258" Height="70" >
+                                    <Polygon Points="249,40 249,55 257,35 249,15" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding Background}"></Polygon>
+                                    <!-- Outer rectangle -->
+                                    <Rectangle x:Name="outerRectangle" 
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Stretch"
+                                   Stroke="Transparent"
+                                               Width="250"
+                                   Fill="{TemplateBinding Background}" />
+                                    <!-- Content -->
+                                    <DockPanel>
+                                        <ContentPresenter x:Name="myContentPresenter" Margin="20" 
+                                              Content="{TemplateBinding Content}" />
+                                    </DockPanel>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+            </Button>
     </Grid>
 </UserControl>

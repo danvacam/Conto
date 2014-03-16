@@ -21,7 +21,7 @@
             <Grid Grid.ZIndex="0" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="50" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -70,6 +70,18 @@
                         </Grid>
                     </Button>
 
+                    <Button Style="{Binding ClientsButtonStyle}"
+                        Command="{Binding ClientsCommand}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0">Clienti</TextBlock>
+                            <Image Grid.Column="1" Source="/img/clients.png" Stretch="None" />
+                        </Grid>
+                    </Button>
+
                     <Button Style="{Binding MaterialsButtonStyle}"
                         Command="{Binding MaterialsCommand}">
                         <Grid>
@@ -78,7 +90,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0">Materiali</TextBlock>
-                            <Image Grid.Column="1" Source="/img/cash-register.png" Stretch="None" />
+                            <Image Grid.Column="1" Source="/img/materials.png" Stretch="None" />
                         </Grid>
                     </Button>
                 </StackPanel>

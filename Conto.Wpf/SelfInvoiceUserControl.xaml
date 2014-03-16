@@ -25,29 +25,22 @@
         </Grid.RowDefinitions>
         <ItemsControl Style="{StaticResource GridItemsStyle}" Grid.Row="0">
             <Label Content="Materiale" Grid.Column="0" Grid.Row="0" Style="{StaticResource FormLabelStyle}"/>
-            <ComboBox Grid.Column="1" Grid.Row="0" IsEditable="True" Margin="10,0,10,0" Height="25">
-                <ComboBoxItem>Item 1</ComboBoxItem>
-                <ComboBoxItem>Item 2</ComboBoxItem>
-                <ComboBoxItem>Item 3</ComboBoxItem>
-            </ComboBox>
+            <ComboBox Grid.Column="1" Grid.Row="0" IsEditable="True" Margin="10,0,10,0" Height="25"
+                      ItemsSource="{Binding Materials}" SelectedItem="{Binding SelectedMaterial}" DisplayMemberPath="Description" SelectedValuePath="Id" />
 
             <Label Content="Prezzo" Grid.Column="2" Grid.Row="0" Style="{StaticResource FormLabelStyle}"/>
-            <TextBox Grid.Column="3" Grid.Row="0" Style="{StaticResource QuantityStyle}"/>
+            <TextBox Grid.Column="3" Grid.Row="0" Style="{StaticResource QuantityStyle}"
+                     Text="{Binding MaterialPrice}"/>
 
             <Label Content="Unita di misura" Grid.Column="0" Grid.Row="1" Style="{StaticResource FormLabelStyle}"/>
-            <ComboBox Grid.Column="1" Grid.Row="1" IsEditable="True" Margin="10,0,10,0" Height="25">
-                <ComboBoxItem>Tonnellate</ComboBoxItem>
-                <ComboBoxItem>Quintali</ComboBoxItem>
-                <ComboBoxItem>Kg</ComboBoxItem>
-            </ComboBox>
+            <ComboBox Grid.Column="1" Grid.Row="1" IsEditable="True" Margin="10,0,10,0" Height="25"
+                      ItemsSource="{Binding Measures}" SelectedItem="{Binding SelectedMeasure}" DisplayMemberPath="Description" SelectedValuePath="Id" />
 
             <Label Content="Quantita" Grid.Column="2" Grid.Row="1" Style="{StaticResource FormLabelStyle}"/>
             <TextBox Text="{Binding Quantity}" Grid.Column="3" Grid.Row="1" Style="{StaticResource QuantityStyle}"/>
 
-            <Label Content="Data inizio" Grid.Column="0" Grid.Row="2" Style="{StaticResource FormLabelStyle}"/>
-            <DatePicker SelectedDate="{Binding InvoiceStartDate}" Grid.Column="1" Grid.Row="2" Style="{StaticResource DateTextStyle}"/>
-            <Label Content="Data fine" Grid.Column="2" Grid.Row="2" Style="{StaticResource FormLabelStyle}"/>
-            <DatePicker SelectedDate="{Binding InvoiceEndDate}" Grid.Column="3" Grid.Row="2"  Style="{StaticResource DateTextStyle}"/>
+            <Label Content="Data fatture" Grid.Column="0" Grid.Row="2" Style="{StaticResource FormLabelStyle}"/>
+            <DatePicker SelectedDate="{Binding InvoiceDate}" Grid.Column="1" Grid.Row="2" Style="{StaticResource DateTextStyle}"/>
 
             <Label Content="Anno di riferimento" Grid.Column="0" Grid.Row="3" Style="{StaticResource FormLabelStyle}" />
             <TextBox Text="{Binding InvoiceYear}" Grid.Column="1" Grid.Row="3" Style="{StaticResource YearTextStyle}" />

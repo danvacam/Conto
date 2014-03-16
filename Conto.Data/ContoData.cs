@@ -121,6 +121,44 @@ namespace Conto.Data
 
         #endregion
 
+        #region SELFINVOICES
+
+        public List<SelfInvoices> SelfInvoicesGet()
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<SelfInvoices>("SELECT * FROM SelfInvoices").ToList();
+            }
+        }
+
+        public void SelfInvoicesAdd(SelfInvoices selfInvoice)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                conn.Execute(
+                    "INSERT INTO SelfInvoices (MaterialId, Quantity, VatExcept, InvoiceNumber, InvoiceYear, MeasureId, InCashFlow, InvoiceDate, InvoiceCost) VALUES (@MaterialId, @Quantity, @VatExcept, @InvoiceNumber, @InvoiceYear, @MeasureId, @InCashFlow, @InvoiceDate, @InvoiceCost)",
+                    new
+                    {
+                        selfInvoice.MaterialId,
+                        selfInvoice.Quantity,
+                        selfInvoice.VatExcept,
+                        selfInvoice.InvoiceNumber,
+                        selfInvoice.InvoiceYear,
+                        selfInvoice.MeasureId,
+                        selfInvoice.InCashFlow,
+                        selfInvoice.InvoiceDate,
+                        selfInvoice.InvoiceCost
+                    });
+            }
+        }
+
+        #endregion
+
+
 
 
         #region CUSTOMERS

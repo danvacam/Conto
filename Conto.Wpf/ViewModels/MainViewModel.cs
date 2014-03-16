@@ -29,9 +29,11 @@ namespace Conto.Wpf.ViewModels
             InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
             CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
             MaterialsButtonStyle = Application.Current.Resources["MaterialsMenuButtonStyle"] as Style;
+            ClientsButtonStyle = Application.Current.Resources["ClientsMenuButtonStyle"] as Style;
 
             SelfInvoiceCommand = new RelayCommand(SelfInvoice_Executed);
             CashFlowCommand = new RelayCommand(CashFlowCommand_Executed);
+            ClientsCommand = new RelayCommand(ClientsCommand_Executed);
             MaterialsCommand = new RelayCommand(MaterialsCommand_Executed);
         }
 
@@ -59,6 +61,18 @@ namespace Conto.Wpf.ViewModels
             {
                 _cashButtonStyle = value;
                 OnPropertyChanged("CashButtonStyle");
+            }
+        }
+
+        private Style _clientsButtonStyle;
+
+        public Style ClientsButtonStyle
+        {
+            get { return _clientsButtonStyle; }
+            set
+            {
+                _clientsButtonStyle = value;
+                OnPropertyChanged("ClientsButtonStyle");
             }
         }
 
@@ -181,6 +195,7 @@ namespace Conto.Wpf.ViewModels
                 InvoceButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
                 MaterialsButtonStyle = Application.Current.Resources["MaterialsMenuButtonStyle"] as Style;
+                ClientsButtonStyle = Application.Current.Resources["ClientsMenuButtonStyle"] as Style;
                 SelectedControl = new SelfInvoiceUserControl();
             }
         }
@@ -193,6 +208,7 @@ namespace Conto.Wpf.ViewModels
                 InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
                 MaterialsButtonStyle = Application.Current.Resources["MaterialsMenuButtonStyle"] as Style;
+                ClientsButtonStyle = Application.Current.Resources["ClientsMenuButtonStyle"] as Style;
                 SelectedControl = new CashFlowUserControl();
             }
         }
@@ -205,7 +221,21 @@ namespace Conto.Wpf.ViewModels
                 InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
                 MaterialsButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
+                ClientsButtonStyle = Application.Current.Resources["ClientsMenuButtonStyle"] as Style;
                 SelectedControl = new MaterialsUserControl();
+            }
+        }
+
+        public ICommand ClientsCommand { get; set; }
+        public void ClientsCommand_Executed(object sender)
+        {
+            if (!AppProperties.FormHaveModifications || DiscardFormModifications())
+            {
+                InvoceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
+                CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
+                MaterialsButtonStyle = Application.Current.Resources["MaterialsMenuButtonStyle"] as Style;
+                ClientsButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
+                SelectedControl = new ClientsUserControl();
             }
         }
 

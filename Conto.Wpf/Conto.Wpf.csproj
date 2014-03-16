@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -60,28 +60,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CashFlowPage.xaml.cs">
-      <DependentUpon>CashFlowPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CashFlowUserControl.xaml.cs">
       <DependentUpon>CashFlowUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CashFlow\CashFlowViewModel.cs" />
+    <Compile Include="ClientsUserControl.xaml.cs">
+      <DependentUpon>ClientsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ContoWindow.xaml.cs">
       <DependentUpon>ContoWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomersPage.xaml.cs">
-      <DependentUpon>CustomersPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Customer\CustomerObjectDataProvider.cs" />
     <Compile Include="Customer\CustomerUIObject.cs" />
     <Compile Include="Customer\CustomerUIObjects.cs" />
-    <Compile Include="MainMenuUserControl.xaml.cs">
-      <DependentUpon>MainMenuUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MaterialsPage.xaml.cs">
-      <DependentUpon>MaterialsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MaterialsUserControl.xaml.cs">
       <DependentUpon>MaterialsUserControl.xaml</DependentUpon>
     </Compile>
@@ -91,33 +82,22 @@
     <Compile Include="OptionsUserControl.xaml.cs">
       <DependentUpon>OptionsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PrintPage.xaml.cs">
-      <DependentUpon>PrintPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="RelayCommand.cs" />
     <Compile Include="Resources\AppProperties.cs" />
-    <Compile Include="SelfInvoicePage.xaml.cs">
-      <DependentUpon>SelfInvoicePage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SelfInvoiceUserControl.xaml.cs">
       <DependentUpon>SelfInvoiceUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SelfInvoice\SelfInvoiceViewModel.cs" />
-    <Compile Include="SettingsPage.xaml.cs">
-      <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\SettingsObjectDataProvider.cs" />
     <Compile Include="Settings\SettingUIObject.cs" />
     <Compile Include="ViewModels\CashFlowViewModel.cs" />
-    <Compile Include="ViewModels\ContoViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MaterialsViewModel.cs" />
     <Compile Include="ViewModels\SelfInvoiceViewModel.cs" />
-    <Page Include="CashFlowPage.xaml">
+    <Page Include="CashFlowUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CashFlowUserControl.xaml">
+    <Page Include="ClientsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -125,46 +105,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomersPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="HomePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainMenuUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="HomePage.xaml.cs">
-      <DependentUpon>HomePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="MaterialsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MaterialsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="OptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PrintPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -176,15 +125,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SelfInvoicePage.xaml">
+    <Page Include="Resources\MenuButtons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SelfInvoiceUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -239,6 +184,10 @@
   <ItemGroup>
     <Resource Include="img\settings.png" />
     <Resource Include="img\settings_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\clients.png" />
+    <Resource Include="img\materials.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
