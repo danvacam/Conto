@@ -119,9 +119,36 @@ namespace Conto.Data
             }
         }
 
+        public Measures MeasureGet(int id)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<Measures>("SELECT * FROM Measures WHERE Id = @Id", new {Id = id}).SingleOrDefault();
+            }
+        }
+
         #endregion
 
         #region SELFINVOICES
+
+        
+//SELECT        SelfInvoices.InvoiceGroupId, Materials.Description AS MaterialDescription, SUM(SelfInvoices.Quantity) AS Quantity, SUM(SelfInvoices.InvoiceCost) AS Cost
+//FROM            SelfInvoices INNER JOIN
+//                         Materials ON SelfInvoices.MaterialId = Materials.Id
+//GROUP BY SelfInvoices.InvoiceGroupId, Materials.Description
+
+        public List<SelfInvoicesMaster> SelfInvoicesMasterGet()
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<SelfInvoicesMaster>("SELECT SelfInvoices.InvoiceGroupId, Materials.Description AS MaterialDescription, SUM(SelfInvoices.Quantity) AS Quantity, SUM(SelfInvoices.InvoiceCost) AS Cost FROM SelfInvoices INNER JOIN Materials ON SelfInvoices.MaterialId = Materials.Id GROUP BY SelfInvoices.InvoiceGroupId, Materials.Description").ToList();
+            }
+        }
+
 
         public List<SelfInvoices> SelfInvoicesGet()
         {
@@ -140,7 +167,7 @@ namespace Conto.Data
             {
                 conn.Open();
                 conn.Execute(
-                    "INSERT INTO SelfInvoices (MaterialId, Quantity, VatExcept, InvoiceNumber, InvoiceYear, MeasureId, InCashFlow, InvoiceDate, InvoiceCost) VALUES (@MaterialId, @Quantity, @VatExcept, @InvoiceNumber, @InvoiceYear, @MeasureId, @InCashFlow, @InvoiceDate, @InvoiceCost)",
+                    "INSERT INTO SelfInvoices (MaterialId, Quantity, VatExcept, InvoiceNumber, InvoiceYear, MeasureId, InCashFlow, InvoiceDate, InvoiceCost, InvoiceGroupId) VALUES (@MaterialId, @Quantity, @VatExcept, @InvoiceNumber, @InvoiceYear, @MeasureId, @InCashFlow, @InvoiceDate, @InvoiceCost, @InvoiceGroupId)",
                     new
                     {
                         selfInvoice.MaterialId,
@@ -151,7 +178,8 @@ namespace Conto.Data
                         selfInvoice.MeasureId,
                         selfInvoice.InCashFlow,
                         selfInvoice.InvoiceDate,
-                        selfInvoice.InvoiceCost
+                        selfInvoice.InvoiceCost,
+                        selfInvoice.InvoiceGroupId
                     });
             }
         }
