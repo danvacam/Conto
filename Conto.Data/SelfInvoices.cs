@@ -16,12 +16,4 @@ namespace Conto.Data
         public decimal InvoiceCost { get; set; }
         public Guid InvoiceGroupId { get; set; }
     }
-
-    public class SelfInvoicesMaster
-    {
-        public Guid InvoiceGroupId { get; set; }
-        public string MaterialDescription { get; set; }
-        public decimal Quantity { get; set; }
-        public decimal Cost { get; set; }
-    }
 }
