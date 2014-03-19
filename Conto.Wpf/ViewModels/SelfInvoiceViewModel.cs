@@ -17,6 +17,7 @@ namespace Conto.Wpf.ViewModels
             _contoData = new ContoData();
 
             AddSelfInvoice = new RelayCommand(AddSelfInvoice_Executed);
+            AddToCashFlowCommand = new RelayCommand(AddToCashFlowCommand_Executed);
 
             InvoiceDate = DateTime.Now;
             InvoiceYear = DateTime.Now.Year;
@@ -24,9 +25,7 @@ namespace Conto.Wpf.ViewModels
             Materials = new List<Material>(_contoData.MaterialsGet());
             Measures = new List<Measures>(_contoData.MeasuresGet());
 
-            SelfInvoicesMaster = new List<SelfInvoicesMaster>(_contoData.SelfInvoicesMasterGet());
-
-            SelfInvoices = new List<SelfInvoices>(_contoData.SelfInvoicesGet());
+            SelfInvoices = new List<SelfInvoicesMaster>(_contoData.SelfInvoicesMasterGet());
         }
 
         private long _id;
@@ -49,7 +48,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _selectedMaterial = value;
-                MaterialPrice = value.Price;
+                MaterialPrice = value != null ? value.Price : null;
                 OnPropertyChanged("SelectedMaterial");
             }
         }
@@ -185,8 +184,8 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        private List<SelfInvoices> _selfInvoices;
-        public List<SelfInvoices> SelfInvoices
+        private List<SelfInvoicesMaster> _selfInvoices;
+        public List<SelfInvoicesMaster> SelfInvoices
         {
             get
             {
@@ -196,20 +195,6 @@ namespace Conto.Wpf.ViewModels
             {
                 _selfInvoices = value;
                 OnPropertyChanged("SelfInvoices");
-            }
-        }
-
-        private List<SelfInvoicesMaster> _selfInvoicesMaster;
-        public List<SelfInvoicesMaster> SelfInvoicesMaster
-        {
-            get
-            {
-                return _selfInvoicesMaster;
-            }
-            set
-            {
-                _selfInvoicesMaster = value;
-                OnPropertyChanged("SelfInvoicesMaster");
             }
         }
 
@@ -239,55 +224,49 @@ namespace Conto.Wpf.ViewModels
                     return;
                 }
 
-                var invoiceNumber = 1;
+                //var invoiceNumber = 1;
                 var invoiceGroup = Guid.NewGuid();
                 var settings = _contoData.GetSettings();
                 var maxInvoiceValue = settings != null ? settings.MaxInvoiceValue : 999;
                 maxInvoiceValue = maxInvoiceValue.HasValue ? maxInvoiceValue.Value : 990;
                 var measure = _contoData.MeasureGet(SelectedMaterial.MeasureId);
 
-                decimal invoiceCost = Quantity.Value*SelectedMaterial.Price.Value;
-                var quantityAtMaxInvoiceValue = (maxInvoiceValue.Value*measure.Grams/SelectedMaterial.Price.Value) / measure.Grams;
+                decimal invoiceCost = (Quantity.Value*SelectedMaterial.Price.Value)/measure.Grams*SelectedMeasure.Grams;
+                decimal quantityAtMaxInvoiceValue = (measure.Grams / SelectedMeasure.Grams);
 
-
-
-                // TODO change measures
-                //if (SelectedMeasure.Id == SelectedMaterial.MeasureId)
-                //{
-                //    invoiceCost = Quantity.Value * SelectedMaterial.Price.Value;
-                //}
-                //else
-                //{
-                //    invoiceCost = 0;
-                //}
-
-                //var invoiceCost = Quantity.Value*MaterialPrice.Value;
-                //var wightForMaxInvoiceValue = maxInvoiceValue.Value 
-
-                var invoices = (int)Math.Truncate(invoiceCost / maxInvoiceValue.Value);
+                var invoices = (int)Math.Truncate(invoiceCost / maxInvoiceValue.Value) + 1;
                 
                 var quantityTot = Quantity.Value;
 
                 for (int i = 0; i < invoices; i++)
                 {
-                    var value = Math.Abs(invoiceCost - maxInvoiceValue.Value);
-                    var invoiceCurrentCost = value > maxInvoiceValue ? maxInvoiceValue : value;
-                    var quantity = Math.Abs(quantityTot - quantityAtMaxInvoiceValue);
-                    quantity = quantity > quantityAtMaxInvoiceValue ? quantityAtMaxInvoiceValue : quantity;
+                    var invoiceCurrentCost = invoiceCost > maxInvoiceValue ? maxInvoiceValue.Value : invoiceCost;
+                    invoiceCost = invoiceCost - maxInvoiceValue.Value;
+                    var quantity = quantityTot > quantityAtMaxInvoiceValue ? quantityAtMaxInvoiceValue : quantityTot;
+                    quantityTot = quantityTot - quantityAtMaxInvoiceValue;
                     _contoData.SelfInvoicesAdd(new SelfInvoices
                     {
                         MaterialId = SelectedMaterial.Id,
                         Quantity = quantity,
                         VatExcept = VatExempt,
-                        InvoiceNumber = invoiceNumber++,
+                        //InvoiceNumber = invoiceNumber++,
                         InvoiceYear = InvoiceYear,
                         MeasureId = SelectedMeasure.Id,
                         InCashFlow = false,
                         InvoiceDate = InvoiceDate,
-                        InvoiceCost = invoiceCurrentCost.Value,
+                        InvoiceCost = invoiceCurrentCost,
                         InvoiceGroupId = invoiceGroup
                     });
                 }
+
+                SelectedMaterial = null;
+                MaterialPrice = null;
+                SelectedMeasure = null;
+                Quantity = null;
+
+                SelfInvoices = new List<SelfInvoicesMaster>(_contoData.SelfInvoicesMasterGet());
+
+                AppProperties.FormHaveModifications = false;
             }
             else
             {
@@ -295,6 +274,12 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
+        public ICommand AddToCashFlowCommand { get; set; }
+        public void AddToCashFlowCommand_Executed(object sender)
+        {
+            _contoData.SelfInvoiceAddToCashFlow((SelfInvoicesMaster)sender);
+            SelfInvoices = new List<SelfInvoicesMaster>(new ContoData().SelfInvoicesMasterGet());
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
