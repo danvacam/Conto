@@ -36,13 +36,13 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
 
-            <Label Content="Descrizione" Grid.Column="0" Grid.Row="0" Style="{StaticResource FormLabelStyle}"/>
+            <Label Content="Descrizione" Grid.Column="0" Grid.Row="0" />
             <TextBox Text="{Binding Description}" Grid.Row="0" Grid.Column="1" Style="{StaticResource DescriptionTextStyle}"/>
 
-            <Label Content="Prezzo" Grid.Column="2" Grid.Row="0" Style="{StaticResource FormLabelStyle}"/>
+            <Label Content="Prezzo" Grid.Column="2" Grid.Row="0" />
             <TextBox Text="{Binding Price}" Grid.Column="3" Grid.Row="0" Style="{StaticResource QuantityStyle}" />
 
-            <Label Content="Unita di misura" Grid.Column="0" Grid.Row="1" Style="{StaticResource FormLabelStyle}"/>
+            <Label Content="Unita di misura" Grid.Column="0" Grid.Row="1" />
             <ComboBox ItemsSource="{Binding Measures}" SelectedValue="{Binding SelectedMeasure}" DisplayMemberPath="Description" SelectedValuePath="Id" 
                       Grid.Column="1"  Grid.Row="1" Style="{StaticResource MeasuresComboBoxStyle}" />
             
