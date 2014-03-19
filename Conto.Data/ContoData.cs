@@ -106,7 +106,7 @@ namespace Conto.Data
         }
 
         #endregion
-
+        
         #region MEASURES
 
         public List<Measures> MeasuresGet()
@@ -145,7 +145,22 @@ namespace Conto.Data
                 ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
             {
                 conn.Open();
-                return conn.Query<SelfInvoicesMaster>("SELECT SelfInvoices.InvoiceGroupId, Materials.Description AS MaterialDescription, SUM(SelfInvoices.Quantity) AS Quantity, SUM(SelfInvoices.InvoiceCost) AS Cost FROM SelfInvoices INNER JOIN Materials ON SelfInvoices.MaterialId = Materials.Id GROUP BY SelfInvoices.InvoiceGroupId, Materials.Description").ToList();
+                return conn.Query<SelfInvoicesMaster>("SELECT SelfInvoices.InvoiceGroupId, Materials.Description AS MaterialDescription, SUM(SelfInvoices.Quantity) AS Quantity, SUM(SelfInvoices.InvoiceCost) AS Cost, SelfInvoices.InvoiceDate, COUNT(*) AS InvoiceCount FROM SelfInvoices INNER JOIN Materials ON SelfInvoices.MaterialId = Materials.Id WHERE SelfInvoices.InCashFlow = 0 GROUP BY SelfInvoices.InvoiceGroupId, Materials.Description, SelfInvoices.InvoiceDate ORDER BY SelfInvoices.InvoiceDate DESC").ToList();
+            }
+        }
+
+        public void SelfInvoiceAddToCashFlow(SelfInvoicesMaster selfInvoice)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                conn.Execute(
+                    "UPDATE SelfInvoices SET InCashFlow = 1 WHERE InvoiceGroupId = @invoiceGroupId",
+                    new
+                    {
+                        invoiceGroupId= selfInvoice.InvoiceGroupId
+                    });
             }
         }
 
@@ -184,7 +199,62 @@ namespace Conto.Data
             }
         }
 
+        
+
         #endregion
+
+
+        #region COMMONDATA
+
+        public CommonDataObject CommonGetForYear(int year)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return
+                    conn.Query<CommonDataObject>("SELECT * FROM Common WHERE work_year = @year", new {year})
+                        .FirstOrDefault();
+            }
+        }
+
+        public void CommonSetInvoiceNumberForYear(int year, long invoiceNumber)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                conn.Execute(
+                    "UPDATE Common SET invoice_number = @invoiceNumber WHERE work_year = @year",
+                    new
+                    {
+                        invoiceNumber,
+                        year
+                    });
+            }
+        }
+
+        #endregion
+
+        #region CLIENTS
+
+        public List<Client> ClientsGet()
+        {
+            return new List<Client>();
+        }
+
+        public void ClientAdd(Client client)
+        {
+            
+        }
+
+        #endregion
+
+
+
+
+
+
 
 
 
