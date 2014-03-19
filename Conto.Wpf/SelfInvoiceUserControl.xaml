@@ -30,27 +30,27 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <ItemsControl Style="{StaticResource GridItemsStyle}" Grid.Row="0">
-                <Label Content="Materiale" Grid.Column="0" Grid.Row="0" Style="{StaticResource FormLabelStyle}"/>
+                <Label Content="Materiale" Grid.Column="0" Grid.Row="0" />
                 <ComboBox Grid.Column="1" Grid.Row="0" Margin="10,0,10,0" Height="25"
                       ItemsSource="{Binding Materials}" SelectedItem="{Binding SelectedMaterial}" DisplayMemberPath="Description" SelectedValuePath="Id" />
 
-                <Label Content="Prezzo" Grid.Column="2" Grid.Row="0" Style="{StaticResource FormLabelStyle}"/>
-                <TextBox Grid.Column="3" Grid.Row="0" Style="{StaticResource QuantityStyle}"
+                <Label Content="Prezzo" Grid.Column="2" Grid.Row="0" />
+                <TextBox xml:lang="it-IT"  Grid.Column="3" Grid.Row="0" Style="{StaticResource QuantityStyle}"
                      Text="{Binding MaterialPrice}"/>
 
-                <Label Content="Unita di misura" Grid.Column="0" Grid.Row="1" Style="{StaticResource FormLabelStyle}"/>
-                <ComboBox Grid.Column="1" Grid.Row="1" Margin="10,0,10,0" Height="25"
+                <Label Content="Unita di misura" Grid.Column="0" Grid.Row="1" />
+                <ComboBox Grid.Column="1" Grid.Row="1" Margin="10,0,10,0" Height="25" 
                       ItemsSource="{Binding Measures}" SelectedItem="{Binding SelectedMeasure}" DisplayMemberPath="Description" SelectedValuePath="Id" />
 
-                <Label Content="Quantita" Grid.Column="2" Grid.Row="1" Style="{StaticResource FormLabelStyle}"/>
-                <TextBox Text="{Binding Quantity}" Grid.Column="3" Grid.Row="1" Style="{StaticResource QuantityStyle}"/>
+                <Label Content="Quantita" Grid.Column="2" Grid.Row="1" />
+                <TextBox xml:lang="it-IT" Text="{Binding Quantity}" Grid.Column="3" Grid.Row="1" Style="{StaticResource QuantityStyle}"/>
 
-                <Label Content="Data fatture" Grid.Column="0" Grid.Row="2" Style="{StaticResource FormLabelStyle}"/>
-                <DatePicker SelectedDate="{Binding InvoiceDate}" Grid.Column="1" Grid.Row="2" Style="{StaticResource DateTextStyle}"/>
+                <Label Content="Data fatture" Grid.Column="0" Grid.Row="2" />
+                <DatePicker SelectedDate="{Binding InvoiceDate}" Grid.Column="1" Grid.Row="2" />
 
-                <Label Content="Anno di riferimento" Grid.Column="0" Grid.Row="3" Style="{StaticResource FormLabelStyle}" />
+                <Label Content="Anno di riferimento" Grid.Column="0" Grid.Row="3"  />
                 <TextBox Text="{Binding InvoiceYear}" Grid.Column="1" Grid.Row="3" Style="{StaticResource YearTextStyle}" />
-                <Label Content="Esente IVA" Grid.Column="2" Grid.Row="3" Style="{StaticResource FormLabelStyle}" />
+                <Label Content="Esente IVA" Grid.Column="2" Grid.Row="3"  />
                 <CheckBox IsChecked="{Binding VatExempt}" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" Margin="10,0,0,0" />
 
                 <Button Command="{Binding AddSelfInvoice}" Style="{StaticResource ActionButtonStyle}" Grid.Column="3" Grid.Row="4" Height="30" Width="80" HorizontalAlignment="Left" Margin="30,0,0,0">
@@ -60,16 +60,36 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            
-            <DataGrid ItemsSource="{Binding SelfInvoices}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" Header="Id" Visibility="Hidden" Binding="{Binding Id}" />
-                    <DataGridTextColumn Width="*" Header="Materiale" Binding="{Binding MaterialId}" />
-                    <DataGridTextColumn Width="*" Header="Ricevuta" Binding="{Binding InvoiceNumber}" />
-                    <DataGridTextColumn Width="*" Header="Costo" Binding="{Binding InvoiceCost}" />
-                </DataGrid.Columns>
-            </DataGrid>
-            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
+                <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False"
+                          ItemsSource="{Binding SelfInvoices}" x:Name="SelfInvoiceDataGrid" Width="580"
+                          RowStyle="{StaticResource DataGridRowStyle}"
+                          MinRowHeight="50"
+                          AlternationCount="2">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding InvoiceGroupId}" Visibility="Hidden" />
+                        <DataGridTextColumn Width="50" Header="Data" Binding="{Binding InvoiceDate.Date}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
+                        <DataGridTextColumn Width="250" Header="Materiale" Binding="{Binding MaterialDescription}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
+                        <DataGridTextColumn Width="60" Header="Quantita" Binding="{Binding Quantity}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
+                        <DataGridTextColumn Width="50" Header="Costo" Binding="{Binding Cost}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
+                        <DataGridTextColumn Width="60" Header="Numero fatture" Binding="{Binding InvoiceCount}" HeaderStyle="{StaticResource WrapHeaderStyle}" />
+                        <DataGridTemplateColumn Header="Aggiungi al conto" Width="80" HeaderStyle="{StaticResource WrapHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Aggiungi" Style="{StaticResource ActionButtonStyle}"
+                                            Height="30" Width="70"
+                                            Command="{Binding DataContext.AddToCashFlowCommand, ElementName=SelfInvoiceDataGrid}" CommandParameter="{Binding SelectedItem, ElementName=SelfInvoiceDataGrid}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
         </Grid>
 
     </Grid>
