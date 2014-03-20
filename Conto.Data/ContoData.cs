@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlServerCe;
@@ -295,6 +296,61 @@ namespace Conto.Data
         
 
         #region CASHFLOW
+
+        public void CashFlowAdd(CashFlow cashFlow)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                    conn.Execute(
+                        "INSERT INTO CashFlow (Cash, Description, FlowDate) VALUES (@Cash, @Description, @FlowDate)",
+                        new { cashFlow.Cash, cashFlow.Description, cashFlow.FlowDate });
+            }
+        }
+
+        public List<CashFlow> CashFlowGetYear(int year)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return
+                    conn.Query<CashFlow>(
+                        "SELECT * FROM CashFlow WHERE DATEPART(year, FlowDate) = @year ORDER BY FlowDate DESC",
+                        new { year }).ToList();
+            }
+        }
+
+        public List<CashFlow> CashFlowGetYearMonth(int year, int month)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return
+                    conn.Query<CashFlow>(
+                        "SELECT * FROM CashFlow WHERE DATEPART(month, FlowDate) = @month AND DATEPART(year, FlowDate) = @year ORDER BY FlowDate DESC",
+                        new {month, year}).ToList();
+            }
+        }
+
+        public DateTime CashFlowGetLastDateTime()
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                try
+                {
+                    var ret = conn.Query<DateTime>("SELECT MAX(FlowDate) FROM CashFlow");
+                    return ret != null ? ret.First() : DateTime.Now;
+                }
+                catch
+                {
+                    return DateTime.Now;
+                }
+            }
+        }
 
         public decimal CashFlowBalance()
         {
