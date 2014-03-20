@@ -240,91 +240,47 @@ namespace Conto.Data
 
         public List<Client> ClientsGet()
         {
-            return new List<Client>();
-        }
-
-        public void ClientAdd(Client client)
-        {
-            
-        }
-
-        #endregion
-
-
-
-
-
-
-
-
-
-
-        #region CUSTOMERS
-
-        public List<CustomerDataObject> GetCustomers()
-        {
             using (
                 var conn = new SqlCeConnection(ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString)
                 )
             {
                 conn.Open();
-                return conn.Query<CustomerDataObject>("SELECT * FROM Customer").ToList();
+                return conn.Query<Client>("SELECT * FROM Clients").ToList();
             }
         }
 
-        public void AddCustomer(CustomerDataObject customer)
+        public void ClientAdd(Client client)
         {
             using (var conn = new SqlCeConnection(
                 ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
             {
                 conn.Open();
                 conn.Execute(
-                    "INSERT INTO Customer (name, address, fiscal_code, vat_code) VALUES (@name, @address, @fiscal_code, @vat_code);",
+                    "INSERT INTO Clients (Name, Address, City, PostalCode, FiscalCode, VatCode) VALUES (@Name, @Address, @City, @PostalCode, @FiscalCode, @VatCode)",
                     new
                     {
-                        name = customer.Name,
-                        address = customer.Address,
-                        fiscal_code = customer.Fiscal_Code,
-                        vat_code = customer.Vat_Code
-                    });
-            }
-        }
-
-        public void UpdateCustomer(CustomerDataObject customer)
-        {
-            using (var conn = new SqlCeConnection(
-                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
-            {
-                conn.Open();
-                conn.Execute(
-                    "UPDATE Customer SET name = @name, address = @address, fiscal_code = @fiscal_code, vat_code = @vat_code WHERE id = @id",
-                    new
-                    {
-                        name = customer.Name,
-                        address = customer.Address,
-                        fiscal_code = customer.Fiscal_Code,
-                        vat_code = customer.Vat_Code,
-                        id = customer.Id
-                    });
-            }
-        }
-
-        public void DeleteCustomer(CustomerDataObject customer)
-        {
-            using (var conn = new SqlCeConnection(
-                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
-            {
-                conn.Open();
-                conn.Execute(
-                    "DELETE Customer WHERE id = @id);",
-                    new
-                    {
-                        id = customer.Id
+                        client.Name,
+                        client.Address,
+                        client.City,
+                        client.PostalCode,
+                        client.FiscalCode,
+                        client.VatCode
                     });
             }
         }
 
         #endregion
+
+
+
+
+
+
+
+
+
+
+        
 
         public CommonDataObject GetCommonData()
         {
@@ -354,26 +310,6 @@ namespace Conto.Data
                 {
                     return 0;
                 }
-            }
-        }
-
-        public IEnumerable<SelfInvoiceDataObject> CashFlowSelfInvoices()
-        {
-            using (var conn = new SqlCeConnection(
-                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
-            {
-                conn.Open();
-                return conn.Query<SelfInvoiceDataObject>("SELECT TOP 50 * FROM SelfInvoice WHERE InCashFlow = 0 ORDER BY Invoicedate ASC").ToList();
-            }
-        }
-
-        public void CashFlowAdd(CashFlowDataObject cashFlow)
-        {
-            using (var conn = new SqlCeConnection(
-                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
-            {
-                conn.Open();
-                var res = conn.Execute("INSERT INTO CashFlow (Cash, Description, FlowDate) VALUES (@Cash, @Description, @FlowDate)", new { Cash = cashFlow.Cash, Description = cashFlow.Description, FlowDate = cashFlow.FlowDate });
             }
         }
 
