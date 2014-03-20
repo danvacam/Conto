@@ -63,22 +63,15 @@
     <Compile Include="CashFlowUserControl.xaml.cs">
       <DependentUpon>CashFlowUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CashFlow\CashFlowViewModel.cs" />
     <Compile Include="ClientsUserControl.xaml.cs">
       <DependentUpon>ClientsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ContoWindow.xaml.cs">
       <DependentUpon>ContoWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Customer\CustomerObjectDataProvider.cs" />
-    <Compile Include="Customer\CustomerUIObject.cs" />
-    <Compile Include="Customer\CustomerUIObjects.cs" />
     <Compile Include="MaterialsUserControl.xaml.cs">
       <DependentUpon>MaterialsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Materials\MaterialsObjectDataProvider.cs" />
-    <Compile Include="Materials\MaterialUIObject.cs" />
-    <Compile Include="Materials\MaterialUIObjects.cs" />
     <Compile Include="OptionsUserControl.xaml.cs">
       <DependentUpon>OptionsUserControl.xaml</DependentUpon>
     </Compile>
@@ -87,8 +80,6 @@
     <Compile Include="SelfInvoiceUserControl.xaml.cs">
       <DependentUpon>SelfInvoiceUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings\SettingsObjectDataProvider.cs" />
-    <Compile Include="Settings\SettingUIObject.cs" />
     <Compile Include="ViewModels\CashFlowViewModel.cs" />
     <Compile Include="ViewModels\ClientsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
