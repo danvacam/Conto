@@ -33,15 +33,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label Content="Prelievo per cassa" Grid.Row="0" Grid.Column="0">
-            <!--<Label.Style>
-                <Style>
-                    <Setter Property="Foreground" Value="Teal"></Setter>
-                </Style>
-            </Label.Style>-->
-        </Label>
+        <Label Content="Prelievo per cassa" Grid.Row="0" Grid.Column="0" />
         <TextBox Text="{Binding Deposit}" Name="WithdrawTextBox" Grid.Row="0" Grid.Column="1" Height="20" Margin="10,4,0,3"/>
         <Label Content="Data prelievo" Grid.Row="0" Grid.Column="2" />
         <DatePicker SelectedDate="{Binding DepositDate}" Grid.Row="0" Grid.Column="3" Height="25" Margin="10,0,0,0"/>
@@ -57,5 +54,25 @@
         <Button Command="{Binding CostCommand}"
                 Style="{StaticResource ActionButtonStyle}"  Height="30" Width="80" Content="Aggiungi" Grid.Row="1" Grid.Column="6" Margin="10,0" />
 
+        <Line HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" X1="0" X2="680" Y1="0" Y2="0" Stroke="Firebrick" StrokeThickness="1"></Line>
+
+        <Label Content="Anno" Grid.Row="3" Grid.Column="0" />
+        <TextBox Text="{Binding SelectedYear}" Grid.Row="3" Grid.Column="1" />
+        <Label Content="Mese" Grid.Row="3" Grid.Column="2" />
+        <TextBox Text="{Binding SelectedMonth}" Grid.Row="3" Grid.Column="3" />
+
+        <Button Command="{Binding FilterGridCommand}"
+                Style="{StaticResource ActionButtonStyle}" Height="30" Width="80" Content="Cerca" Grid.Row="3" Grid.Column="4" />
+
+        <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="7"
+                  ItemsSource="{Binding CashFlows}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden" />
+                <DataGridTextColumn Header="Descrizione" Width="120" Binding="{Binding Description}" />
+                <DataGridTextColumn Header="Ammontare" Width="80" Binding="{Binding Cash}" />
+                <DataGridTextColumn Header="Data" Width="70" Binding="{Binding FlowDate}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        
     </Grid>
 </UserControl>
