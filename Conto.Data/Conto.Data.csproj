@@ -54,14 +54,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CashFlowDataObject.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="CommonDataObject.cs" />
     <Compile Include="ContoData.cs" />
-    <Compile Include="CustomerDataObject.cs" />
     <Compile Include="ExcelHelpers\ExcelTypeAttribute.cs" />
     <Compile Include="ExcelHelpers\NpoiObjectExport.cs" />
-    <Compile Include="MaterialDataObject.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="Measures.cs" />
     <Compile Include="PdfHelpers\ItextObjectExport.cs" />
@@ -71,7 +68,6 @@
       <DependentUpon>PdfResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SelfInvoiceDataObject.cs" />
     <Compile Include="SelfInvoices.cs" />
     <Compile Include="SelfInvoicesMaster.cs" />
     <Compile Include="Settings.cs" />
