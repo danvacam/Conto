@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CashFlow.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="CommonDataObject.cs" />
     <Compile Include="ContoData.cs" />
