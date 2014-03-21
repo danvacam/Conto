@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
+             xmlns:wpf="clr-namespace:Conto.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="900">
+    <UserControl.Resources>
+        <wpf:CashFlowToVisibilityConverter x:Key="CashFlowToVisibilityConverter" />
+    </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.Loaded">
             <BeginStoryboard>
@@ -54,7 +58,7 @@
         <Button Command="{Binding CostCommand}"
                 Style="{StaticResource ActionButtonStyle}"  Height="30" Width="80" Content="Aggiungi" Grid.Row="1" Grid.Column="6" Margin="10,0" />
 
-        <Line HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" X1="0" X2="680" Y1="0" Y2="0" Stroke="Firebrick" StrokeThickness="1"></Line>
+
 
         <Label Content="Anno" Grid.Row="3" Grid.Column="0" />
         <TextBox Text="{Binding SelectedYear}" Grid.Row="3" Grid.Column="1" />
@@ -64,15 +68,41 @@
         <Button Command="{Binding FilterGridCommand}"
                 Style="{StaticResource ActionButtonStyle}" Height="30" Width="80" Content="Cerca" Grid.Row="3" Grid.Column="4" />
 
-        <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="7"
-                  ItemsSource="{Binding CashFlows}" AutoGenerateColumns="False">
+        <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="6" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False"
+                  ItemsSource="{Binding CashFlows}" x:Name="CashFlowDataGrid"
+                  RowStyle="{StaticResource DataGridRowStyle}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden" />
-                <DataGridTextColumn Header="Descrizione" Width="120" Binding="{Binding Description}" />
-                <DataGridTextColumn Header="Ammontare" Width="80" Binding="{Binding Cash}" />
-                <DataGridTextColumn Header="Data" Width="70" Binding="{Binding FlowDate}" />
+
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden"/>
+                <DataGridTextColumn Header="Descrizione" Width="250" Binding="{Binding Description}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+                <DataGridTextColumn Header="Ammontare" Width="80" Binding="{Binding Cash}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+                <DataGridTextColumn Header="Data" Width="65" Binding="{Binding FlowDate}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+
+                <DataGridTemplateColumn Header="Esporta" Width="150" HeaderStyle="{StaticResource DataGridHeaderStyle}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Pdf" Style="{StaticResource ActionButtonStyle}"
+                                        Height="30" Width="40"
+                                        Command="{Binding DataContext.ExportPdf, ElementName=CashFlowDataGrid}" CommandParameter="{Binding SelectedItem, ElementName=CashFlowDataGrid}"
+                                        Visibility="{Binding ., Converter={StaticResource CashFlowToVisibilityConverter}, ConverterParameter=CashFlowType}" />
+                                <Button Content="Aggiungi" Style="{StaticResource ActionButtonStyle}"
+                                        Height="30" Width="60"
+                                        Command="{Binding DataContext.AddSelfInvoiceToPrintCommand, ElementName=CashFlowDataGrid}" CommandParameter="{Binding SelectedItem, ElementName=CashFlowDataGrid}"
+                                        Visibility="{Binding ., Converter={StaticResource CashFlowToVisibilityConverter}, ConverterParameter=CashFlowType}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         
+        <StackPanel Grid.Column="6" Grid.Row="5">
+            <Label Content="{Binding SelfInvoicePrint}" />
+            <Button Content="Stampa" Height="30" Width="60" Style="{StaticResource ActionButtonStyle}"
+                    Visibility="{Binding SelfInvoicePrintButtonVisibility}" />
+        </StackPanel>
+
+
     </Grid>
 </UserControl>
