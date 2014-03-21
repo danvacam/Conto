@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlServerCe;
+using System.Globalization;
 using System.Linq;
 using Dapper;
 
@@ -13,7 +14,7 @@ namespace Conto.Data
         {
             get
             {
-                return new SqlCeConnection( ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString);
+                return new SqlCeConnection(ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString);
             }
         }
 
@@ -53,6 +54,16 @@ namespace Conto.Data
             {
                 conn.Open();
                 return conn.Query<Material>("SELECT * FROM Materials").ToList();
+            }
+        }
+
+        public Material MaterialGet(long id)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<Material>("SELECT * FROM Materials WHERE Id = @Id", new { Id = id}).SingleOrDefault();
             }
         }
 
@@ -107,7 +118,7 @@ namespace Conto.Data
         }
 
         #endregion
-        
+
         #region MEASURES
 
         public List<Measures> MeasuresGet()
@@ -126,19 +137,13 @@ namespace Conto.Data
                 ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
             {
                 conn.Open();
-                return conn.Query<Measures>("SELECT * FROM Measures WHERE Id = @Id", new {Id = id}).SingleOrDefault();
+                return conn.Query<Measures>("SELECT * FROM Measures WHERE Id = @Id", new { Id = id }).SingleOrDefault();
             }
         }
 
         #endregion
 
         #region SELFINVOICES
-
-        
-//SELECT        SelfInvoices.InvoiceGroupId, Materials.Description AS MaterialDescription, SUM(SelfInvoices.Quantity) AS Quantity, SUM(SelfInvoices.InvoiceCost) AS Cost
-//FROM            SelfInvoices INNER JOIN
-//                         Materials ON SelfInvoices.MaterialId = Materials.Id
-//GROUP BY SelfInvoices.InvoiceGroupId, Materials.Description
 
         public List<SelfInvoicesMaster> SelfInvoicesMasterGet()
         {
@@ -156,15 +161,53 @@ namespace Conto.Data
                 ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
             {
                 conn.Open();
-                conn.Execute(
-                    "UPDATE SelfInvoices SET InCashFlow = 1 WHERE InvoiceGroupId = @invoiceGroupId",
+
+                var selfInvoices =
+                    conn.Query<SelfInvoices>("SELECT * FROM SelfInvoices WHERE InvoiceGroupId = @invoiceGroupId", new
+                    {
+                        invoiceGroupId = selfInvoice.InvoiceGroupId
+                    }).ToList();
+
+                foreach (var selfInv in selfInvoices)
+                {
+                    conn.Execute(
+                        "INSERT INTO CashFlow (Cash, Description, FlowDate, CashFlowType) VALUES (@Cash, @Description, @FlowDate, @CashFlowType)",
+                        new
+                        {
+                            Cash = selfInv.InvoiceCost,
+                            Description =
+                                string.Format("Pagata autofattura {0}/{1}", selfInv.InvoiceNumber,
+                                    selfInv.InvoiceYear.ToString(CultureInfo.InvariantCulture).Substring(2)),
+                            FlowDate = selfInv.InvoiceDate,
+                            CashFlowType = "SelfInvoice"
+                        });
+
+                    var id = conn.Query("SELECT @@IDENTITY AS id").SingleOrDefault();
+
+                    if(id != null)
+                    conn.Execute(
+                    "UPDATE SelfInvoices SET InCashFlow = 1, CashFlowId = @CashFlowId WHERE InvoiceGroupId = @InvoiceGroupId AND InvoiceId = @InvoiceId",
                     new
                     {
-                        invoiceGroupId= selfInvoice.InvoiceGroupId
+                        CashFlowId = (long)id.id,
+                        selfInv.InvoiceGroupId,
+                        selfInv.InvoiceId
                     });
+                }
             }
         }
 
+        public SelfInvoices SelfInvoiceGetByCashFlow(long cashFlowId)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return
+                    conn.Query<SelfInvoices>("SELECT * FROM SelfInvoices WHERE CashFlowId = @CashFlowId",
+                        new {CashFlowId = cashFlowId}).SingleOrDefault();
+            }
+        }
 
         public List<SelfInvoices> SelfInvoicesGet()
         {
@@ -200,8 +243,6 @@ namespace Conto.Data
             }
         }
 
-        
-
         #endregion
 
 
@@ -214,7 +255,7 @@ namespace Conto.Data
             {
                 conn.Open();
                 return
-                    conn.Query<CommonDataObject>("SELECT * FROM Common WHERE work_year = @year", new {year})
+                    conn.Query<CommonDataObject>("SELECT * FROM Common WHERE work_year = @year", new { year })
                         .FirstOrDefault();
             }
         }
@@ -281,7 +322,7 @@ namespace Conto.Data
 
 
 
-        
+
 
         public CommonDataObject GetCommonData()
         {
@@ -292,8 +333,8 @@ namespace Conto.Data
                 return conn.Query<CommonDataObject>("SELECT * FROM Common").FirstOrDefault();
             }
         }
-        
-        
+
+
 
         #region CASHFLOW
 
@@ -303,9 +344,9 @@ namespace Conto.Data
                 ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
             {
                 conn.Open();
-                    conn.Execute(
-                        "INSERT INTO CashFlow (Cash, Description, FlowDate) VALUES (@Cash, @Description, @FlowDate)",
-                        new { cashFlow.Cash, cashFlow.Description, cashFlow.FlowDate });
+                conn.Execute(
+                    "INSERT INTO CashFlow (Cash, Description, FlowDate) VALUES (@Cash, @Description, @FlowDate)",
+                    new { cashFlow.Cash, cashFlow.Description, cashFlow.FlowDate });
             }
         }
 
@@ -331,7 +372,7 @@ namespace Conto.Data
                 return
                     conn.Query<CashFlow>(
                         "SELECT * FROM CashFlow WHERE DATEPART(month, FlowDate) = @month AND DATEPART(year, FlowDate) = @year ORDER BY FlowDate DESC",
-                        new {month, year}).ToList();
+                        new { month, year }).ToList();
             }
         }
 
