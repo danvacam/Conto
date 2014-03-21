@@ -1,0 +1,2 @@
+- tab SelfInvoices add col CashFlowId BigInt
+- tab CashFlow add col CashFlowType string
