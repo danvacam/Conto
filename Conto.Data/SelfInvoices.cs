@@ -4,7 +4,7 @@ namespace Conto.Data
 {
     public class SelfInvoices
     {
-        public long Id { get; set; }
+        public long InvoiceId { get; set; }
         public long MaterialId { get; set; }
         public decimal Quantity { get; set; }
         public bool VatExcept { get; set; }
@@ -15,5 +15,6 @@ namespace Conto.Data
         public DateTime InvoiceDate { get; set; }
         public decimal InvoiceCost { get; set; }
         public Guid InvoiceGroupId { get; set; }
+        public long CashFlowId { get; set; }
     }
 }
