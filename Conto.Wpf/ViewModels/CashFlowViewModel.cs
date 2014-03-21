@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Conto.Data;
+using Conto.Data.PdfHelpers;
 using Conto.Wpf.Resources;
 
 namespace Conto.Wpf.ViewModels
@@ -29,6 +30,8 @@ namespace Conto.Wpf.ViewModels
             DepositCommand = new RelayCommand(DepositCommand_Executed);
             CostCommand = new RelayCommand(CostCommand_Executed);
             FilterGridCommand = new RelayCommand(FilterGridCommand_Executed);
+            ExportPdf = new RelayCommand(ExportPdf_Executed);
+            AddSelfInvoiceToPrintCommand = new RelayCommand(AddSelfInvoiceToPrintCommand_Executed);
 
             var lastDate = _contoData.CashFlowGetLastDateTime();
             SelectedYear = lastDate.Year;
@@ -38,6 +41,8 @@ namespace Conto.Wpf.ViewModels
 
             DepositDate = DateTime.Now;
             CostDate = DateTime.Now;
+            SelfInvoicePrintButtonVisibility = Visibility.Collapsed;
+            
         }
         
         private decimal _depostit;
@@ -172,30 +177,82 @@ namespace Conto.Wpf.ViewModels
 
         #endregion
 
+        #region PRINT
+
+        private int _totSelfInvoicePrint;
+        private List<CashFlow> _selfInvoicePrintList = new List<CashFlow>();
+
+        private string _selfInvoicePrint;
+        public string SelfInvoicePrint
+        {
+            get
+            {
+                return _selfInvoicePrint;
+            }
+            set
+            {
+                _selfInvoicePrint = value;
+                OnPropertyChanged("SelfInvoicePrint");
+            }
+        }
+
+        private Visibility _selfInvoicePrintButtonVisibility;
+        public Visibility SelfInvoicePrintButtonVisibility
+        {
+            get
+            {
+                return _selfInvoicePrintButtonVisibility;
+            }
+            set
+            {
+                _selfInvoicePrintButtonVisibility = value;
+                OnPropertyChanged("SelfInvoicePrintButtonVisibility");
+            }
+        }
+
+        #endregion
+
         #region Commands
 
         public ICommand DepositCommand { get; set; }
-
         public void DepositCommand_Executed(object sender)
         {
             
         }
 
         public ICommand CostCommand { get; set; }
-
         public void CostCommand_Executed(object sender)
         {
 
         }
 
         public ICommand FilterGridCommand { get; set; }
-
         public void FilterGridCommand_Executed(object sender)
         {
             if (SelectedYear.HasValue && SelectedMonth.HasValue)
                 CashFlows = new List<CashFlow>(_contoData.CashFlowGetYearMonth(SelectedYear.Value, SelectedMonth.Value));
             else
                 MessageBox.Show("Selezionare anno e mese");
+        }
+
+        public ICommand ExportPdf { get; set; }
+        public void ExportPdf_Executed(object sender)
+        {
+            ItextObjectExport.ExportSelfInvoicesPdf(_contoData.SelfInvoiceGetByCashFlow(((CashFlow) sender).Id));
+        }
+
+        public ICommand AddSelfInvoiceToPrintCommand { get; set; }
+        public void AddSelfInvoiceToPrintCommand_Executed(object sender)
+        {
+            var item = (CashFlow) sender;
+
+            if (!_selfInvoicePrintList.Contains(item))
+            {
+                _selfInvoicePrintList.Add(item);
+                _totSelfInvoicePrint++;
+                SelfInvoicePrint = string.Format("Pdf autofatture {0}", _totSelfInvoicePrint);
+                SelfInvoicePrintButtonVisibility = Visibility.Visible;
+            }
         }
 
         #endregion
