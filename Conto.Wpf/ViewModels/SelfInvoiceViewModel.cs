@@ -227,14 +227,17 @@ namespace Conto.Wpf.ViewModels
                 //var invoiceNumber = 1;
                 var invoiceGroup = Guid.NewGuid();
                 var settings = _contoData.GetSettings();
-                var maxInvoiceValue = settings != null ? settings.MaxInvoiceValue : 999;
+                var maxInvoiceValue = settings != null ? settings.MaxInvoiceValue : 990;
                 maxInvoiceValue = maxInvoiceValue.HasValue ? maxInvoiceValue.Value : 990;
                 var measure = _contoData.MeasureGet(SelectedMaterial.MeasureId);
 
                 decimal invoiceCost = (Quantity.Value*SelectedMaterial.Price.Value)/measure.Grams*SelectedMeasure.Grams;
-                decimal quantityAtMaxInvoiceValue = (measure.Grams / SelectedMeasure.Grams);
+                //decimal quantityAtMaxInvoiceValue = (measure.Grams / SelectedMeasure.Grams);
+                decimal quantityAtMaxInvoiceValue = maxInvoiceValue.Value*(Quantity.Value*SelectedMeasure.Grams)/
+                                                    invoiceCost/
+                                                    SelectedMeasure.Grams;
 
-                var invoices = (int)Math.Truncate(invoiceCost / maxInvoiceValue.Value) + 1;
+                var invoices = (int)Math.Truncate(invoiceCost / maxInvoiceValue.Value) + (invoiceCost % maxInvoiceValue.Value == 0 ? 0 : 1);
                 
                 var quantityTot = Quantity.Value;
 
@@ -279,6 +282,7 @@ namespace Conto.Wpf.ViewModels
         {
             _contoData.SelfInvoiceAddToCashFlow((SelfInvoicesMaster)sender);
             SelfInvoices = new List<SelfInvoicesMaster>(new ContoData().SelfInvoicesMasterGet());
+            AppProperties.FormHaveModifications = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
