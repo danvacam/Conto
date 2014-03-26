@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -19,6 +20,92 @@ namespace Conto.Data.PdfHelpers
         //ITC Avant Garde Gothic
         // Print with acrobat reader snippet
         // http://www.codeproject.com/Tips/598424/How-to-Silently-Print-PDFs-using-Adobe-Reader-and
+
+        public static void ExportSelfInvoicesPdf(List<SelfInvoices> selfInvoices)
+        {
+            var contoData = new ContoData();
+
+            using (var fs = new FileStream("Fatture.pdf", FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var doc = new Document(PageSize.A4, 25, 25, 30, 30))
+            using (PdfWriter writer = PdfWriter.GetInstance(doc, fs))
+            {
+                doc.Open();
+                // get template and add to page
+                var templateReader = new PdfReader(PdfResources.Autofattura_Template);
+                PdfTemplate background = writer.GetImportedPage(templateReader, 1);
+                foreach (var selfInvoice in selfInvoices)
+                {
+                    ExportPdfSelfInvoice(selfInvoice, contoData, doc, writer, background);
+                }
+                
+                doc.Close();
+                writer.Close();
+                fs.Close();
+            }
+        }
+
+        public static void ExportSelfInvoicesPdf(SelfInvoices selfInvoices)
+        {
+            var contoData = new ContoData();
+            var fileName = string.Format("Fattura_{0}_{1}.pdf", selfInvoices.InvoiceNumber, selfInvoices.InvoiceYear);
+
+            using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var doc = new Document(PageSize.A4, 25, 25, 30, 30))
+            using (PdfWriter writer = PdfWriter.GetInstance(doc, fs))
+            {
+                doc.Open();
+                // get template and add to page
+                var templateReader = new PdfReader(PdfResources.Autofattura_Template);
+                PdfTemplate background = writer.GetImportedPage(templateReader, 1);
+
+                ExportPdfSelfInvoice(selfInvoices, contoData, doc, writer, background);
+
+                doc.Close();
+                writer.Close();
+                fs.Close();
+            }
+
+            string path = Environment.ExpandEnvironmentVariables(@"%ProgramFiles(x86)%");
+            const string pathToExecutable = @"\Adobe\Adobe Reader\Reader\AcroRd32.exe";
+            //RunExecutable(string.Concat(path, pathToExecutable), @"/p """ + fileName + "");
+
+            RunExecutable(string.Concat(path, pathToExecutable), @"" + fileName + "");
+        }
+
+        private static void ExportPdfSelfInvoice(SelfInvoices selfInvoices, ContoData contoData, Document doc, PdfWriter writer,
+            PdfTemplate background)
+        {
+            var material = contoData.MaterialGet(selfInvoices.MaterialId);
+            doc.NewPage();
+            var pcb = writer.DirectContentUnder;
+            pcb.AddTemplate(background, 0, 0);
+
+            pcb = writer.DirectContent;
+            pcb.BeginText();
+            pcb.SetFontAndSize(Font, 10);
+
+            // invoice date
+            pcb.SetTextMatrix(469, 650);
+            pcb.ShowText(selfInvoices.InvoiceDate.ToString("dd/MM/yyyy"));
+            // invoice number
+            pcb.SetTextMatrix(469, 613);
+            pcb.ShowText(string.Format("{0}/{1}", selfInvoices.InvoiceNumber,
+                selfInvoices.InvoiceYear.ToString(CultureInfo.InvariantCulture).Substring(2)));
+            // invoice owner
+            SelfInvoiceOwner(pcb, contoData.GetSettings());
+            // material description
+            SelfInvoiceDescription(pcb, material.Description);
+
+
+            SelfInvoiceQuantity(pcb, selfInvoices.Quantity);
+            SelfInvoiceMaterialPrice(pcb, material.Price.HasValue ? material.Price.Value : 0);
+            SelfInvoiceAmount(pcb, selfInvoices.InvoiceCost);
+
+            TaxableAmount(pcb, selfInvoices.InvoiceCost);
+            TotalAmount(pcb, selfInvoices.InvoiceCost);
+
+            pcb.EndText();
+        }
 
 
         public static void CreateFirstPdf()
@@ -185,23 +272,23 @@ namespace Conto.Data.PdfHelpers
             Process process = new Process();
             process.StartInfo = starter;
             process.Start();
-            StringBuilder buffer = new StringBuilder();
-            using (StreamReader reader = process.StandardOutput)
-            {
-                string line = reader.ReadLine();
-                while (line != null)
-                {
-                    buffer.Append(line);
-                    buffer.Append(Environment.NewLine);
-                    line = reader.ReadLine();
-                    Thread.Sleep(100);
-                }
-            }
-            if (process.ExitCode != 0)
-            {
-                throw new Exception(string.Format(@"""{0}"" exited with ExitCode {1}. Output: {2}",
-                    executable, process.ExitCode, buffer.ToString()));
-            }
+            //StringBuilder buffer = new StringBuilder();
+            //using (StreamReader reader = process.StandardOutput)
+            //{
+            //    string line = reader.ReadLine();
+            //    while (line != null)
+            //    {
+            //        buffer.Append(line);
+            //        buffer.Append(Environment.NewLine);
+            //        line = reader.ReadLine();
+            //        Thread.Sleep(100);
+            //    }
+            //}
+            //if (process.ExitCode != 0)
+            //{
+            //    //throw new Exception(string.Format(@"""{0}"" exited with ExitCode {1}. Output: {2}",
+            //    //    executable, process.ExitCode, buffer.ToString()));
+            //}
         }
 
     }
