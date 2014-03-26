@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <LinearGradientBrush x:Key="TomatoGradientBrush"  
@@ -6,6 +6,13 @@
         <GradientStop Color="#FF3333" Offset="0" />
         <GradientStop Color="#EE2222" Offset="0.5" />
         <GradientStop Color="#FF3333" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="LightBrownGradientBrush"  
+    StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#BB5555" Offset="0" />
+        <GradientStop Color="#AA4444" Offset="0.5" />
+        <GradientStop Color="#BB5555" Offset="1" />
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="SandyGradientBrush"  
@@ -70,6 +77,16 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="ActionOneClickButtonStyle" BasedOn="{StaticResource ActionButtonStyle}">
+        <Style.Triggers>
+            <Trigger Property="Button.IsPressed" Value="True">
+                <Setter Property="Button.IsEnabled">
+                    <Setter.Value>False</Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="SelectedMenuButtonStyle" TargetType="Button">
@@ -150,6 +167,10 @@
         </Setter>
     </Style>
 
+    <Style x:Key="InvoiceMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MainMenuButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource LightBrownGradientBrush}" />
+    </Style>
+    
     <Style x:Key="CashMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MainMenuButtonStyle}">
         <Setter Property="Background" Value="{StaticResource SandyGradientBrush}" />
     </Style>
