@@ -60,7 +60,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CashFlowToVisibilityConverter.cs" />
+    <Compile Include="Converters\AddPdfToVisibilityConverter.cs" />
+    <Compile Include="Converters\CashFlowToVisibilityConverter.cs" />
     <Compile Include="CashFlowUserControl.xaml.cs">
       <DependentUpon>CashFlowUserControl.xaml</DependentUpon>
     </Compile>
@@ -70,11 +71,17 @@
     <Compile Include="ContoWindow.xaml.cs">
       <DependentUpon>ContoWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InvoiceUserControl.xaml.cs">
+      <DependentUpon>InvoiceUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MaterialsUserControl.xaml.cs">
       <DependentUpon>MaterialsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="OptionsUserControl.xaml.cs">
       <DependentUpon>OptionsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PagingUserControl.xaml.cs">
+      <DependentUpon>PagingUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="RelayCommand.cs" />
     <Compile Include="Resources\AppProperties.cs" />
@@ -102,11 +109,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="InvoiceUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MaterialsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="OptionsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PagingUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\DataGridStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\ListBoxStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
