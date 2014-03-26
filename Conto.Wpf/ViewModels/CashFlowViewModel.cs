@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Conto.Data;
@@ -9,18 +10,32 @@ using Conto.Wpf.Resources;
 
 namespace Conto.Wpf.ViewModels
 {
-    public class UnconfirmedCashFlow
+    public class CashFlowGridRow
     {
-        public decimal DepositValue { get; set; }
-        public DateTime DepositDate { get; set; }
-        public decimal CostValue { get; set; }
-        public DateTime CostDate { get; set; }
-        public string CostJustification { get; set; }
+        public CashFlowGridRow()
+        {
+        }
+
+        public CashFlowGridRow(CashFlow cashFlow)
+        {
+            Id = cashFlow.Id;
+            Cash = cashFlow.Cash;
+            Description = cashFlow.Description;
+            FlowDate = cashFlow.FlowDate.ToString("dd/MM/yyyy");
+            CashFlowType = cashFlow.CashFlowType;
+            AddToPdfButtonVisibility = cashFlow.CashFlowType == "SelfInvoice" ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        public long Id { get; set; }
+        public decimal Cash { get; set; }
+        public string Description { get; set; }
+        public string FlowDate { get; set; }
+        public string CashFlowType { get; set; }
+        public Visibility AddToPdfButtonVisibility;
     }
 
     public class CashFlowViewModel : INotifyPropertyChanged
     {
-
         private readonly ContoData _contoData;
 
         public CashFlowViewModel()
@@ -37,14 +52,20 @@ namespace Conto.Wpf.ViewModels
             SelectedYear = lastDate.Year;
             SelectedMonth = lastDate.Month;
 
-            CashFlows = new List<CashFlow>(_contoData.CashFlowGetYearMonth(lastDate.Year, lastDate.Month));
+            CashFlows = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(lastDate.Year, lastDate.Month)));
 
             DepositDate = DateTime.Now;
             CostDate = DateTime.Now;
             SelfInvoicePrintButtonVisibility = Visibility.Collapsed;
             
         }
-        
+
+        private List<CashFlowGridRow> CashFlowListToCashFlowGridRows(IEnumerable<CashFlow> cashFlowList)
+        {
+            return cashFlowList.Select(cashFlow => new CashFlowGridRow(cashFlow)).ToList();
+        }
+
+
         private decimal _depostit;
         public decimal Deposit
         {
@@ -161,8 +182,8 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        private List<CashFlow> _cashFlows;
-        public List<CashFlow> CashFlows
+        private List<CashFlowGridRow> _cashFlows;
+        public List<CashFlowGridRow> CashFlows
         {
             get
             {
@@ -180,7 +201,20 @@ namespace Conto.Wpf.ViewModels
         #region PRINT
 
         private int _totSelfInvoicePrint;
-        private List<CashFlow> _selfInvoicePrintList = new List<CashFlow>();
+        
+        private List<CashFlowGridRow> _selfInvoicePrintList = new List<CashFlowGridRow>();
+        public List<CashFlowGridRow> SelfInvoicePrintList
+        {
+            get
+            {
+                return _selfInvoicePrintList;
+            }
+            set
+            {
+                _selfInvoicePrintList = value;
+                OnPropertyChanged("SelfInvoicePrintList");
+            }
+        }
 
         private string _selfInvoicePrint;
         public string SelfInvoicePrint
@@ -230,7 +264,7 @@ namespace Conto.Wpf.ViewModels
         public void FilterGridCommand_Executed(object sender)
         {
             if (SelectedYear.HasValue && SelectedMonth.HasValue)
-                CashFlows = new List<CashFlow>(_contoData.CashFlowGetYearMonth(SelectedYear.Value, SelectedMonth.Value));
+                CashFlows = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(SelectedYear.Value, SelectedMonth.Value)));
             else
                 MessageBox.Show("Selezionare anno e mese");
         }
@@ -244,11 +278,27 @@ namespace Conto.Wpf.ViewModels
         public ICommand AddSelfInvoiceToPrintCommand { get; set; }
         public void AddSelfInvoiceToPrintCommand_Executed(object sender)
         {
-            var item = (CashFlow) sender;
+            var item = (CashFlowGridRow) sender;
 
             if (!_selfInvoicePrintList.Contains(item))
             {
-                _selfInvoicePrintList.Add(item);
+                foreach (var cashFlowGridRow in CashFlows)
+                {
+                    if (cashFlowGridRow.Id == item.Id)
+                    {
+                        cashFlowGridRow.AddToPdfButtonVisibility = Visibility.Hidden;
+                    }
+                }
+
+                var cashFlows = CashFlows;
+                CashFlows = null;
+                CashFlows = cashFlows;
+
+                var selfInvoicesPrintList = SelfInvoicePrintList;
+                selfInvoicesPrintList.Add(item);
+                SelfInvoicePrintList = null;
+                SelfInvoicePrintList = selfInvoicesPrintList;
+
                 _totSelfInvoicePrint++;
                 SelfInvoicePrint = string.Format("Pdf autofatture {0}", _totSelfInvoicePrint);
                 SelfInvoicePrintButtonVisibility = Visibility.Visible;
