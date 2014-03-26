@@ -1,0 +1,24 @@
+<UserControl x:Class="Conto.Wpf.PagingUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="25" d:DesignWidth="120"
+             Name="Root">
+    <Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="FirstPageButton" Content="9" FontFamily="Webdings" 
+                    Command="{Binding Path=FirstPageCommand, ElementName=Root}"/>
+            <Button Name="PreviousPageButton" Content="7" FontFamily="Webdings"
+                    Command="{Binding Path=PreviousPageCommand, ElementName=Root}"/>
+            <Label Name="PageIndexLabel" Content="{Binding ElementName=Root, Path=PageIndex, UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
+            <Label Content=" di " />
+            <Label Name="NumberOfPagesLabel" Content="{Binding ElementName=Root, Path=NumberOfPages, UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
+            <Button Name="NextPageButton" Content="8" FontFamily="Webdings" 
+                    Command="{Binding Path=NextPageCommand, ElementName=Root}"/>
+            <Button Name="LastPageButton" Content=":" FontFamily="Webdings" 
+                    Command="{Binding Path=LastPageCommand, ElementName=Root}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
