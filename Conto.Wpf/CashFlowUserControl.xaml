@@ -5,10 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
              xmlns:wpf="clr-namespace:Conto.Wpf"
+             xmlns:converters="clr-namespace:Conto.Wpf.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="900">
     <UserControl.Resources>
-        <wpf:CashFlowToVisibilityConverter x:Key="CashFlowToVisibilityConverter" />
+        <converters:CashFlowToVisibilityConverter x:Key="CashFlowToVisibilityConverter" />
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.Loaded">
@@ -40,6 +41,8 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Content="Prelievo per cassa" Grid.Row="0" Grid.Column="0" />
@@ -89,20 +92,25 @@
                                 <Button Content="Aggiungi" Style="{StaticResource ActionButtonStyle}"
                                         Height="30" Width="60"
                                         Command="{Binding DataContext.AddSelfInvoiceToPrintCommand, ElementName=CashFlowDataGrid}" CommandParameter="{Binding SelectedItem, ElementName=CashFlowDataGrid}"
-                                        Visibility="{Binding ., Converter={StaticResource CashFlowToVisibilityConverter}, ConverterParameter=CashFlowType}" />
+                                        Visibility="{Binding ., Converter={StaticResource CashFlowToVisibilityConverter}, ConverterParameter=AddToPdf}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        
-        <StackPanel Grid.Column="6" Grid.Row="5">
+
+        <StackPanel Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="4" >
             <Label Content="{Binding SelfInvoicePrint}" />
+            <ListBox Margin="17,8,15,26" ItemsSource="{Binding SelfInvoicePrintList}" 
+                     ItemTemplate="{StaticResource PrintListBoxTemplate}"
+                     Style="{StaticResource ListStyle}"/>
             <Button Content="Stampa" Height="30" Width="60" Style="{StaticResource ActionButtonStyle}"
                     Visibility="{Binding SelfInvoicePrintButtonVisibility}" />
         </StackPanel>
 
-
+        <ListBox Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="4" ItemsSource="{Binding CashFlows}" 
+                     ItemTemplate="{StaticResource CashFlowListBoxTemplate}" />
+        
     </Grid>
 </UserControl>
