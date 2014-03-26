@@ -12,5 +12,6 @@ namespace Conto.Data
         public string Description { get; set; }
         public decimal? Price { get; set; }
         public int MeasureId { get; set; }
+        public string MeasureDescription { get; set; }
     }
 }
