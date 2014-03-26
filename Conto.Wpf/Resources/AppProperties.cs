@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Conto.Wpf.Resources
@@ -18,6 +13,28 @@ namespace Conto.Wpf.Resources
                 return (bool)Application.Current.Properties["FormHaveModifications"];
             }
             set { Application.Current.Properties["FormHaveModifications"] = value; }
+        }
+
+        public static string FirstInfo
+        {
+            get
+            {
+                if (Application.Current.Properties["FirstInfo"] == null)
+                    Application.Current.Properties["FirstInfo"] = string.Empty;
+                return Application.Current.Properties["FirstInfo"].ToString();
+            }
+            set { Application.Current.Properties["FirstInfo"] = value; }
+        }
+
+        public static string SecondInfo
+        {
+            get
+            {
+                if (Application.Current.Properties["FirstInfo"] == null)
+                    Application.Current.Properties["FirstInfo"] = string.Empty;
+                return Application.Current.Properties["FirstInfo"].ToString();
+            }
+            set { Application.Current.Properties["FirstInfo"] = value; }
         }
     }
 }
