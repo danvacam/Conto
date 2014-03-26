@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="Resources/ContoStyles.xaml" />
                 <ResourceDictionary Source="Resources/DataGridStyle.xaml" />
                 <ResourceDictionary Source="Resources/MenuButtons.xaml" />
+                <ResourceDictionary Source="Resources/ListBoxStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
