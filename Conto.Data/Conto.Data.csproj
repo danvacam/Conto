@@ -60,6 +60,7 @@
     <Compile Include="ContoData.cs" />
     <Compile Include="ExcelHelpers\ExcelTypeAttribute.cs" />
     <Compile Include="ExcelHelpers\NpoiObjectExport.cs" />
+    <Compile Include="LazyInitializeContoData.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="Measures.cs" />
     <Compile Include="PdfHelpers\ItextObjectExport.cs" />
