@@ -11,7 +11,7 @@
         <EventTrigger RoutedEvent="UserControl.Loaded">
             <BeginStoryboard>
                 <Storyboard>
-                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="670" Duration="0:0:0.3" />
+                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="685" Duration="0:0:0.3" />
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
@@ -24,53 +24,166 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.Row="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="380"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
 
-            <Line Grid.Row="0" Grid.ColumnSpan="4" X1="0" X2="670" Y1="0" Y2="0" Stroke="IndianRed" StrokeThickness="1" />
-            
+            <Label Content="Nuovo Materiale" Style="{StaticResource SectionTitleLabelStyle}"
+                   Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" />
+
             <Label Content="Descrizione" Grid.Column="0" Grid.Row="1" />
-            <TextBox Text="{Binding Description}" Grid.Row="1" Grid.Column="1" Style="{StaticResource DescriptionTextStyle}"/>
+            <TextBox Text="{Binding Description}" Grid.Row="1" Grid.Column="1" Style="{StaticResource LongSizeTextStyle}"/>
 
             <Label Content="Prezzo" Grid.Column="2" Grid.Row="1" />
             <TextBox Text="{Binding Price}" Grid.Column="3" Grid.Row="1" Style="{StaticResource QuantityStyle}" />
 
             <Label Content="Unita di misura" Grid.Column="0" Grid.Row="2" />
             <ComboBox ItemsSource="{Binding Measures}" SelectedValue="{Binding SelectedMeasure}" DisplayMemberPath="Description" SelectedValuePath="Id" 
-                      Grid.Column="1"  Grid.Row="2" Height="25" Width="350" />
+                      Grid.Column="1"  Grid.Row="2" Height="25" Width="350" HorizontalAlignment="Left" Margin="10,0,0,0" />
 
             <Button Command="{Binding AddMaterialCommand}" Style="{StaticResource ActionButtonStyle}" 
-                    Grid.Column="3" Grid.Row="2" Height="30" Width="80" Margin="10,10,0,10">
+                    Grid.Column="3" Grid.Row="2" Height="30" Width="80" Margin="10,10,0,10"
+                    HorizontalAlignment="Left">
                 <TextBlock>Aggiungi</TextBlock>
             </Button>
 
         </Grid>
-        <StackPanel Grid.Row="1" Margin="0,20,0,0">
-            <DataGrid CanUserAddRows="False" AutoGenerateColumns="False"
+        
+        <Grid Grid.Row="1" Margin="5,20,5,0" Height="500">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0"
+                Content="Lista Materiali" Style="{StaticResource SectionTitleLabelStyle}" />
+            
+            <StackPanel ZIndex="0" Height="600" Grid.Row="1">
+                <DataGrid CanUserAddRows="False" AutoGenerateColumns="False"
                       ItemsSource="{Binding Materials}"
                       AlternationCount="2"
-                      RowStyle="{StaticResource DataGridRowStyle}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Id" Visibility="Hidden" Binding="{Binding Path=Id}"></DataGridTextColumn>
-                    <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Descrizione" Width="*" Binding="{Binding Path=Description}"></DataGridTextColumn>
-                    <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Prezzo" Width="Auto" Binding="{Binding Path=Price}"></DataGridTextColumn>
-                    <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Misura" Width="Auto" Binding="{Binding Path=MeasureDescription}"></DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-            <wpf:PagingUserControl 
+                      RowStyle="{StaticResource DataGridRowStyle}"
+                      Name="MaterialsDataGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Id" Visibility="Hidden" Binding="{Binding Path=Id}"></DataGridTextColumn>
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Descrizione" Width="*" Binding="{Binding Path=Description}"></DataGridTextColumn>
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Prezzo" Width="Auto" Binding="{Binding Path=Price}"></DataGridTextColumn>
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Misura" Width="Auto" Binding="{Binding Path=MeasureDescription}"></DataGridTextColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="5,3,5,0">
+                                        <TextBlock Text="!" FontFamily="Wingdings" FontSize="16">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.ModifyMaterialCommand, ElementName=MaterialsDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Orange" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="  " />
+                                        <TextBlock Text="&#x000FB;" FontFamily="Wingdings" FontSize="16">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.RemoveMaterialCommand, ElementName=MaterialsDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Setter Property="FontSize" Value="16" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Red" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <wpf:PagingUserControl 
                 FirstPageCommand="{Binding FirstPage}" PreviousPageCommand="{Binding PreviousPage}" NextPageCommand="{Binding NextPage}" LastPageCommand="{Binding LastPage}"
                 PageIndex="{Binding PageIndex}" NumberOfPages="{Binding NumberOfPages}"/>
-        </StackPanel>
+            </StackPanel>
+
+            <Grid Grid.Row="0" Grid.RowSpan="2" ZIndex="1" Name="UpdateMaterialGrid" Visibility="{Binding UpdatePanelVisibility}">
+                <Grid.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <Trigger Property="Grid.Visibility" Value="Visible">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+
+                <Rectangle Opacity=".5" Fill="White" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border CornerRadius="10" Grid.Column="1" Grid.RowSpan="8" BorderBrush="LightBlue" Background="LightBlue" />
+                    <!--<Rectangle Grid.Column="1" Grid.RowSpan="7" Fill="LightBlue"></Rectangle>-->
+                    <Label Content="Modifica" Grid.Row="0" Grid.Column="1" Style="{StaticResource PanelTitleStyle}" />
+                    <Label Content="Descrizione" Grid.Column="1" Grid.Row="1" />
+                    <TextBox Text="{Binding ExistingDescription}" Grid.Row="2" Grid.Column="1" Style="{StaticResource LongSizeTextStyle}" Width="180"/>
+
+                    <Label Content="Prezzo" Grid.Column="1" Grid.Row="3" />
+                    <TextBox Text="{Binding ExistingPrice}" Grid.Column="1" Grid.Row="4" Style="{StaticResource QuantityStyle}" />
+
+                    <Label Content="Unita di misura" Grid.Column="1" Grid.Row="5" />
+                    <ComboBox ItemsSource="{Binding ExistingMeasures}" SelectedValue="{Binding ExistingSelectedMeasure}" DisplayMemberPath="Description" SelectedValuePath="Id" 
+                      Grid.Column="1"  Grid.Row="6" Height="25" Width="180" />
+
+                    <Button Command="{Binding UpdateMaterialCommand}" Style="{StaticResource ActionButtonStyle}" 
+                    Grid.Column="1" Grid.Row="7" Height="30" Width="80" Margin="10,10,0,10">
+                        <TextBlock>Modifica</TextBlock>
+                    </Button>
+                </Grid>
+
+            </Grid>
+        </Grid>
+        
     </Grid>
 </UserControl>
