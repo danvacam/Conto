@@ -178,7 +178,7 @@
                     </StackPanel>
 
                     <Grid Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" 
-                          HorizontalAlignment="Left" Background="SeaShell">
+                          HorizontalAlignment="Left" Background="Lavender">
                         <ContentControl Content="{Binding SelectedControl}"></ContentControl>
                     </Grid>
                 </Grid>
