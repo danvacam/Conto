@@ -8,56 +8,13 @@ using Dapper;
 
 namespace Conto.Data
 {
-    public class LazyInitializeContoData
-    {
-        private static readonly Lazy<LazyInitializeContoData> Instance =
-            new Lazy<LazyInitializeContoData>(() => new LazyInitializeContoData());
-
-        private SqlCeConnection Connection
-        {
-            get
-            {
-                return new SqlCeConnection(ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString);
-            }
-        }
-
-        private LazyInitializeContoData()
-        {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                var settings = conn.Query<Settings>("SELECT * FROM Settings");
-                if (!settings.Any())
-                {
-                    conn.Execute(
-                    "INSERT INTO Settings (InvoiceOwnerName, InvoiceOwnerAddress, InvoiceOwnerCity, InvoiceOwnerPostalCode, InvoiceOwnerFiscalCode, InvoiceOwnerVatCode, MaxInvoiceValue) VALUES (@InvoiceOwnerName, @InvoiceOwnerAddress, @InvoiceOwnerCity, @InvoiceOwnerPostalCode, @InvoiceOwnerFiscalCode, @InvoiceOwnerVatCode, @MaxInvoiceValue)",
-                    new { InvoiceOwnerName = "O.S. Trading S.r.l Soc. Unipersonale", InvoiceOwnerAddress = "Via Mascagni snc", InvoiceOwnerCity = "Usmate Velate", InvoiceOwnerPostalCode = "20040", InvoiceOwnerFiscalCode = "05962770961", InvoiceOwnerVatCode = "05962770961", MaxInvoiceValue = 990 });
-                }
-
-                var demoValues = ConfigurationManager.AppSettings["DemoValues"];
-                if (demoValues == "true")
-                {
-                    
-                }
-
-            }
-        }
-
-        public static LazyInitializeContoData GetInstance
-        {
-            get { return Instance.Value; }
-        }
-    }
-
     public class ContoData
     {
         public ContoData()
         {
             var inst = LazyInitializeContoData.GetInstance;
         }
-
-
-
+        
         private SqlCeConnection Connection
         {
             get
@@ -94,6 +51,16 @@ namespace Conto.Data
         #endregion
 
         #region MATERIALS
+
+        public int MaterialsCountGet()
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                var ret = conn.Query<int>("SELECT Count(*) FROM Materials");
+                return ret != null ? ret.First() : 0;
+            }
+        }
 
         public List<Material> MaterialsGet()
         {
@@ -150,19 +117,29 @@ namespace Conto.Data
             }
         }
 
-        public void MaterialDelete(Material material)
+        public bool MaterialDelete(Material material)
         {
             using (var conn = new SqlCeConnection(
                 ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
             {
                 conn.Open();
-                conn.Execute(
-                    "DELETE Materials WHERE Id = @Id);",
+
+                var ret = conn.Query<int>("SELECT Count(*) FROM SelfInvoices WHERE MaterialId = @Id", new
+                {
+                    material.Id
+                });
+
+                var totUsedMaterials = ret != null ? ret.First() : 0;
+                if (totUsedMaterials > 0)
+                    return false;
+                
+                conn.Execute("DELETE FROM Materials WHERE Id = @Id",
                     new
                     {
                         material.Id
                     });
             }
+            return true;
         }
 
         #endregion
@@ -339,6 +316,16 @@ namespace Conto.Data
             }
         }
 
+        public Client ClientGet(long id)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                return conn.Query<Client>("SELECT * FROM Clients WHERE Id = @Id", new { Id = id }).SingleOrDefault();
+            }
+        }
+
         public void ClientAdd(Client client)
         {
             using (var conn = new SqlCeConnection(
@@ -358,6 +345,53 @@ namespace Conto.Data
                     });
             }
         }
+
+        public void ClientUpdate(Client client)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+                conn.Execute(
+                    "UPDATE Clients SET Name = @Name, Address = @Address, PostalCode = @PostalCode, FiscalCode = @FiscalCode, VatCode = @VatCode WHERE Id = @Id",
+                    new
+                    {
+                        client.Name,
+                        client.Address,
+                        client.City,
+                        client.PostalCode,
+                        client.FiscalCode,
+                        client.VatCode,
+                        client.Id
+                    });
+            }
+        }
+
+        public bool ClientDelete(Client client)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+
+                //var ret = conn.Query<int>("SELECT Count(*) FROM SelfInvoices WHERE MaterialId = @Id", new
+                //{
+                //    client.Id
+                //});
+
+                //var totUsedMaterials = ret != null ? ret.First() : 0;
+                //if (totUsedMaterials > 0)
+                //    return false;
+
+                conn.Execute("DELETE FROM Clients WHERE Id = @Id",
+                    new
+                    {
+                        client.Id
+                    });
+            }
+            return true;
+        }
+
 
         #endregion
 
