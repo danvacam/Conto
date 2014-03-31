@@ -17,12 +17,18 @@ namespace Conto.Wpf.ViewModels
         {
             _contoData = new ContoData();
             Measures = new List<Measures>(_contoData.MeasuresGet());
+            ExistingMeasures = new List<Measures>(_contoData.MeasuresGet());
 
             _completeList = new List<Material>(_contoData.MaterialsGet());
             NumberOfPages =  (int) Math.Ceiling((double) _completeList.Count / NumberOfRowsInMaterialsGrid);
             SetMaterialsList();
 
             AddMaterialCommand = new RelayCommand(AddMaterial_Executed);
+            RemoveMaterialCommand = new RelayCommand(RemoveMaterialCommand_Executed);
+            ModifyMaterialCommand = new RelayCommand(ModifyMaterialCommand_Executed);
+            UpdateMaterialCommand = new RelayCommand(UpdateMaterialCommand_Executed);
+
+            UpdatePanelVisibility = Visibility.Collapsed;
         }
 
         private void SetMaterialsList(int pageIndex = 0)
@@ -90,7 +96,7 @@ namespace Conto.Wpf.ViewModels
 
         #region MATERIALS GRID PROPERTIES
 
-        private readonly List<Material> _completeList;
+        private List<Material> _completeList;
 
         private List<Material> _materials;
         public List<Material> Materials
@@ -102,7 +108,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _materials = value;
-                OnPropertyChanged("Materials");
+                OnPropertyChanged("Materials", false);
             }
         }
 
@@ -116,7 +122,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _pageIndex = value;
-                OnPropertyChanged("PageIndex");
+                OnPropertyChanged("PageIndex", false);
             }
         }
 
@@ -130,7 +136,89 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _numberOfPages = value;
-                OnPropertyChanged("NumberOfPages");
+                OnPropertyChanged("NumberOfPages", false);
+            }
+        }
+
+        #endregion
+
+        #region UPDATE MATERIAL PROPERTIES
+
+        private long _existingId;
+        public long ExistingId
+        {
+            get
+            {
+                return _existingId;
+            }
+            set
+            {
+                _existingId = value;
+                OnPropertyChanged("ExistingId", false);
+            }
+        }
+
+        private string _existingDescription;
+        public string ExistingDescription
+        {
+            get
+            {
+                return _existingDescription;
+            }
+            set
+            {
+                _existingDescription = value;
+                OnPropertyChanged("ExistingDescription", false);
+            }
+        }
+
+        private decimal? _existingPrice;
+        public decimal? ExistingPrice
+        {
+            get
+            {
+                return _existingPrice;
+            }
+            set
+            {
+                _existingPrice = value;
+                OnPropertyChanged("ExistingPrice", false);
+            }
+        }
+
+        private int _existingSelectedMeasure;
+        public int ExistingSelectedMeasure
+        {
+            get { return _existingSelectedMeasure; }
+            set
+            {
+                _existingSelectedMeasure = value;
+                OnPropertyChanged("ExistingSelectedMeasure", false);
+            }
+        }
+
+        private List<Measures> _existingMeasures;
+        public List<Measures> ExistingMeasures
+        {
+            get
+            {
+                return _existingMeasures;
+            }
+            set
+            {
+                _existingMeasures = value;
+                OnPropertyChanged("ExistingMeasures", false);
+            }
+        }
+
+        private Visibility _updatePanelVisibility;
+        public Visibility UpdatePanelVisibility
+        {
+            get { return _updatePanelVisibility; }
+            set
+            {
+                _updatePanelVisibility = value;
+                OnPropertyChanged("UpdatePanelVisibility", false);
             }
         }
 
@@ -164,13 +252,62 @@ namespace Conto.Wpf.ViewModels
                     Price = Price,
                     MeasureId = SelectedMeasure.Value
                 });
-                Materials = new List<Material>(_contoData.MaterialsGet());
+
+                _completeList = new List<Material>(_contoData.MaterialsGet());
+                NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInMaterialsGrid);
+                SetMaterialsList();
                 
                 Description = string.Empty;
                 Price = null;
                 SelectedMeasure = null;
                 AppProperties.FormHaveModifications = false;
             }
+        }
+
+        public ICommand RemoveMaterialCommand { get; set; }
+        public void RemoveMaterialCommand_Executed(object sender)
+        {
+
+            if (_contoData.MaterialDelete((Material) sender))
+            {
+                _completeList = new List<Material>(_contoData.MaterialsGet());
+                NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInMaterialsGrid);
+                SetMaterialsList();
+                AppProperties.FormHaveModifications = false;
+            }
+            else
+            {
+                MessageBox.Show("Impossibile eliminare il materiale perchè in uso nelle fatture!");
+            }
+        }
+
+        public ICommand ModifyMaterialCommand { get; set; }
+        public void ModifyMaterialCommand_Executed(object sender)
+        {
+            var material = (Material) sender;
+            ExistingId = material.Id;
+            ExistingDescription = material.Description;
+            ExistingSelectedMeasure = material.MeasureId;
+            ExistingPrice = material.Price;
+
+            UpdatePanelVisibility = Visibility.Visible;
+        }
+
+        public ICommand UpdateMaterialCommand { get; set; }
+        public void UpdateMaterialCommand_Executed(object sender)
+        {
+            _contoData.MaterialUpdate(new Material
+            {
+                Id = ExistingId,
+                Description = ExistingDescription,
+                MeasureId = ExistingSelectedMeasure,
+                Price = ExistingPrice
+            });
+
+            _completeList = new List<Material>(_contoData.MaterialsGet());
+            SetMaterialsList();
+
+            UpdatePanelVisibility = Visibility.Collapsed;
         }
 
         #region PAGING COMMANDS
@@ -226,12 +363,12 @@ namespace Conto.Wpf.ViewModels
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged(string propertyName, bool formHaveModifications = true)
         {
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                AppProperties.FormHaveModifications = true;
+                AppProperties.FormHaveModifications = formHaveModifications;
             }
         }
     }
