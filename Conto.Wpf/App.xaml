@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="Resources/DataGridStyle.xaml" />
                 <ResourceDictionary Source="Resources/MenuButtons.xaml" />
                 <ResourceDictionary Source="Resources/ListBoxStyles.xaml" />
+                <ResourceDictionary Source="Resources/TextBoxStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
