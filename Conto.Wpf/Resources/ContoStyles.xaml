@@ -39,6 +39,7 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40"/>
+                            <RowDefinition Height="5"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
@@ -62,36 +63,23 @@
         <Setter Property="Margin" Value="10,0,0,0" />
     </Style>
     
-    <Style x:Key="{x:Type TextBox}" TargetType="TextBox">
-        <Setter Property="Background" Value="Lavender" />
-        <Setter Property="Height" Value="25" />
-        <Setter Property="Margin" Value="10,0,0,0" />
-    </Style>
-
-    <Style x:Key="DescriptionTextStyle" TargetType="TextBox"  BasedOn="{StaticResource {x:Type TextBox}}">
-        <Setter Property="Width" Value="350" />
-        <Setter Property="TextAlignment" Value="Right" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-    </Style>
     
-    <Style x:Key="MeasuresComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
-        <Setter Property="Width" Value="100" />
+
+    <LinearGradientBrush x:Key="SectionTitleGradientBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+        <GradientStop Color="DarkSlateGray" Offset="0.0" />
+        <GradientStop Color="SlateGray" Offset="0.25" />
+        <GradientStop Color="Lavender" Offset="1.0" />
+    </LinearGradientBrush>
+    
+    <Style x:Key="SectionTitleLabelStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Width" Value="670" />
+        <Setter Property="Margin" Value="10,15,0,15" />
+        <Setter Property="FontWeight" Value="DemiBold" />
+        <Setter Property="Foreground" Value="GhostWhite" />
+        <Setter Property="Background" Value="{StaticResource SectionTitleGradientBrush}" />
     </Style>
-
-    <Style x:Key="QuantityStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-        <Setter Property="Width" Value="50" />
-        <Setter Property="TextAlignment" Value="Right" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-    </Style>
-
-    <Style x:Key="YearTextStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-        <Setter Property="Width" Value="35" />
-        <Setter Property="TextAlignment" Value="Right" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-    </Style>
-
-
     
     
     
