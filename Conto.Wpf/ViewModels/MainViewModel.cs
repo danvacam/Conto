@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,11 +10,13 @@ namespace Conto.Wpf.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        readonly ContoData _contoData;
+
         public MainViewModel()
         {
-            var contoData = new ContoData();
+            _contoData = new ContoData();
 
-            var settings = contoData.GetSettings();
+            var settings = _contoData.GetSettings();
 
             if (settings != null)
             {
@@ -229,6 +232,8 @@ namespace Conto.Wpf.ViewModels
         {
             if (!AppProperties.FormHaveModifications || DiscardFormModifications())
             {
+                AppProperties.FormHaveModifications = false;
+
                 SelfInvoiceButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
                 InvoiceButtonStyle = Application.Current.Resources["InvoiceMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
@@ -243,6 +248,8 @@ namespace Conto.Wpf.ViewModels
         {
             if (!AppProperties.FormHaveModifications || DiscardFormModifications())
             {
+                AppProperties.FormHaveModifications = false;
+
                 SelfInvoiceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 InvoiceButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
@@ -257,6 +264,8 @@ namespace Conto.Wpf.ViewModels
         {
             if (!AppProperties.FormHaveModifications || DiscardFormModifications())
             {
+                AppProperties.FormHaveModifications = false;
+
                 SelfInvoiceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 InvoiceButtonStyle = Application.Current.Resources["InvoiceMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
@@ -271,13 +280,15 @@ namespace Conto.Wpf.ViewModels
         {
             if (!AppProperties.FormHaveModifications || DiscardFormModifications())
             {
+                AppProperties.FormHaveModifications = false;
+
                 SelfInvoiceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 InvoiceButtonStyle = Application.Current.Resources["InvoiceMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
                 MaterialsButtonStyle = Application.Current.Resources["SelectedMenuButtonStyle"] as Style;
                 ClientsButtonStyle = Application.Current.Resources["ClientsMenuButtonStyle"] as Style;
-                FirstInfo = "Materiali";
-                SecondInfo = "5";
+                FirstInfo = "Materiali inseriti nel sistema:";
+                SecondInfo = _contoData.MaterialsCountGet().ToString(CultureInfo.InvariantCulture);
                 SelectedControl = new MaterialsUserControl();
             }
         }
@@ -287,6 +298,8 @@ namespace Conto.Wpf.ViewModels
         {
             if (!AppProperties.FormHaveModifications || DiscardFormModifications())
             {
+                AppProperties.FormHaveModifications = false;
+
                 SelfInvoiceButtonStyle = Application.Current.Resources["MainMenuButtonStyle"] as Style;
                 InvoiceButtonStyle = Application.Current.Resources["InvoiceMenuButtonStyle"] as Style;
                 CashButtonStyle = Application.Current.Resources["CashMenuButtonStyle"] as Style;
