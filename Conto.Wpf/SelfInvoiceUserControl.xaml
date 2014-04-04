@@ -4,90 +4,240 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:selfInvoice="clr-namespace:Conto.Wpf.ViewModels"
+             xmlns:wpf="clr-namespace:Conto.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.Loaded">
             <BeginStoryboard>
                 <Storyboard>
-                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="650" Duration="0:0:0.3" />
+                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="685" Duration="0:0:0.3" />
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
     </UserControl.Triggers>
+    <UserControl.DataContext>
+        <selfInvoice:SelfInvoiceViewModel />
+    </UserControl.DataContext>
     <Grid>
-        <Grid.DataContext>
-            <selfInvoice:SelfInvoiceViewModel />
-        </Grid.DataContext>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid ZIndex="0" Grid.Row="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <ItemsControl Style="{StaticResource GridItemsStyle}" Grid.Row="0">
-                <Label Content="Materiale" Grid.Column="0" Grid.Row="0" />
-                <ComboBox Grid.Column="1" Grid.Row="0" Margin="10,0,10,0" Height="25"
+
+            <Label Grid.Row="0"
+                Content="Nuova Autofattura" Style="{StaticResource SectionTitleLabelStyle}" />
+
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                <Label Content="Materiale"/>
+                <ComboBox Margin="6,0,10,0" Height="25" Width="340"
                       ItemsSource="{Binding Materials}" SelectedItem="{Binding SelectedMaterial}" DisplayMemberPath="Description" SelectedValuePath="Id" />
-
-                <Label Content="Prezzo" Grid.Column="2" Grid.Row="0" />
-                <TextBox xml:lang="it-IT"  Grid.Column="3" Grid.Row="0" Style="{StaticResource QuantityStyle}"
-                     Text="{Binding MaterialPrice}"/>
-
-                <Label Content="Unita di misura" Grid.Column="0" Grid.Row="1" />
-                <ComboBox Grid.Column="1" Grid.Row="1" Margin="10,0,10,0" Height="25" 
+                <Label Content="{Binding MaterialPriceMessage}"/>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,15,0,0">
+                <Label Content="Quantita"/>
+                <TextBox xml:lang="it-IT" Text="{Binding Quantity}" Style="{StaticResource QuantityStyle}"/>
+                <Label Content="Unita di misura" Margin="50,0,0,0"/>
+                <ComboBox Margin="10,0,10,0" Height="25" 
                       ItemsSource="{Binding Measures}" SelectedItem="{Binding SelectedMeasure}" DisplayMemberPath="Description" SelectedValuePath="Id" />
+            </StackPanel>
 
-                <Label Content="Quantita" Grid.Column="2" Grid.Row="1" />
-                <TextBox xml:lang="it-IT" Text="{Binding Quantity}" Grid.Column="3" Grid.Row="1" Style="{StaticResource QuantityStyle}"/>
-
-                <Label Content="Data fatture" Grid.Column="0" Grid.Row="2" />
-                <DatePicker SelectedDate="{Binding InvoiceDate}" Grid.Column="1" Grid.Row="2" />
-
-                <Label Content="Anno di riferimento" Grid.Column="0" Grid.Row="3"  />
-                <TextBox Text="{Binding InvoiceYear}" Grid.Column="1" Grid.Row="3" Style="{StaticResource YearTextStyle}" />
-                <Label Content="Esente IVA" Grid.Column="2" Grid.Row="3"  />
-                <CheckBox IsChecked="{Binding VatExempt}" Grid.Column="3" Grid.Row="3" VerticalAlignment="Center" Margin="10,0,0,0" />
-
-                <Button Command="{Binding AddSelfInvoice}" Style="{StaticResource ActionButtonStyle}" Grid.Column="3" Grid.Row="4" Height="30" Width="80" HorizontalAlignment="Left" Margin="30,0,0,0">
+            <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0,15,0,0">
+                <Label Content="Anno"/>
+                <TextBox Text="{Binding InvoiceYear}" Style="{StaticResource YearTextStyle}" Margin="28,0,0,0" />
+                <Label Content="Data fatture" Margin="65,0,0,0"/>
+                <DatePicker SelectedDate="{Binding InvoiceDate}" Margin="28,0,0,0"/>
+                <Label Content="Esente IVA" Margin="45,0,0,0"/>
+                <CheckBox IsChecked="{Binding VatExempt}" VerticalAlignment="Center" Margin="10,0,0,0" />
+                
+                <Button Command="{Binding AddSelfInvoice}" Style="{StaticResource ActionButtonStyle}" Height="30" Width="80" HorizontalAlignment="Left" Margin="30,0,0,0">
                     <TextBlock>Genera</TextBlock>
                 </Button>
-            </ItemsControl>
+            </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid ZIndex="0" Grid.Row="1" Height="400">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="1">
+
+            <Label Grid.Row="0"
+                Content="Lista Autofatture" Style="{StaticResource SectionTitleLabelStyle}" />
+
+            <StackPanel Grid.Row="1" Margin="5">
                 <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False"
-                          ItemsSource="{Binding SelfInvoices}" x:Name="SelfInvoiceDataGrid" Width="580"
+                          ItemsSource="{Binding SelfInvoices}" x:Name="SelfInvoiceDataGrid" Width="642"
                           RowStyle="{StaticResource DataGridRowStyle}"
                           MinRowHeight="50"
                           AlternationCount="2">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Id" Binding="{Binding InvoiceGroupId}" Visibility="Hidden" />
-                        <DataGridTextColumn Width="50" Header="Data" Binding="{Binding InvoiceDate.Date}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
+                        <DataGridTextColumn Width="70" Header="Data" Binding="{Binding InvoiceDate.Date}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
                         <DataGridTextColumn Width="250" Header="Materiale" Binding="{Binding MaterialDescription}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
-                        <DataGridTextColumn Width="60" Header="Quantita" Binding="{Binding Quantity}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
+                        <DataGridTextColumn Width="65" Header="Quantita" Binding="{Binding Quantity}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
+                        <DataGridTextColumn Width="65" Header="MisuraId" Binding="{Binding MeasureId}" Visibility="Hidden" />
+                        <DataGridTextColumn Width="70" Header="Misura" Binding="{Binding MeasuresDescription}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
                         <DataGridTextColumn Width="50" Header="Costo" Binding="{Binding Cost}" HeaderStyle="{StaticResource DataGridHeaderStyle}" />
                         <DataGridTextColumn Width="60" Header="Numero fatture" Binding="{Binding InvoiceCount}" HeaderStyle="{StaticResource WrapHeaderStyle}" />
-                        <DataGridTemplateColumn Header="Aggiungi al conto" Width="80" HeaderStyle="{StaticResource WrapHeaderStyle}">
+                        <DataGridTemplateColumn Header="Azioni" HeaderStyle="{StaticResource WrapHeaderStyle}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="Aggiungi" Style="{StaticResource ActionButtonStyle}"
-                                            Height="30" Width="70"
-                                            Command="{Binding DataContext.AddToCashFlowCommand, ElementName=SelfInvoiceDataGrid}" CommandParameter="{Binding SelectedItem, ElementName=SelfInvoiceDataGrid}"/>
+                                    <StackPanel Orientation="Horizontal" Margin="5,3,5,0">
+                                        <TextBlock Text="4" FontFamily="Wingdings" FontSize="16" ToolTip="Aggiungi al conto">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.AddToCashFlowCommand, ElementName=SelfInvoiceDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Orange" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="  " />
+                                        <TextBlock Text="!" FontFamily="Wingdings" FontSize="16" ToolTip="Modifica">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.ModifySelfInvoiceCommand, ElementName=SelfInvoiceDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Orange" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="  " />
+                                        <TextBlock Text="&#x000FB;" FontFamily="Wingdings" FontSize="16" ToolTip="Elimina">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.RemoveSelfInvoiceCommand, ElementName=SelfInvoiceDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Setter Property="FontSize" Value="16" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Red" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+
+                <wpf:PagingUserControl 
+                    FirstPageCommand="{Binding FirstPage}" PreviousPageCommand="{Binding PreviousPage}" NextPageCommand="{Binding NextPage}" LastPageCommand="{Binding LastPage}"
+                    PageIndex="{Binding PageIndex}" NumberOfPages="{Binding NumberOfPages}"/>
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.RowSpan="2" ZIndex="1" Name="UpdateClientGrid" Visibility="{Binding UpdatePanelVisibility}">
+            <Grid.Style>
+                <Style>
+                    <Style.Triggers>
+                        <Trigger Property="Grid.Visibility" Value="Visible">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <Rectangle Opacity=".5" Fill="White" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="380" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+
+                <Border CornerRadius="10" Grid.Column="1" Grid.Row="1" BorderBrush="LightBlue" Background="LightBlue" />
+
+                <StackPanel Grid.Row="1" Grid.Column="1">
+                    <StackPanel Orientation="Horizontal" Margin="0,5,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Transparent">
+                        <TextBlock HorizontalAlignment="Left" Width="320"
+                                   FontSize="16" Padding="5" VerticalAlignment="Top">Modifica Autofattura</TextBlock>
+                        <TextBlock x:Name="CloseButton" ToolTip="Chiudi"
+                           Text="r" FontFamily="Webdings" FontSize="16"
+                           Padding="5" Margin="5,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <TextBlock.InputBindings>
+                                <MouseBinding Command="{Binding UpdateSelfInvoiceCloseCommand}" MouseAction="LeftClick"/>
+                            </TextBlock.InputBindings>
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="Gray" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="Red" />
+                                            <Setter Property="Foreground" Value="White" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <Label Content="Materiale"/>
+                    <ComboBox Height="25" ItemsSource="{Binding ExistingMaterials}" SelectedIndex="{Binding ExistingSelectedMaterialIndex}" DisplayMemberPath="Description" SelectedValuePath="Id" />
+                    
+                    <Label Content="Quantita"/>
+                    <TextBox Text="{Binding ExistingQuantity}" Style="{StaticResource SmallSizeTextStyle}"/>
+                    
+                    <Label Content="Misura" />
+                    <ComboBox Height="25" ItemsSource="{Binding ExistingMeasures}" SelectedIndex="{Binding ExistingSelectedMeasureIndex}" DisplayMemberPath="Description" SelectedValuePath="Id" />
+
+                    <Label Content="Data" />
+                    <DatePicker SelectedDate="{Binding ExistingInvoiceDate}" />
+
+                    <Label Content="Anno di riferimento" />
+                    <TextBox Text="{Binding ExistingInvoiceYear}" Style="{StaticResource MidSizeTextStyle}" />
+
+                    <Label Content="Esente IVA"/>
+                    <CheckBox IsChecked="{Binding ExistingVatExempt}" VerticalAlignment="Center" />
+
+                    <Button Command="{Binding UpdateSelfInvoiceCommand}" Style="{StaticResource ActionButtonStyle}" 
+                            Height="30" Width="80" Margin="10,10,0,10">
+                        <TextBlock>Modifica</TextBlock>
+                    </Button>
+                </StackPanel>
             </Grid>
 
         </Grid>
