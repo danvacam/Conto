@@ -70,7 +70,7 @@
             
             <StackPanel ZIndex="0" Height="600" Grid.Row="1">
                 <DataGrid CanUserAddRows="False" AutoGenerateColumns="False"
-                      ItemsSource="{Binding Materials}"
+                      ItemsSource="{Binding GridSource}"
                       AlternationCount="2"
                       RowStyle="{StaticResource DataGridRowStyle}"
                       Name="MaterialsDataGrid">
