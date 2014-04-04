@@ -176,8 +176,33 @@ namespace Conto.Data
                 ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
             {
                 conn.Open();
-                return conn.Query<SelfInvoicesMaster>("SELECT SelfInvoices.InvoiceGroupId, Materials.Description AS MaterialDescription, SUM(SelfInvoices.Quantity) AS Quantity, SUM(SelfInvoices.InvoiceCost) AS Cost, SelfInvoices.InvoiceDate, COUNT(*) AS InvoiceCount FROM SelfInvoices INNER JOIN Materials ON SelfInvoices.MaterialId = Materials.Id WHERE SelfInvoices.InCashFlow = 0 GROUP BY SelfInvoices.InvoiceGroupId, Materials.Description, SelfInvoices.InvoiceDate ORDER BY SelfInvoices.InvoiceDate DESC").ToList();
+                return conn.Query<SelfInvoicesMaster>("SELECT SelfInvoices.InvoiceGroupId, Materials.Description AS MaterialDescription, SUM(SelfInvoices.Quantity) AS Quantity, SUM(SelfInvoices.InvoiceCost) AS Cost, SelfInvoices.InvoiceDate, COUNT(*) AS InvoiceCount, SelfInvoices.MeasureId, Measures.Description AS MeasuresDescription, SelfInvoices.MaterialId, SelfInvoices.VatExcept, SelfInvoices.InvoiceYear FROM SelfInvoices INNER JOIN Materials ON SelfInvoices.MaterialId = Materials.Id INNER JOIN Measures ON Measures.Id = SelfInvoices.MeasureId WHERE SelfInvoices.InCashFlow = 0 GROUP BY SelfInvoices.InvoiceGroupId, Materials.Description, SelfInvoices.InvoiceDate, SelfInvoices.MeasureId, Measures.Description, SelfInvoices.MaterialId, SelfInvoices.VatExcept, SelfInvoices.InvoiceYear ORDER BY SelfInvoices.InvoiceDate DESC").ToList();
             }
+        }
+
+        public bool SelfInvoiceDelete(SelfInvoicesMaster selfInvoice)
+        {
+            using (var conn = new SqlCeConnection(
+                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            {
+                conn.Open();
+
+                var selfInvoices = conn.Query<SelfInvoices>("SELECT * FROM SelfInvoices WHERE InvoiceGroupId = @InvoiceGroupId AND CashFlowId IS NULL", new
+                {
+                   selfInvoice.InvoiceGroupId
+                });
+
+                var totInCashFlow = selfInvoices != null ? selfInvoices.Count() : 0;
+                if (totInCashFlow == 0)
+                    return false;
+
+                conn.Execute("DELETE FROM SelfInvoices WHERE InvoiceGroupId = @InvoiceGroupId",
+                    new
+                    {
+                        selfInvoice.InvoiceGroupId
+                    });
+            }
+            return true;
         }
 
         public void SelfInvoiceAddToCashFlow(SelfInvoicesMaster selfInvoice)
@@ -193,6 +218,22 @@ namespace Conto.Data
                         invoiceGroupId = selfInvoice.InvoiceGroupId
                     }).ToList();
 
+                var invoiceYear = selfInvoices[0].InvoiceYear;
+                var common =
+                    conn.Query<Common>("SELECT * FROM Common WHERE WorkYear = @WorkYear", new { WorkYear = invoiceYear })
+                        .SingleOrDefault();
+                long invoiceNumber = 1;
+                if (common != null)
+                {
+                    invoiceNumber = common.CurrentAvailableInvoiceNumber;
+                }
+                else
+                {
+                    conn.Execute(
+                        "INSERT INTO Common (CurrentAvailableInvoiceNumber, WorkYear) VALUES (@CurrentAvailableInvoiceNumber, @WorkYear)",
+                        new {invoiceNumber, invoiceYear});
+                }
+
                 foreach (var selfInv in selfInvoices)
                 {
                     conn.Execute(
@@ -201,7 +242,7 @@ namespace Conto.Data
                         {
                             Cash = selfInv.InvoiceCost,
                             Description =
-                                string.Format("Pagata autofattura {0}/{1}", selfInv.InvoiceNumber,
+                                string.Format("Pagata autofattura {0}/{1}", invoiceNumber,
                                     selfInv.InvoiceYear.ToString(CultureInfo.InvariantCulture).Substring(2)),
                             FlowDate = selfInv.InvoiceDate,
                             CashFlowType = "SelfInvoice"
@@ -209,16 +250,22 @@ namespace Conto.Data
 
                     var id = conn.Query("SELECT @@IDENTITY AS id").SingleOrDefault();
 
-                    if(id != null)
-                    conn.Execute(
-                    "UPDATE SelfInvoices SET InCashFlow = 1, CashFlowId = @CashFlowId WHERE InvoiceGroupId = @InvoiceGroupId AND InvoiceId = @InvoiceId",
-                    new
-                    {
-                        CashFlowId = (long)id.id,
-                        selfInv.InvoiceGroupId,
-                        selfInv.InvoiceId
-                    });
+                    if (id != null)
+                        conn.Execute(
+                            "UPDATE SelfInvoices SET InCashFlow = 1, CashFlowId = @CashFlowId, InvoiceNumber = @InvoiceNumber WHERE InvoiceGroupId = @InvoiceGroupId AND InvoiceId = @InvoiceId",
+                            new
+                            {
+                                CashFlowId = (long) id.id,
+                                selfInv.InvoiceGroupId,
+                                selfInv.InvoiceId,
+                                InvoiceNumber = invoiceNumber
+                            });
+
+                    invoiceNumber++;
                 }
+
+                conn.Execute("UPDATE Common SET CurrentAvailableInvoiceNumber = @CurrentAvailableInvoiceNumber WHERE WorkYear = @WorkYear",
+                    new { CurrentAvailableInvoiceNumber = invoiceNumber, WorkYear = invoiceYear });
             }
         }
 
@@ -251,52 +298,18 @@ namespace Conto.Data
             {
                 conn.Open();
                 conn.Execute(
-                    "INSERT INTO SelfInvoices (MaterialId, Quantity, VatExcept, InvoiceNumber, InvoiceYear, MeasureId, InCashFlow, InvoiceDate, InvoiceCost, InvoiceGroupId) VALUES (@MaterialId, @Quantity, @VatExcept, @InvoiceNumber, @InvoiceYear, @MeasureId, @InCashFlow, @InvoiceDate, @InvoiceCost, @InvoiceGroupId)",
+                    "INSERT INTO SelfInvoices (MaterialId, Quantity, VatExcept, InvoiceYear, MeasureId, InCashFlow, InvoiceDate, InvoiceCost, InvoiceGroupId) VALUES (@MaterialId, @Quantity, @VatExcept, @InvoiceYear, @MeasureId, @InCashFlow, @InvoiceDate, @InvoiceCost, @InvoiceGroupId)",
                     new
                     {
                         selfInvoice.MaterialId,
                         selfInvoice.Quantity,
                         selfInvoice.VatExcept,
-                        selfInvoice.InvoiceNumber,
                         selfInvoice.InvoiceYear,
                         selfInvoice.MeasureId,
                         selfInvoice.InCashFlow,
                         selfInvoice.InvoiceDate,
                         selfInvoice.InvoiceCost,
                         selfInvoice.InvoiceGroupId
-                    });
-            }
-        }
-
-        #endregion
-
-
-        #region COMMONDATA
-
-        public CommonDataObject CommonGetForYear(int year)
-        {
-            using (var conn = new SqlCeConnection(
-                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
-            {
-                conn.Open();
-                return
-                    conn.Query<CommonDataObject>("SELECT * FROM Common WHERE work_year = @year", new { year })
-                        .FirstOrDefault();
-            }
-        }
-
-        public void CommonSetInvoiceNumberForYear(int year, long invoiceNumber)
-        {
-            using (var conn = new SqlCeConnection(
-                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
-            {
-                conn.Open();
-                conn.Execute(
-                    "UPDATE Common SET invoice_number = @invoiceNumber WHERE work_year = @year",
-                    new
-                    {
-                        invoiceNumber,
-                        year
                     });
             }
         }
@@ -395,26 +408,55 @@ namespace Conto.Data
 
         #endregion
 
+        #region COMMON
 
-
-
-
-
-
-
-
-
-
-
-        public CommonDataObject GetCommonData()
+        public List<Common> CommonsGet()
         {
-            using (var conn = new SqlCeConnection(
-                ConfigurationManager.ConnectionStrings["ContoDatabase"].ConnectionString))
+            using (var conn = Connection)
             {
                 conn.Open();
-                return conn.Query<CommonDataObject>("SELECT * FROM Common").FirstOrDefault();
+                return conn.Query<Common>("SELECT * FROM Common").ToList();
             }
         }
+
+        public Common CommonGet(int year)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                return
+                    conn.Query<Common>("SELECT * FROM Common WHERE WorkYear = @WorkYear", new {WorkYear = year})
+                        .SingleOrDefault();
+            }
+        }
+
+        public void CommonUpdate(Common common)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                conn.Execute("UPDATE Common SET CurrentAvailableInvoiceNumber = @CurrentAvailableInvoiceNumber WHERE WorkYear = @WorkYear",
+                    new {common.CurrentAvailableInvoiceNumber, common.WorkYear});
+            }
+        }
+
+        public void CommonInsert(Common common)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                conn.Execute("INSERT INTO Common (CurrentAvailableInvoiceNumber, WorkYear) VALUES (@CurrentAvailableInvoiceNumber, @WorkYear)",
+                    new {common.CurrentAvailableInvoiceNumber, common.WorkYear});
+            }
+        }
+
+        #endregion
+
+
+
+
+
+
 
 
 
