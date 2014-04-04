@@ -26,6 +26,7 @@ namespace Conto.Wpf.ViewModels
             RemoveClientCommand = new RelayCommand(RemoveClientCommand_Executed);
             ModifyClientCommand = new RelayCommand(ModifyClientCommand_Executed);
             UpdateClientCommand = new RelayCommand(UpdateClientCommand_Executed);
+            UpdateClientCloseCommand = new RelayCommand(UpdateClientCommandClose_Executed);
 
             UpdatePanelVisibility = Visibility.Collapsed;
         }
@@ -330,6 +331,12 @@ namespace Conto.Wpf.ViewModels
             ExistingVatCode = client.VatCode;
 
             UpdatePanelVisibility = Visibility.Visible;
+        }
+
+        public ICommand UpdateClientCloseCommand { get; set; }
+        public void UpdateClientCommandClose_Executed(object sender)
+        {
+            UpdatePanelVisibility = Visibility.Collapsed;
         }
 
         public ICommand UpdateClientCommand { get; set; }
