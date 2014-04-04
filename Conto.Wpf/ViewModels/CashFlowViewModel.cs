@@ -36,6 +36,7 @@ namespace Conto.Wpf.ViewModels
 
     public class CashFlowViewModel : INotifyPropertyChanged
     {
+        private const int NumberOfRowsInCashFlowsGrid = 10;
         private readonly ContoData _contoData;
 
         public CashFlowViewModel()
@@ -48,16 +49,40 @@ namespace Conto.Wpf.ViewModels
             ExportPdf = new RelayCommand(ExportPdf_Executed);
             AddSelfInvoiceToPrintCommand = new RelayCommand(AddSelfInvoiceToPrintCommand_Executed);
 
+            Months = new Dictionary<int, string>
+            {
+                {1,"Gennaio"},
+                {2,"Febbraio"},
+                {3,"Marzo"},
+                {4,"Aprile"},
+                {5,"Maggio"},
+                {6,"Giugno"},
+                {7,"Luglio"},
+                {8,"Agosto"},
+                {9,"Settembre"},
+                {10,"Ottobre"},
+                {11,"Novembre"},
+                {12,"Dicembre"},
+            };
+
             var lastDate = _contoData.CashFlowGetLastDateTime();
             SelectedYear = lastDate.Year;
             SelectedMonth = lastDate.Month;
 
-            CashFlows = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(lastDate.Year, lastDate.Month)));
+            _completeList = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(lastDate.Year, lastDate.Month)));
+            NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInCashFlowsGrid);
+            SetCashFlowsList();
 
             DepositDate = DateTime.Now;
             CostDate = DateTime.Now;
             SelfInvoicePrintButtonVisibility = Visibility.Collapsed;
             
+        }
+
+        private void SetCashFlowsList(int pageIndex = 0)
+        {
+            PageIndex = pageIndex + 1;
+            CashFlows = _completeList.Skip(pageIndex * NumberOfRowsInCashFlowsGrid).Take(NumberOfRowsInCashFlowsGrid).ToList();
         }
 
         private List<CashFlowGridRow> CashFlowListToCashFlowGridRows(IEnumerable<CashFlow> cashFlowList)
@@ -66,8 +91,8 @@ namespace Conto.Wpf.ViewModels
         }
 
 
-        private decimal _depostit;
-        public decimal Deposit
+        private decimal? _depostit;
+        public decimal? Deposit
         {
             get
             {
@@ -94,8 +119,8 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        private decimal _cost;
-        public decimal Cost
+        private decimal? _cost;
+        public decimal? Cost
         {
             get
             {
@@ -136,7 +161,7 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        #region CASH FLOW GRID
+        #region CASH FLOW GRID FILTERS
 
         private int? _selectedMonth;
         public int? SelectedMonth
@@ -182,19 +207,7 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        private List<CashFlowGridRow> _cashFlows;
-        public List<CashFlowGridRow> CashFlows
-        {
-            get
-            {
-                return _cashFlows;
-            }
-            set
-            {
-                _cashFlows = value;
-                OnPropertyChanged("CashFlows");
-            }
-        }
+        
 
         #endregion
 
@@ -246,6 +259,54 @@ namespace Conto.Wpf.ViewModels
 
         #endregion
 
+        #region CASH FLOW GRID PROPERTIES
+
+        private List<CashFlowGridRow> _completeList;
+
+        private List<CashFlowGridRow> _cashFlows;
+        public List<CashFlowGridRow> CashFlows
+        {
+            get
+            {
+                return _cashFlows;
+            }
+            set
+            {
+                _cashFlows = value;
+                OnPropertyChanged("CashFlows");
+            }
+        }
+
+        private int _pageIndex;
+        public int PageIndex
+        {
+            get
+            {
+                return _pageIndex;
+            }
+            set
+            {
+                _pageIndex = value;
+                OnPropertyChanged("PageIndex", false);
+            }
+        }
+
+        private int _numberOfPages;
+        public int NumberOfPages
+        {
+            get
+            {
+                return _numberOfPages;
+            }
+            set
+            {
+                _numberOfPages = value;
+                OnPropertyChanged("NumberOfPages", false);
+            }
+        }
+
+        #endregion
+
         #region Commands
 
         public ICommand DepositCommand { get; set; }
@@ -272,7 +333,7 @@ namespace Conto.Wpf.ViewModels
         public ICommand ExportPdf { get; set; }
         public void ExportPdf_Executed(object sender)
         {
-            ItextObjectExport.ExportSelfInvoicesPdf(_contoData.SelfInvoiceGetByCashFlow(((CashFlow) sender).Id));
+            ItextObjectExport.ExportSelfInvoicesPdf(_contoData.SelfInvoiceGetByCashFlow(((CashFlowGridRow)sender).Id));
         }
 
         public ICommand AddSelfInvoiceToPrintCommand { get; set; }
@@ -305,18 +366,68 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
+        #region PAGING COMMANDS
+
+        private ICommand _firstPageCommand;
+        public ICommand FirstPage
+        {
+            get { return _firstPageCommand ?? (_firstPageCommand = new RelayCommand(First_Page)); }
+        }
+
+        public void First_Page(object sender)
+        {
+            SetCashFlowsList();
+        }
+
+        private ICommand _previousPageCommand;
+        public ICommand PreviousPage
+        {
+            get { return _previousPageCommand ?? (_previousPageCommand = new RelayCommand(Previous_Page)); }
+        }
+
+        public void Previous_Page(object sender)
+        {
+            if (PageIndex > 1)
+                SetCashFlowsList(PageIndex - 2);
+        }
+
+        private ICommand _nextPageCommand;
+        public ICommand NextPage
+        {
+            get { return _nextPageCommand ?? (_nextPageCommand = new RelayCommand(Next_Page)); }
+        }
+
+        public void Next_Page(object sender)
+        {
+            if (PageIndex < NumberOfPages)
+                SetCashFlowsList(PageIndex);
+        }
+
+        private ICommand _lastPageCommand;
+        public ICommand LastPage
+        {
+            get { return _lastPageCommand ?? (_lastPageCommand = new RelayCommand(Last_Page)); }
+        }
+
+        public void Last_Page(object sender)
+        {
+            SetCashFlowsList(NumberOfPages - 1);
+        }
+
+        #endregion
+
         #endregion
 
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged(string propertyName, bool formHaveModifications = true)
         {
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                AppProperties.FormHaveModifications = true;
+                AppProperties.FormHaveModifications = formHaveModifications;
             }
         }
 
