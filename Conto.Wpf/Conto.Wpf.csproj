@@ -71,6 +71,7 @@
     <Compile Include="ContoWindow.xaml.cs">
       <DependentUpon>ContoWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GridPaging\GridPaging.cs" />
     <Compile Include="InvoiceUserControl.xaml.cs">
       <DependentUpon>InvoiceUserControl.xaml</DependentUpon>
     </Compile>
@@ -210,6 +211,7 @@
     <Resource Include="img\clients.png" />
     <Resource Include="img\materials.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
