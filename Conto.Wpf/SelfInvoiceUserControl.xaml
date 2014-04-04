@@ -78,7 +78,7 @@
 
             <StackPanel Grid.Row="1" Margin="5">
                 <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False"
-                          ItemsSource="{Binding SelfInvoices}" x:Name="SelfInvoiceDataGrid" Width="642"
+                          ItemsSource="{Binding GridSource}" x:Name="SelfInvoiceDataGrid" Width="642"
                           RowStyle="{StaticResource DataGridRowStyle}"
                           MinRowHeight="50"
                           AlternationCount="2">
