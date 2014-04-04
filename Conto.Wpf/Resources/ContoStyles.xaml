@@ -25,32 +25,6 @@
         </Style.Resources>
     </Style>
 
-
-    <Style x:Key="GridItemsStyle" TargetType="ItemsControl">
-        <Setter Property="ItemsPanel">
-            <Setter.Value>
-                <ItemsPanelTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="5"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                    </Grid>
-                </ItemsPanelTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style x:Key="{x:Type Label}" TargetType="Label">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="DimGray" />
