@@ -1,35 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using Conto.Data;
 using Conto.Wpf.Resources;
+using Conto.Wpf.GridPaging;
 
 namespace Conto.Wpf.ViewModels
 {
-    public class SelfInvoiceViewModel : INotifyPropertyChanged
+    public class SelfInvoiceViewModel : GridPaging<SelfInvoicesMaster>, INotifyPropertyChanged
     {
         private const int NumberOfRowsInSelfInvoicesGrid = 10;
         readonly ContoData _contoData;
 
         public SelfInvoiceViewModel()
+            : base(NumberOfRowsInSelfInvoicesGrid)
         {
             _contoData = new ContoData();
-
-            _completeList = new List<SelfInvoicesMaster>(_contoData.SelfInvoicesMasterGet());
-            NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInSelfInvoicesGrid);
-            SetSelfInvoicesList();
-
-            AddSelfInvoice = new RelayCommand(AddSelfInvoice_Executed);
-            AddToCashFlowCommand = new RelayCommand(AddToCashFlowCommand_Executed);
 
             ModifySelfInvoiceCommand = new RelayCommand(ModifySelfInvoiceCommand_Executed);
             UpdateSelfInvoiceCloseCommand = new RelayCommand(UpdateSelfInvoiceCommandClose_Executed);
             UpdateSelfInvoiceCommand = new RelayCommand(UpdateSelfInvoiceCommand_Executed);
             RemoveSelfInvoiceCommand = new RelayCommand(RemoveSelfInvoiceCommand_Executed);
-            
+
             InvoiceDate = DateTime.Now;
             InvoiceYear = DateTime.Now.Year;
             VatExempt = true;
@@ -38,14 +33,12 @@ namespace Conto.Wpf.ViewModels
             Measures = new List<Measures>(_contoData.MeasuresGet());
             ExistingMeasures = new List<Measures>(_contoData.MeasuresGet());
 
+            Initialize(OnPropertyChanged, _contoData.SelfInvoicesMasterGet);
+
             UpdatePanelVisibility = Visibility.Collapsed;
         }
 
-        private void SetSelfInvoicesList(int pageIndex = 0)
-        {
-            PageIndex = pageIndex + 1;
-            SelfInvoices = _completeList.Skip(pageIndex * NumberOfRowsInSelfInvoicesGrid).Take(NumberOfRowsInSelfInvoicesGrid).ToList();
-        }
+        #region NEW SELFINVOICE PROPERTIES
 
         private long _id;
         public long Id
@@ -54,7 +47,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged();
             }
         }
 
@@ -70,7 +63,7 @@ namespace Conto.Wpf.ViewModels
                     MaterialPrice = value.Price;
                     MaterialPriceMessage = string.Format("Prezzo materiale {0}€ a {1}", value.Price, value.MeasureDescription);
                 }
-                OnPropertyChanged("SelectedMaterial");
+                OnPropertyChanged();
             }
         }
 
@@ -84,7 +77,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _materials = value;
-                OnPropertyChanged("Materials");
+                OnPropertyChanged();
             }
         }
 
@@ -98,7 +91,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _quantity = value;
-                OnPropertyChanged("Quantity");
+                OnPropertyChanged();
             }
         }
 
@@ -112,7 +105,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _vatExempt = value;
-                OnPropertyChanged("VatExempt");
+                OnPropertyChanged();
             }
         }
 
@@ -123,7 +116,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _invoiceNumber = value;
-                OnPropertyChanged("InvoiceNumber");
+                OnPropertyChanged();
             }
         }
 
@@ -134,7 +127,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _invoiceYear = value;
-                OnPropertyChanged("InvoiceYear");
+                OnPropertyChanged();
             }
         }
 
@@ -145,7 +138,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _selectedMeasure = value;
-                OnPropertyChanged("SelectedMeasure");
+                OnPropertyChanged();
             }
         }
 
@@ -159,7 +152,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _measures = value;
-                OnPropertyChanged("Measures");
+                OnPropertyChanged();
             }
         }
 
@@ -170,7 +163,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _materialPriceMessage = value;
-                OnPropertyChanged("MaterialPriceMessage");
+                OnPropertyChanged();
             }
         }
 
@@ -184,7 +177,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _materialPrice = value;
-                OnPropertyChanged("MaterialPrice");
+                OnPropertyChanged();
             }
         }
 
@@ -198,7 +191,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _inCashFlow = value;
-                OnPropertyChanged("InCashFlow");
+                OnPropertyChanged();
             }
         }
 
@@ -212,53 +205,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _invoiceDate = value;
-                OnPropertyChanged("InvoiceDate");
-            }
-        }
-        
-        #region SELFINVOICES GRID PROPERTIES
-
-        private List<SelfInvoicesMaster> _completeList;
-
-        private List<SelfInvoicesMaster> _selfInvoices;
-        public List<SelfInvoicesMaster> SelfInvoices
-        {
-            get
-            {
-                return _selfInvoices;
-            }
-            set
-            {
-                _selfInvoices = value;
-                OnPropertyChanged("SelfInvoices", false);
-            }
-        }
-
-        private int _pageIndex;
-        public int PageIndex
-        {
-            get
-            {
-                return _pageIndex;
-            }
-            set
-            {
-                _pageIndex = value;
-                OnPropertyChanged("PageIndex", false);
-            }
-        }
-
-        private int _numberOfPages;
-        public int NumberOfPages
-        {
-            get
-            {
-                return _numberOfPages;
-            }
-            set
-            {
-                _numberOfPages = value;
-                OnPropertyChanged("NumberOfPages", false);
+                OnPropertyChanged();
             }
         }
 
@@ -276,7 +223,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingId = value;
-                OnPropertyChanged("ExistingId", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -287,7 +234,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingSelectedMaterialIndex = value;
-                OnPropertyChanged("ExistingSelectedMaterialIndex", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -301,7 +248,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingMaterials = value;
-                OnPropertyChanged("ExistingMaterials", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -315,7 +262,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingQuantity = value;
-                OnPropertyChanged("ExistingQuantity", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -329,7 +276,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingVatExempt = value;
-                OnPropertyChanged("ExistingVatExempt", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -340,7 +287,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingInvoiceYear = value;
-                OnPropertyChanged("ExistingInvoiceYear", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -351,7 +298,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingSelectedMeasureIndex = value;
-                OnPropertyChanged("ExistingSelectedMeasureIndex", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -365,7 +312,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingMeasures = value;
-                OnPropertyChanged("ExistingMeasures", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -379,7 +326,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingInvoiceDate = value;
-                OnPropertyChanged("ExistingInvoiceDate", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -390,7 +337,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _updatePanelVisibility = value;
-                OnPropertyChanged("UpdatePanelVisibility", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -398,7 +345,11 @@ namespace Conto.Wpf.ViewModels
 
         #region COMMANDS
 
-        public ICommand AddSelfInvoice { get; set; }
+        private ICommand _addSelfInvoice;
+        public ICommand AddSelfInvoice
+        {
+            get { return _addSelfInvoice ?? (_addSelfInvoice = new RelayCommand(AddSelfInvoice_Executed)); }
+        }
         public void AddSelfInvoice_Executed(object sender)
         {
             if (AppProperties.FormHaveModifications)
@@ -431,14 +382,14 @@ namespace Conto.Wpf.ViewModels
                 maxInvoiceValue = maxInvoiceValue.HasValue ? maxInvoiceValue.Value : 990;
                 var measure = _contoData.MeasureGet(SelectedMaterial.MeasureId);
 
-                decimal invoiceCost = (Quantity.Value*SelectedMaterial.Price.Value)/measure.Grams*SelectedMeasure.Grams;
+                decimal invoiceCost = (Quantity.Value * SelectedMaterial.Price.Value) / measure.Grams * SelectedMeasure.Grams;
                 //decimal quantityAtMaxInvoiceValue = (measure.Grams / SelectedMeasure.Grams);
-                decimal quantityAtMaxInvoiceValue = maxInvoiceValue.Value*(Quantity.Value*SelectedMeasure.Grams)/
-                                                    invoiceCost/
+                decimal quantityAtMaxInvoiceValue = maxInvoiceValue.Value * (Quantity.Value * SelectedMeasure.Grams) /
+                                                    invoiceCost /
                                                     SelectedMeasure.Grams;
 
                 var invoices = (int)Math.Truncate(invoiceCost / maxInvoiceValue.Value) + (invoiceCost % maxInvoiceValue.Value == 0 ? 0 : 1);
-                
+
                 var quantityTot = Quantity.Value;
 
                 for (int i = 0; i < invoices; i++)
@@ -467,9 +418,7 @@ namespace Conto.Wpf.ViewModels
                 SelectedMeasure = null;
                 Quantity = null;
 
-                _completeList = new List<SelfInvoicesMaster>(_contoData.SelfInvoicesMasterGet());
-                NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInSelfInvoicesGrid);
-                SetSelfInvoicesList();
+                UpdateList();
 
                 AppProperties.FormHaveModifications = false;
             }
@@ -479,13 +428,15 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        public ICommand AddToCashFlowCommand { get; set; }
+        private ICommand _addToCashFlowCommand;
+        public ICommand AddToCashFlowCommand
+        {
+            get{ return _addToCashFlowCommand ?? (_addToCashFlowCommand = new RelayCommand(AddToCashFlowCommand_Executed)); }
+        }
         public void AddToCashFlowCommand_Executed(object sender)
         {
             _contoData.SelfInvoiceAddToCashFlow((SelfInvoicesMaster)sender);
-            _completeList = new List<SelfInvoicesMaster>(_contoData.SelfInvoicesMasterGet());
-            NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInSelfInvoicesGrid);
-            SetSelfInvoicesList();
+            UpdateList();
             AppProperties.FormHaveModifications = false;
         }
 
@@ -495,9 +446,7 @@ namespace Conto.Wpf.ViewModels
 
             if (_contoData.SelfInvoiceDelete((SelfInvoicesMaster)sender))
             {
-                _completeList = new List<SelfInvoicesMaster>(_contoData.SelfInvoicesMasterGet());
-                NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInSelfInvoicesGrid);
-                SetSelfInvoicesList();
+                UpdateList();
                 AppProperties.FormHaveModifications = false;
             }
             else
@@ -541,66 +490,15 @@ namespace Conto.Wpf.ViewModels
             //    VatCode = ExistingVatCode
             //});
 
-            _completeList = new List<SelfInvoicesMaster>(_contoData.SelfInvoicesMasterGet());
-            SetSelfInvoicesList();
+            UpdateList();
 
             UpdatePanelVisibility = Visibility.Collapsed;
         }
 
-        #region PAGING COMMANDS
-
-        private ICommand _firstPageCommand;
-        public ICommand FirstPage
-        {
-            get { return _firstPageCommand ?? (_firstPageCommand = new RelayCommand(First_Page)); }
-        }
-
-        public void First_Page(object sender)
-        {
-            SetSelfInvoicesList();
-        }
-
-        private ICommand _previousPageCommand;
-        public ICommand PreviousPage
-        {
-            get { return _previousPageCommand ?? (_previousPageCommand = new RelayCommand(Previous_Page)); }
-        }
-
-        public void Previous_Page(object sender)
-        {
-            if (PageIndex > 1)
-                SetSelfInvoicesList(PageIndex - 2);
-        }
-
-        private ICommand _nextPageCommand;
-        public ICommand NextPage
-        {
-            get { return _nextPageCommand ?? (_nextPageCommand = new RelayCommand(Next_Page)); }
-        }
-
-        public void Next_Page(object sender)
-        {
-            if (PageIndex < NumberOfPages)
-                SetSelfInvoicesList(PageIndex);
-        }
-
-        private ICommand _lastPageCommand;
-        public ICommand LastPage
-        {
-            get { return _lastPageCommand ?? (_lastPageCommand = new RelayCommand(Last_Page)); }
-        }
-
-        public void Last_Page(object sender)
-        {
-            SetSelfInvoicesList(NumberOfPages - 1);
-        }
-
-        #endregion
-
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName, bool formHaveModifications = true)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = "", bool formHaveModifications = true)
         {
             if (PropertyChanged != null)
             {
