@@ -90,6 +90,7 @@
     </Compile>
     <Compile Include="ViewModels\CashFlowViewModel.cs" />
     <Compile Include="ViewModels\ClientsViewModel.cs" />
+    <Compile Include="ViewModels\InvoiceViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MaterialsViewModel.cs" />
     <Compile Include="ViewModels\SelfInvoiceViewModel.cs" />
