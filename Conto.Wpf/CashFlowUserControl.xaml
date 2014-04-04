@@ -15,102 +15,133 @@
         <EventTrigger RoutedEvent="UserControl.Loaded">
             <BeginStoryboard>
                 <Storyboard>
-                    <!--<DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />-->
-                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="900" Duration="0:0:0.3" />
+                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="685" Duration="0:0:0.3" />
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
     </UserControl.Triggers>
+    <UserControl.DataContext>
+        <viewModels:CashFlowViewModel />
+    </UserControl.DataContext>
     <Grid>
-        <Grid.DataContext>
-            <viewModels:CashFlowViewModel />
-        </Grid.DataContext>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Label Content="Prelievo per cassa" Grid.Row="0" Grid.Column="0" />
-        <TextBox Text="{Binding Deposit}" Name="WithdrawTextBox" Grid.Row="0" Grid.Column="1" Height="20" Margin="10,4,0,3"/>
-        <Label Content="Data prelievo" Grid.Row="0" Grid.Column="2" />
-        <DatePicker SelectedDate="{Binding DepositDate}" Grid.Row="0" Grid.Column="3" Height="25" Margin="10,0,0,0"/>
-        <Button Command="{Binding DepositCommand}"  
-                Style="{StaticResource ActionButtonStyle}"  Height="30" Width="80" Content="Aggiungi" Grid.Row="0" Grid.Column="4" Margin="10,0" />
 
-        <Label Content="Spesa su cassa" Grid.Row="1" Grid.Column="0" />
-        <TextBox Text="{Binding Cost}" Grid.Row="1" Grid.Column="1" Height="20" Margin="10,4,0,3" />
-        <Label Content="Data spesa" Grid.Row="1" Grid.Column="2" />
-        <DatePicker SelectedDate="{Binding CostDate}" Grid.Row="1" Grid.Column="3" Height="25" Margin="10,0,0,0" />
-        <Label Content="Giustificativo" Grid.Row="1" Grid.Column="4" />
-        <TextBox Text="{Binding CostJustification}" Grid.Row="1" Grid.Column="5" Height="20" Margin="10,4,0,3" />
-        <Button Command="{Binding CostCommand}"
-                Style="{StaticResource ActionButtonStyle}"  Height="30" Width="80" Content="Aggiungi" Grid.Row="1" Grid.Column="6" Margin="10,0" />
+        <Grid Grid.Row="0" ZIndex="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
+            <Label Grid.Row="0" Grid.Column="0" Content="Prelievo" Style="{StaticResource SectionTitleLabelStyle}" />
 
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Label Content="Importo"/>
+                <TextBox Text="{Binding Deposit}" Style="{StaticResource SmallSizeTextStyle}" />
+                <Label Content="Data prelievo"/>
+                <DatePicker SelectedDate="{Binding DepositDate}"/>
+                <Button Command="{Binding DepositCommand}" Style="{StaticResource ActionButtonStyle}"  Height="30" Width="80" 
+                    Content="Aggiungi" Margin="10,0" />
+            </StackPanel>
+            
+            <Label Grid.Row="2" Grid.Column="0" Content="Spesa" Style="{StaticResource SectionTitleLabelStyle}" />
+            
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                <Label Content="Importo"/>
+                <TextBox Text="{Binding Cost}" Style="{StaticResource SmallSizeTextStyle}"  />
+                <Label Content="Data spesa"/>
+                <DatePicker SelectedDate="{Binding CostDate}"/>
+                <Label Content="Giustificativo"/>
+                <TextBox Text="{Binding CostJustification}" Style="{StaticResource MidSizeTextStyle}" />
+                <Button Command="{Binding CostCommand}"
+                        Style="{StaticResource ActionButtonStyle}"  Height="30" Width="80" Content="Aggiungi" Margin="10,0" />
+            </StackPanel>
+        </Grid>
 
-        <Label Content="Anno" Grid.Row="3" Grid.Column="0" />
-        <TextBox Text="{Binding SelectedYear}" Grid.Row="3" Grid.Column="1" />
-        <Label Content="Mese" Grid.Row="3" Grid.Column="2" />
-        <TextBox Text="{Binding SelectedMonth}" Grid.Row="3" Grid.Column="3" />
+        <Grid Grid.Row="1" ZIndex="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <Button Command="{Binding FilterGridCommand}"
-                Style="{StaticResource ActionButtonStyle}" Height="30" Width="80" Content="Cerca" Grid.Row="3" Grid.Column="4" />
+            <Label Grid.Row="0" Content="Operazioni" Style="{StaticResource SectionTitleLabelStyle}" />
 
-        <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="6" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False"
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Label Content="Anno"/>
+                <TextBox Text="{Binding SelectedYear}"/>
+                <Label Content="Mese"/>
+                <ComboBox ItemsSource="{Binding Months}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SelectedMonth}"/>
+
+                <Button Command="{Binding FilterGridCommand}"
+                        Style="{StaticResource ActionButtonStyle}" Height="30" Width="80" Content="Cerca"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2">
+
+                <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False"
                   ItemsSource="{Binding CashFlows}" x:Name="CashFlowDataGrid"
                   RowStyle="{StaticResource DataGridRowStyle}">
-            <DataGrid.Columns>
+                    <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden"/>
-                <DataGridTextColumn Header="Descrizione" Width="250" Binding="{Binding Description}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
-                <DataGridTextColumn Header="Ammontare" Width="80" Binding="{Binding Cash}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
-                <DataGridTextColumn Header="Data" Width="65" Binding="{Binding FlowDate}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden"/>
+                        <DataGridTextColumn Header="Descrizione" Width="250" Binding="{Binding Description}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+                        <DataGridTextColumn Header="Ammontare" Width="80" Binding="{Binding Cash}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+                        <DataGridTextColumn Header="Data" Width="70" Binding="{Binding FlowDate}" HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
 
-                <DataGridTemplateColumn Header="Esporta" Width="150" HeaderStyle="{StaticResource DataGridHeaderStyle}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Pdf" Style="{StaticResource ActionButtonStyle}"
-                                        Height="30" Width="40"
-                                        Command="{Binding DataContext.ExportPdf, ElementName=CashFlowDataGrid}" CommandParameter="{Binding SelectedItem, ElementName=CashFlowDataGrid}"
-                                        Visibility="{Binding ., Converter={StaticResource CashFlowToVisibilityConverter}, ConverterParameter=CashFlowType}" />
-                                <Button Content="Aggiungi" Style="{StaticResource ActionButtonStyle}"
-                                        Height="30" Width="60"
-                                        Command="{Binding DataContext.AddSelfInvoiceToPrintCommand, ElementName=CashFlowDataGrid}" CommandParameter="{Binding SelectedItem, ElementName=CashFlowDataGrid}"
-                                        Visibility="{Binding ., Converter={StaticResource CashFlowToVisibilityConverter}, ConverterParameter=AddToPdf}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                        <DataGridTemplateColumn Header="Esporta" HeaderStyle="{StaticResource DataGridHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="5,3,5,0">
 
-        <StackPanel Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="4" >
-            <Label Content="{Binding SelfInvoicePrint}" />
-            <ListBox Margin="17,8,15,26" ItemsSource="{Binding SelfInvoicePrintList}" 
-                     ItemTemplate="{StaticResource PrintListBoxTemplate}"
-                     Style="{StaticResource ListStyle}"/>
-            <Button Content="Stampa" Height="30" Width="60" Style="{StaticResource ActionButtonStyle}"
-                    Visibility="{Binding SelfInvoicePrintButtonVisibility}" />
-        </StackPanel>
+                                        <TextBlock Text="3" FontFamily="Wingdings" FontSize="16" ToolTip="Vedi Pdf" Visibility="{Binding ., Converter={StaticResource CashFlowToVisibilityConverter}, ConverterParameter=CashFlowType}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.ExportPdf, ElementName=CashFlowDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Teal" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="  " />
+                                        <TextBlock Text="4" FontFamily="Wingdings" FontSize="16" ToolTip="Aggiungi a Pdf" Visibility="{Binding ., Converter={StaticResource CashFlowToVisibilityConverter}, ConverterParameter=AddToPdf}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.AddSelfInvoiceToPrintCommand, ElementName=CashFlowDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Setter Property="FontSize" Value="16" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Teal" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                    </DataGrid.Columns>
+                </DataGrid>
+                <wpf:PagingUserControl 
+                    FirstPageCommand="{Binding FirstPage}" PreviousPageCommand="{Binding PreviousPage}" NextPageCommand="{Binding NextPage}" LastPageCommand="{Binding LastPage}"
+                    PageIndex="{Binding PageIndex}" NumberOfPages="{Binding NumberOfPages}"/>
+            </StackPanel>
+        </Grid>
 
-        <ListBox Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="4" ItemsSource="{Binding CashFlows}" 
-                     ItemTemplate="{StaticResource CashFlowListBoxTemplate}" />
-        
     </Grid>
 </UserControl>
