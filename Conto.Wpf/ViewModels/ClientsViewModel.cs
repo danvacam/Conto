@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using Conto.Data;
@@ -46,7 +47,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _name = value;
-                OnPropertyChanged("Name");
+                OnPropertyChanged();
             }
         }
 
@@ -57,7 +58,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _address = value;
-                OnPropertyChanged("Address");
+                OnPropertyChanged();
             }
         }
 
@@ -68,7 +69,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _city = value;
-                OnPropertyChanged("City");
+                OnPropertyChanged();
             }
         }
 
@@ -79,7 +80,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _postalCode = value;
-                OnPropertyChanged("PostalCode");
+                OnPropertyChanged();
             }
         }
 
@@ -90,7 +91,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _fiscalCode = value;
-                OnPropertyChanged("FiscalCode");
+                OnPropertyChanged();
             }
         }
 
@@ -101,7 +102,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _vatCode = value;
-                OnPropertyChanged("VatCode");
+                OnPropertyChanged();
             }
         }
 
@@ -121,7 +122,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _clients = value;
-                OnPropertyChanged("Clients");
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -135,7 +136,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _pageIndex = value;
-                OnPropertyChanged("PageIndex", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -149,7 +150,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _numberOfPages = value;
-                OnPropertyChanged("NumberOfPages", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -167,7 +168,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingId = value;
-                OnPropertyChanged("ExistingId", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -181,7 +182,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingName = value;
-                OnPropertyChanged("ExistingName", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -195,7 +196,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingAddress = value;
-                OnPropertyChanged("ExistingAddress", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -209,7 +210,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingCity = value;
-                OnPropertyChanged("ExistingCity", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -223,7 +224,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingPostalCode = value;
-                OnPropertyChanged("ExistingPostalCode", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -237,7 +238,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingFiscalCode = value;
-                OnPropertyChanged("ExistingFiscalCode", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -251,7 +252,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingVatCode = value;
-                OnPropertyChanged("ExistingVatCode", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -263,7 +264,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _updatePanelVisibility = value;
-                OnPropertyChanged("UpdatePanelVisibility", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -412,7 +413,7 @@ namespace Conto.Wpf.ViewModels
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName, bool formHaveModifications = true)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = "", bool formHaveModifications = true)
         {
             if (PropertyChanged != null)
             {
