@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Conto.Data
 {
@@ -15,6 +12,8 @@ namespace Conto.Data
         public int InvoiceYear { get; set; }
         public int MeasureId { get; set; }
         public IEnumerable<InvoiceContent> InvoiceContentRows { get; set; }
+        public bool InCashFlow { get; set; }
+        public long CashFlowId { get; set; }
     }
 
     public class InvoiceContent
