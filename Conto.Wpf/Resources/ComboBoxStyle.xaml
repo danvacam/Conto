@@ -60,7 +60,7 @@
 
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
 
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="Lavender" />
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="White" />
 
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
 
