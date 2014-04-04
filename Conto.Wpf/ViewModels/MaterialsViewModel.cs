@@ -1,40 +1,28 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using Conto.Data;
 using Conto.Wpf.Resources;
+using Conto.Wpf.GridPaging;
 
 namespace Conto.Wpf.ViewModels
 {
-    public class MaterialsViewModel : INotifyPropertyChanged
+    public class MaterialsViewModel : GridPaging<Material>, INotifyPropertyChanged
     {
         private const int NumberOfRowsInMaterialsGrid = 10;
         private readonly ContoData _contoData;
         public MaterialsViewModel()
+            : base(NumberOfRowsInMaterialsGrid)
         {
             _contoData = new ContoData();
             Measures = new List<Measures>(_contoData.MeasuresGet());
             ExistingMeasures = new List<Measures>(_contoData.MeasuresGet());
 
-            _completeList = new List<Material>(_contoData.MaterialsGet());
-            NumberOfPages =  (int) Math.Ceiling((double) _completeList.Count / NumberOfRowsInMaterialsGrid);
-            SetMaterialsList();
-
-            AddMaterialCommand = new RelayCommand(AddMaterial_Executed);
-            RemoveMaterialCommand = new RelayCommand(RemoveMaterialCommand_Executed);
-            ModifyMaterialCommand = new RelayCommand(ModifyMaterialCommand_Executed);
-            UpdateMaterialCommand = new RelayCommand(UpdateMaterialCommand_Executed);
+            Initialize(OnPropertyChanged, _contoData.MaterialsGet);
 
             UpdatePanelVisibility = Visibility.Collapsed;
-        }
-
-        private void SetMaterialsList(int pageIndex = 0)
-        {
-            PageIndex = pageIndex + 1;
-            Materials = _completeList.Skip(pageIndex * NumberOfRowsInMaterialsGrid).Take(NumberOfRowsInMaterialsGrid).ToList();
         }
 
         #region NEW MATERIAL FORM PROPERTIES
@@ -49,7 +37,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _description = value;
-                OnPropertyChanged("Description");
+                OnPropertyChanged();
             }
         }
 
@@ -63,7 +51,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _price = value;
-                OnPropertyChanged("Price");
+                OnPropertyChanged();
             }
         }
 
@@ -74,7 +62,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _selectedMeasure = value;
-                OnPropertyChanged("SelectedMeasure");
+                OnPropertyChanged();
             }
         }
 
@@ -88,55 +76,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _measures = value;
-                OnPropertyChanged("Measures");
-            }
-        }
-
-        #endregion
-
-        #region MATERIALS GRID PROPERTIES
-
-        private List<Material> _completeList;
-
-        private List<Material> _materials;
-        public List<Material> Materials
-        {
-            get
-            {
-                return _materials;
-            }
-            set
-            {
-                _materials = value;
-                OnPropertyChanged("Materials", false);
-            }
-        }
-
-        private int _pageIndex;
-        public int PageIndex
-        {
-            get
-            {
-                return _pageIndex;
-            }
-            set
-            {
-                _pageIndex = value;
-                OnPropertyChanged("PageIndex", false);
-            }
-        }
-
-        private int _numberOfPages;
-        public int NumberOfPages
-        {
-            get
-            {
-                return _numberOfPages;
-            }
-            set
-            {
-                _numberOfPages = value;
-                OnPropertyChanged("NumberOfPages", false);
+                OnPropertyChanged();
             }
         }
 
@@ -154,7 +94,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingId = value;
-                OnPropertyChanged("ExistingId", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -168,7 +108,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingDescription = value;
-                OnPropertyChanged("ExistingDescription", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -182,7 +122,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingPrice = value;
-                OnPropertyChanged("ExistingPrice", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -193,7 +133,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingSelectedMeasure = value;
-                OnPropertyChanged("ExistingSelectedMeasure", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -207,7 +147,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _existingMeasures = value;
-                OnPropertyChanged("ExistingMeasures", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -218,7 +158,7 @@ namespace Conto.Wpf.ViewModels
             set
             {
                 _updatePanelVisibility = value;
-                OnPropertyChanged("UpdatePanelVisibility", false);
+                OnPropertyChanged(formHaveModifications: false);
             }
         }
 
@@ -226,7 +166,11 @@ namespace Conto.Wpf.ViewModels
 
         #region COMMANDS
 
-        public ICommand AddMaterialCommand { get; set; }
+        private ICommand _addMaterialCommand;
+        public ICommand AddMaterialCommand
+        {
+            get { return _addMaterialCommand ?? (_addMaterialCommand = new RelayCommand(AddMaterial_Executed)); }
+        }
         public void AddMaterial_Executed(object sender)
         {
             if (AppProperties.FormHaveModifications)
@@ -253,9 +197,7 @@ namespace Conto.Wpf.ViewModels
                     MeasureId = SelectedMeasure.Value
                 });
 
-                _completeList = new List<Material>(_contoData.MaterialsGet());
-                NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInMaterialsGrid);
-                SetMaterialsList();
+                UpdateList();
                 
                 Description = string.Empty;
                 Price = null;
@@ -264,15 +206,21 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        public ICommand RemoveMaterialCommand { get; set; }
+        private ICommand _removeMaterialCommand;
+        public ICommand RemoveMaterialCommand
+        {
+            get
+            {
+                return _removeMaterialCommand ??
+                       (_removeMaterialCommand = new RelayCommand(RemoveMaterialCommand_Executed));
+            }
+        }
         public void RemoveMaterialCommand_Executed(object sender)
         {
 
             if (_contoData.MaterialDelete((Material) sender))
             {
-                _completeList = new List<Material>(_contoData.MaterialsGet());
-                NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInMaterialsGrid);
-                SetMaterialsList();
+                UpdateList();
                 AppProperties.FormHaveModifications = false;
             }
             else
@@ -281,7 +229,15 @@ namespace Conto.Wpf.ViewModels
             }
         }
 
-        public ICommand ModifyMaterialCommand { get; set; }
+        private ICommand _modifyMaterialCommand;
+        public ICommand ModifyMaterialCommand
+        {
+            get
+            {
+                return _modifyMaterialCommand ??
+                       (_modifyMaterialCommand = new RelayCommand(ModifyMaterialCommand_Executed));
+            }
+        }
         public void ModifyMaterialCommand_Executed(object sender)
         {
             var material = (Material) sender;
@@ -293,7 +249,15 @@ namespace Conto.Wpf.ViewModels
             UpdatePanelVisibility = Visibility.Visible;
         }
 
-        public ICommand UpdateMaterialCommand { get; set; }
+        private ICommand _updateMaterialCommand;
+        public ICommand UpdateMaterialCommand
+        {
+            get
+            {
+                return _updateMaterialCommand ??
+                       (_updateMaterialCommand = new RelayCommand(UpdateMaterialCommand_Executed));
+            }
+        }
         public void UpdateMaterialCommand_Executed(object sender)
         {
             _contoData.MaterialUpdate(new Material
@@ -304,66 +268,15 @@ namespace Conto.Wpf.ViewModels
                 Price = ExistingPrice
             });
 
-            _completeList = new List<Material>(_contoData.MaterialsGet());
-            SetMaterialsList();
+            UpdateList();
 
             UpdatePanelVisibility = Visibility.Collapsed;
         }
 
-        #region PAGING COMMANDS
-
-        private ICommand _firstPageCommand;
-        public ICommand FirstPage
-        {
-            get { return _firstPageCommand ?? (_firstPageCommand = new RelayCommand(First_Page)); }
-        }
-
-        public void First_Page(object sender)
-        {
-            SetMaterialsList();
-        }
-
-        private ICommand _previousPageCommand;
-        public ICommand PreviousPage
-        {
-            get { return _previousPageCommand ?? (_previousPageCommand = new RelayCommand(Previous_Page)); }
-        }
-
-        public void Previous_Page(object sender)
-        {
-            if (PageIndex > 1)
-                SetMaterialsList(PageIndex - 2);
-        }
-
-        private ICommand _nextPageCommand;
-        public ICommand NextPage
-        {
-            get { return _nextPageCommand ?? (_nextPageCommand = new RelayCommand(Next_Page)); }
-        }
-
-        public void Next_Page(object sender)
-        {
-            if(PageIndex < NumberOfPages)
-                SetMaterialsList(PageIndex);
-        }
-
-        private ICommand _lastPageCommand;
-        public ICommand LastPage
-        {
-            get { return _lastPageCommand ?? (_lastPageCommand = new RelayCommand(Last_Page)); }
-        }
-
-        public void Last_Page(object sender)
-        {
-            SetMaterialsList(NumberOfPages - 1);
-        }
-
-        #endregion
-
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName, bool formHaveModifications = true)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = "", bool formHaveModifications = true)
         {
             if (PropertyChanged != null)
             {
@@ -371,5 +284,7 @@ namespace Conto.Wpf.ViewModels
                 AppProperties.FormHaveModifications = formHaveModifications;
             }
         }
+
+
     }
 }
