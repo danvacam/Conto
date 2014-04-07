@@ -2,10 +2,271 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
+             xmlns:wpf="clr-namespace:Conto.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="UserControl.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="685" Duration="0:0:0.3" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+    <UserControl.DataContext>
+        <viewModels:InvoiceViewModel/>
+    </UserControl.DataContext>
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" ZIndex="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0"
+                Content="Nuova Fattura" Style="{StaticResource SectionTitleLabelStyle}" />
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Label Content="Cliente" />
+                <ComboBox Width="250"
+                    ItemsSource="{Binding Clients}" SelectedValue="{Binding SelectedClient}" DisplayMemberPath="Name" SelectedValuePath="Id"  />
+
+                <Label Content="Data" />
+                <DatePicker SelectedDate="{Binding InvoiceDate}" />
+
+                <Label Content="Unita di misura"/>
+                <ComboBox Width="70"
+                          ItemsSource="{Binding Measures}" SelectedValue="{Binding SelectedMeasure}" DisplayMemberPath="Description" SelectedValuePath="Id" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                <!-- NEW INVOICE ROWS -->
+                <StackPanel>
+                    <StackPanel>
+                        <Label>
+                            <Label.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#x000CC;" FontFamily="Wingdings 2" FontSize="16" Margin="0,4,0,0"/>
+                                    <TextBlock Text=" Aggiungi gruppo" FontSize="14"/>
+                                </StackPanel>
+                            </Label.Content>
+                            <Label.InputBindings>
+                                <MouseBinding Command="{Binding AddInvoiceRowCommand}" MouseAction="LeftClick" />
+                            </Label.InputBindings>
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="Cursor" Value="Hand" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="Green" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                    </StackPanel>
+                </StackPanel>
+                
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="300">
+                    <ItemsControl ItemsSource="{Binding InvoiceRows}" Name="InvoiceRowsItemsControl">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Margin="5" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="1" BorderBrush="Coral" CornerRadius="5" Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Descrizione" />
+                                            <TextBox Text="{Binding Path=Description}" Width="240"/>
+
+                                            <Label>
+                                                <Label.Content>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="&#x00033;" FontFamily="Wingdings 2" FontSize="16" Margin="0,4,0,0"/>
+                                                        <TextBlock Text=" Rimuovi gruppo" FontSize="14"/>
+                                                    </StackPanel>
+                                                </Label.Content>
+                                                <Label.InputBindings>
+                                                    <MouseBinding Command="{Binding DataContext.RemoveInvoiceRowCommand, ElementName=InvoiceRowsItemsControl}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                                </Label.InputBindings>
+                                                <Label.Style>
+                                                    <Style TargetType="Label">
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Foreground" Value="Green" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Label.Style>
+                                            </Label>
+
+                                            <Label>
+                                                <Label.Content>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="&#x000CC;" FontFamily="Wingdings 2" FontSize="16" Margin="0,4,0,0"/>
+                                                        <TextBlock Text=" Aggiungi materiale" FontSize="14"/>
+                                                    </StackPanel>
+                                                </Label.Content>
+                                                <Label.InputBindings>
+                                                    <MouseBinding Command="{Binding DataContext.AddInvoiceContentRowCommand, ElementName=InvoiceRowsItemsControl}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                                </Label.InputBindings>
+                                                <Label.Style>
+                                                    <Style TargetType="Label">
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Foreground" Value="Green" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Label.Style>
+                                            </Label>
+                                        </StackPanel>
+                                        <ItemsControl ItemsSource="{Binding Path=Rows}" Name="InvoiceContentRowsItemsControl">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Margin="5" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderThickness="1" BorderBrush="Coral" CornerRadius="5" Margin="0,0,0,4" Height="35">
+                                                        <StackPanel Orientation="Horizontal" Margin="2.5,0,0,0">
+                                                            <Label Content="Materiale" />
+                                                            <TextBox Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+
+                                                            <Label Content="Quantita" />
+                                                            <TextBox Text="{Binding Path=MaterialQuantity, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+
+                                                            <Label Content="Prezzo" />
+                                                            <TextBox Text="{Binding Path=MaterialPrice, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+
+                                                            <Label>
+                                                                <Label.Content>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Text="&#x00033;" FontFamily="Wingdings 2" FontSize="16" Margin="0,4,0,0"/>
+                                                                        <TextBlock Text=" Rimuovi materiale" FontSize="14"/>
+                                                                    </StackPanel>
+                                                                </Label.Content>
+                                                                <Label.InputBindings>
+                                                                    <MouseBinding Command="{Binding DataContext.RemoveInvoiceContentRowCommand, ElementName=InvoiceRowsItemsControl}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                                                </Label.InputBindings>
+                                                                <Label.Style>
+                                                                    <Style TargetType="Label">
+                                                                        <Setter Property="Cursor" Value="Hand" />
+                                                                        <Style.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter Property="Foreground" Value="Green" />
+                                                                            </Trigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Label.Style>
+                                                            </Label>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </StackPanel>
+
+            <StackPanel Grid.Row="5">
+                <Button Content="Aggiungi" Command="{Binding AddInvoiceCommand}"  
+                        Style="{StaticResource ActionButtonStyle}" Height="30" Width="80" Margin="10,10,0,10"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" ZIndex="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0"
+                Content="Lista Fatture" Style="{StaticResource SectionTitleLabelStyle}" />
+
+            <StackPanel Grid.Row="1" Margin="5">
+                <DataGrid CanUserAddRows="False" AutoGenerateColumns="False" 
+                          CanUserSortColumns="False" CanUserResizeColumns="False"
+                          ItemsSource="{Binding GridSource}"
+                          AlternationCount="2"
+                          Name="InvoicesDataGrid"
+                          RowStyle="{StaticResource DataGridRowStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden" />
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Data" Binding="{Binding InvoiceDate}" />
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Cliente" Binding="{Binding ClientName}" />
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Importo" Binding="{Binding Amount}" />
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="5,3,5,0">
+                                        <TextBlock Text="!" FontFamily="Wingdings" FontSize="16">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.ModifyInvoiceCommand, ElementName=InvoicesDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Orange" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="  " />
+                                        <TextBlock Text="&#x000FB;" FontFamily="Wingdings" FontSize="16">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.RemoveInvoiceCommand, ElementName=InvoicesDataGrid}" CommandParameter="{Binding}" MouseAction="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                    <Setter Property="FontSize" Value="16" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="Red" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <wpf:PagingUserControl 
+                    FirstPageCommand="{Binding FirstPage}" PreviousPageCommand="{Binding PreviousPage}" NextPageCommand="{Binding NextPage}" LastPageCommand="{Binding LastPage}"
+                    PageIndex="{Binding PageIndex}" NumberOfPages="{Binding NumberOfPages}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.RowSpan="2" ZIndex="1"></Grid>
     </Grid>
 </UserControl>
