@@ -168,6 +168,31 @@ namespace Conto.Data
 
         #endregion
 
+        #region INVOICES
+
+        public List<InvoiceMaster> InvoicesMasterGet()
+        {
+            return new List<InvoiceMaster>
+            {
+                new InvoiceMaster
+                {
+                    Id = 1,
+                    ClientName = "Rottami metalli Italia S.p.A",
+                    Amount = 4500.0M,
+                    InvoiceDate = DateTime.Now
+                },
+                new InvoiceMaster
+                {
+                    Id = 2,
+                    ClientName = "Amico Joe Rottami",
+                    Amount = 3780.0M,
+                    InvoiceDate = DateTime.Now
+                }
+            };
+        }
+
+        #endregion
+
         #region SELFINVOICES
 
         public List<SelfInvoicesMaster> SelfInvoicesMasterGet()
@@ -535,5 +560,6 @@ namespace Conto.Data
         }
 
         #endregion
+
     }
 }
