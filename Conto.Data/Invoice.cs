@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace Conto.Data
 {
+    public class InvoiceMaster
+    {
+        public long Id { get; set; }
+        public DateTime InvoiceDate { get; set; }
+        public string ClientName { get; set; }
+        public decimal Amount { get; set; }
+    }
+
+
     public class Invoice
     {
         public long Id { get; set; }
@@ -25,8 +34,8 @@ namespace Conto.Data
     public class InvoiceMaterialRow
     {
         public string Description { get; set; }
-        public decimal MaterialQuantity { get; set; }
-        public decimal MaterialPrice { get; set; }
+        public decimal? MaterialQuantity { get; set; }
+        public decimal? MaterialPrice { get; set; }
         public decimal MaterialCost { get; set; }
     }
 }
