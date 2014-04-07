@@ -49,7 +49,7 @@ namespace Conto.Wpf.ViewModels
             ExportPdf = new RelayCommand(ExportPdf_Executed);
             AddSelfInvoiceToPrintCommand = new RelayCommand(AddSelfInvoiceToPrintCommand_Executed);
 
-            Months = new Dictionary<int, string>
+            GridFilterMonths = new Dictionary<int, string>
             {
                 {1,"Gennaio"},
                 {2,"Febbraio"},
@@ -65,9 +65,11 @@ namespace Conto.Wpf.ViewModels
                 {12,"Dicembre"},
             };
 
+            
+
             var lastDate = _contoData.CashFlowGetLastDateTime();
-            SelectedYear = lastDate.Year;
-            SelectedMonth = lastDate.Month;
+            GridFilterSelectedYear = lastDate.Year;
+            GridFilterSelectedMonth = lastDate.Month;
 
             _completeList = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(lastDate.Year, lastDate.Month)));
             NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInCashFlowsGrid);
@@ -163,36 +165,73 @@ namespace Conto.Wpf.ViewModels
 
         #region CASH FLOW GRID FILTERS
 
-        private int? _selectedMonth;
-        public int? SelectedMonth
+        private void GridFilterDaysSet()
         {
-            get { return _selectedMonth; }
-            set
+            GridFilterDays = new Dictionary<int, int>();
+
+            if (GridFilterSelectedYear.HasValue && GridFilterSelectedMonth.HasValue)
             {
-                _selectedMonth = value;
-                OnPropertyChanged("SelectedMonth");
+                var days = DateTime.DaysInMonth(GridFilterSelectedYear.Value, GridFilterSelectedMonth.Value);
+                for (var i = 1; i <= days; i++)
+                {
+                    GridFilterDays.Add(i, i);
+                }
             }
         }
 
-        private Dictionary<int, string> _months;
-        public Dictionary<int, string> Months
+        private int? _gridFilterSelectedDay;
+        public int? GridFilterSelectedDay
         {
-            get { return _months; }
+            get { return _gridFilterSelectedDay; }
             set
             {
-                _months = value;
-                OnPropertyChanged("Months");
+                _gridFilterSelectedDay = value;
+                OnPropertyChanged("GridFilterSelectedDay", false);
             }
         }
 
-        private int? _selectedYear;
-        public int? SelectedYear
+        private Dictionary<int, int> _gridFilterDays;
+        public Dictionary<int, int> GridFilterDays
         {
-            get { return _selectedYear; }
+            get { return _gridFilterDays; }
             set
             {
-                _selectedYear = value;
-                OnPropertyChanged("SelectedYear");
+                _gridFilterDays = value;
+                OnPropertyChanged("GridFilterDays", false);
+            }
+        }
+
+        private int? _gridFilterSelectedMonth;
+        public int? GridFilterSelectedMonth
+        {
+            get { return _gridFilterSelectedMonth; }
+            set
+            {
+                _gridFilterSelectedMonth = value;
+                GridFilterDaysSet();
+                OnPropertyChanged("GridFilterSelectedMonth", false);
+            }
+        }
+
+        private Dictionary<int, string> _gridFilterMonths;
+        public Dictionary<int, string> GridFilterMonths
+        {
+            get { return _gridFilterMonths; }
+            set
+            {
+                _gridFilterMonths = value;
+                OnPropertyChanged("GridFilterMonths", false);
+            }
+        }
+
+        private int? _gridFilterSelectedYear;
+        public int? GridFilterSelectedYear
+        {
+            get { return _gridFilterSelectedYear; }
+            set
+            {
+                _gridFilterSelectedYear = value;
+                OnPropertyChanged("GridFilterSelectedYear", false);
             }
         }
 
@@ -324,8 +363,8 @@ namespace Conto.Wpf.ViewModels
         public ICommand FilterGridCommand { get; set; }
         public void FilterGridCommand_Executed(object sender)
         {
-            if (SelectedYear.HasValue && SelectedMonth.HasValue)
-                CashFlows = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(SelectedYear.Value, SelectedMonth.Value)));
+            if (GridFilterSelectedYear.HasValue && GridFilterSelectedMonth.HasValue)
+                CashFlows = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(GridFilterSelectedYear.Value, GridFilterSelectedMonth.Value)));
             else
                 MessageBox.Show("Selezionare anno e mese");
         }
