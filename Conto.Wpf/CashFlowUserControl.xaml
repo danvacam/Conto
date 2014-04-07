@@ -73,11 +73,14 @@
 
             <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <Label Content="Anno"/>
-                <TextBox Text="{Binding SelectedYear}"/>
+                <TextBox Text="{Binding GridFilterSelectedYear}"/>
                 <Label Content="Mese"/>
-                <ComboBox ItemsSource="{Binding Months}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SelectedMonth}"/>
-
-                <Button Command="{Binding FilterGridCommand}"
+                <ComboBox Height="25"
+                          ItemsSource="{Binding GridFilterMonths}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding GridFilterSelectedMonth}"/>
+                <Label Content="Giorno"/>
+                <ComboBox Height="25"
+                          ItemsSource="{Binding GridFilterDays}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding GridFilterSelectedDay}"/>
+                <Button Command="{Binding FilterGridCommand}" Margin="10,10,0,10"
                         Style="{StaticResource ActionButtonStyle}" Height="30" Width="80" Content="Cerca"/>
             </StackPanel>
             
