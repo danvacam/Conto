@@ -87,8 +87,26 @@
             <StackPanel Grid.Row="2">
 
                 <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False"
-                  ItemsSource="{Binding CashFlows}" x:Name="CashFlowDataGrid"
+                  ItemsSource="{Binding GridSource}" x:Name="CashFlowDataGrid"
                   RowStyle="{StaticResource DataGridRowStyle}">
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="Nessun dato presente" Width="400" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+                    <DataGrid.Style>
+                        <Style TargetType="DataGrid">
+                            <Setter Property="RowDetailsVisibilityMode" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GridSourceHaveRecords}" Value="false">
+                                    <Setter Property="RowHeight" Value="0"/>
+                                    <Setter Property="RowDetailsVisibilityMode" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Style>
                     <DataGrid.Columns>
 
                         <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden"/>

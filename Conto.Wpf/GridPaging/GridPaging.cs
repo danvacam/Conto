@@ -21,11 +21,22 @@ namespace Conto.Wpf.GridPaging
         {
             PropertyChangeAction = propertyChangeAction;
             _gridDataSource = gridDataSource;
-
             UpdateList();
+            GridSourceHaveRecords = GridSource.Count > 0;
         }
 
         internal List<T> CompleteList;
+
+        private bool _gridSourceHaveRecords;
+        public bool GridSourceHaveRecords
+        {
+            get { return _gridSourceHaveRecords; }
+            set
+            {
+                _gridSourceHaveRecords = value;
+                PropertyChangeAction("GridSourceHaveRecords", false);
+            }
+        }
 
         private List<T> _gridSource;
         public List<T> GridSource
@@ -149,8 +160,8 @@ namespace Conto.Wpf.GridPaging
         {
             PropertyChangeAction = propertyChangeAction;
             _gridDataSource = gridDataSource;
-
             UpdateList(gridDataSourceInputParameter1, gridDataSourceInputParameter2);
+            GridSourceHaveRecords = GridSource.Count > 0;
         }
 
         public void UpdateList(TIn1 gridDataSourceInputParameter1, TIn2 gridDataSourceInputParameter2)

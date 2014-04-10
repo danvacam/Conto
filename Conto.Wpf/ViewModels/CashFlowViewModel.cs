@@ -67,8 +67,6 @@ namespace Conto.Wpf.ViewModels
                 {12,"Dicembre"},
             };
 
-            
-
             var lastDate = _contoData.CashFlowGetLastDateTime();
             GridFilterSelectedYear = lastDate.Year;
             GridFilterSelectedMonth = lastDate.Month;
@@ -79,7 +77,6 @@ namespace Conto.Wpf.ViewModels
             Initialize(OnPropertyChanged, _contoData.CashFlowGetYearMonth, lastDate.Year, lastDate.Month);
 
             SelfInvoicePrintButtonVisibility = Visibility.Collapsed;
-            
         }
         
         private List<CashFlowGridRow> CashFlowListToCashFlowGridRows(IEnumerable<CashFlow> cashFlowList)
@@ -87,6 +84,7 @@ namespace Conto.Wpf.ViewModels
             return cashFlowList.Select(cashFlow => new CashFlowGridRow(cashFlow)).ToList();
         }
 
+        #region NEW CASH FLOW PROPERTIES
 
         private decimal? _depostit;
         public decimal? Deposit
@@ -157,6 +155,8 @@ namespace Conto.Wpf.ViewModels
                 OnPropertyChanged("CostJustification");
             }
         }
+
+        #endregion
 
         #region CASH FLOW GRID FILTERS
 
