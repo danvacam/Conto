@@ -35,7 +35,7 @@ namespace Conto.Wpf.ViewModels
         public Visibility AddToPdfButtonVisibility;
     }
 
-    public class CashFlowViewModel : GridPaging<Material>, INotifyPropertyChanged
+    public class CashFlowViewModel : GridPaging<CashFlow, int, int>, INotifyPropertyChanged
     {
         private const int NumberOfRowsInCashFlowsGrid = 10;
         private readonly ContoData _contoData;
@@ -73,22 +73,15 @@ namespace Conto.Wpf.ViewModels
             GridFilterSelectedYear = lastDate.Year;
             GridFilterSelectedMonth = lastDate.Month;
 
-            _completeList = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(lastDate.Year, lastDate.Month)));
-            NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / NumberOfRowsInCashFlowsGrid);
-            SetCashFlowsList();
+            DepositDate = DateTime.Today;
+            CostDate = DateTime.Today;
 
-            DepositDate = DateTime.Now;
-            CostDate = DateTime.Now;
+            Initialize(OnPropertyChanged, _contoData.CashFlowGetYearMonth, lastDate.Year, lastDate.Month);
+
             SelfInvoicePrintButtonVisibility = Visibility.Collapsed;
             
         }
-
-        private void SetCashFlowsList(int pageIndex = 0)
-        {
-            PageIndex = pageIndex + 1;
-            CashFlows = _completeList.Skip(pageIndex * NumberOfRowsInCashFlowsGrid).Take(NumberOfRowsInCashFlowsGrid).ToList();
-        }
-
+        
         private List<CashFlowGridRow> CashFlowListToCashFlowGridRows(IEnumerable<CashFlow> cashFlowList)
         {
             return cashFlowList.Select(cashFlow => new CashFlowGridRow(cashFlow)).ToList();
@@ -300,54 +293,6 @@ namespace Conto.Wpf.ViewModels
 
         #endregion
 
-        #region CASH FLOW GRID PROPERTIES
-
-        private List<CashFlowGridRow> _completeList;
-
-        private List<CashFlowGridRow> _cashFlows;
-        public List<CashFlowGridRow> CashFlows
-        {
-            get
-            {
-                return _cashFlows;
-            }
-            set
-            {
-                _cashFlows = value;
-                OnPropertyChanged("CashFlows");
-            }
-        }
-
-        private int _pageIndex;
-        public int PageIndex
-        {
-            get
-            {
-                return _pageIndex;
-            }
-            set
-            {
-                _pageIndex = value;
-                OnPropertyChanged("PageIndex", false);
-            }
-        }
-
-        private int _numberOfPages;
-        public int NumberOfPages
-        {
-            get
-            {
-                return _numberOfPages;
-            }
-            set
-            {
-                _numberOfPages = value;
-                OnPropertyChanged("NumberOfPages", false);
-            }
-        }
-
-        #endregion
-
         #region Commands
 
         public ICommand DepositCommand { get; set; }
@@ -369,6 +314,9 @@ namespace Conto.Wpf.ViewModels
 
             Deposit = null;
             DepositDate = DateTime.Today;
+
+            if (GridFilterSelectedYear.HasValue && GridFilterSelectedMonth.HasValue)
+                UpdateList(GridFilterSelectedYear.Value, GridFilterSelectedMonth.Value);
 
             AppProperties.FormHaveModifications = false;
         }
@@ -394,6 +342,9 @@ namespace Conto.Wpf.ViewModels
             CostDate = DateTime.Today;
             CostJustification = null;
 
+            if (GridFilterSelectedYear.HasValue && GridFilterSelectedMonth.HasValue)
+                UpdateList(GridFilterSelectedYear.Value, GridFilterSelectedMonth.Value);
+
             AppProperties.FormHaveModifications = false;
         }
 
@@ -401,7 +352,7 @@ namespace Conto.Wpf.ViewModels
         public void FilterGridCommand_Executed(object sender)
         {
             if (GridFilterSelectedYear.HasValue && GridFilterSelectedMonth.HasValue)
-                CashFlows = CashFlowListToCashFlowGridRows(new List<CashFlow>(_contoData.CashFlowGetYearMonth(GridFilterSelectedYear.Value, GridFilterSelectedMonth.Value)));
+                UpdateList(GridFilterSelectedYear.Value, GridFilterSelectedMonth.Value);
             else
                 MessageBox.Show("Selezionare anno e mese");
         }
@@ -419,17 +370,17 @@ namespace Conto.Wpf.ViewModels
 
             if (!_selfInvoicePrintList.Contains(item))
             {
-                foreach (var cashFlowGridRow in CashFlows)
+                foreach (var cashFlowGridRow in GridSource)
                 {
                     if (cashFlowGridRow.Id == item.Id)
                     {
-                        cashFlowGridRow.AddToPdfButtonVisibility = Visibility.Hidden;
+                        //cashFlowGridRow.AddToPdfButtonVisibility = Visibility.Hidden;
                     }
                 }
 
-                var cashFlows = CashFlows;
-                CashFlows = null;
-                CashFlows = cashFlows;
+                var cashFlows = GridSource;
+                GridSource = null;
+                GridSource = cashFlows;
 
                 var selfInvoicesPrintList = SelfInvoicePrintList;
                 selfInvoicesPrintList.Add(item);
@@ -441,56 +392,6 @@ namespace Conto.Wpf.ViewModels
                 SelfInvoicePrintButtonVisibility = Visibility.Visible;
             }
         }
-
-        #region PAGING COMMANDS
-
-        private ICommand _firstPageCommand;
-        public ICommand FirstPage
-        {
-            get { return _firstPageCommand ?? (_firstPageCommand = new RelayCommand(First_Page)); }
-        }
-
-        public void First_Page(object sender)
-        {
-            SetCashFlowsList();
-        }
-
-        private ICommand _previousPageCommand;
-        public ICommand PreviousPage
-        {
-            get { return _previousPageCommand ?? (_previousPageCommand = new RelayCommand(Previous_Page)); }
-        }
-
-        public void Previous_Page(object sender)
-        {
-            if (PageIndex > 1)
-                SetCashFlowsList(PageIndex - 2);
-        }
-
-        private ICommand _nextPageCommand;
-        public ICommand NextPage
-        {
-            get { return _nextPageCommand ?? (_nextPageCommand = new RelayCommand(Next_Page)); }
-        }
-
-        public void Next_Page(object sender)
-        {
-            if (PageIndex < NumberOfPages)
-                SetCashFlowsList(PageIndex);
-        }
-
-        private ICommand _lastPageCommand;
-        public ICommand LastPage
-        {
-            get { return _lastPageCommand ?? (_lastPageCommand = new RelayCommand(Last_Page)); }
-        }
-
-        public void Last_Page(object sender)
-        {
-            SetCashFlowsList(NumberOfPages - 1);
-        }
-
-        #endregion
 
         #endregion
 

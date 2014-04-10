@@ -2,45 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Conto.Wpf.GridPaging
 {
-    public interface IGridPaging<T> where T : class
+    public class GridPaging<T> where T : class
     {
-        List<T> GridSource { get; set; }
-        int PageIndex { get; set; }
-        int NumberOfPages { get; set; }
-        ICommand FirstPage { get; }
-        ICommand PreviousPage { get; }
-        ICommand NextPage { get; }
-        ICommand LastPage { get; }
-        void First_Page(object sender);
-        void Previous_Page(object sender);
-        void Next_Page(object sender);
-        void Last_Page(object sender);
-    }
-
-    public class GridPaging<T> : IGridPaging<T> where T : class
-    {
-        private Action<string, bool> _propertyChangeAction;
+        internal Action<string, bool> PropertyChangeAction;
         private Func<List<T>> _gridDataSource;
-        private readonly int _numberOfRowsInGrid;
+        internal readonly int NumberOfRowsInGrid;
 
         public GridPaging(int numberOfRowsInGrid)
         {
-            _numberOfRowsInGrid = numberOfRowsInGrid;
+            NumberOfRowsInGrid = numberOfRowsInGrid;
         }
 
         internal void Initialize(Action<string, bool> propertyChangeAction, Func<List<T>> gridDataSource)
         {
-            _propertyChangeAction = propertyChangeAction;
+            PropertyChangeAction = propertyChangeAction;
             _gridDataSource = gridDataSource;
 
             UpdateList();
         }
 
-
-        private List<T> _completeList;
+        internal List<T> CompleteList;
 
         private List<T> _gridSource;
         public List<T> GridSource
@@ -52,7 +37,7 @@ namespace Conto.Wpf.GridPaging
             set
             {
                 _gridSource = value;
-                _propertyChangeAction("GridSource", false);
+                PropertyChangeAction("GridSource", false);
             }
         }
 
@@ -66,7 +51,7 @@ namespace Conto.Wpf.GridPaging
             set
             {
                 _pageIndex = value;
-                _propertyChangeAction("PageIndex", false);
+                PropertyChangeAction("PageIndex", false);
             }
         }
 
@@ -80,7 +65,7 @@ namespace Conto.Wpf.GridPaging
             set
             {
                 _numberOfPages = value;
-                _propertyChangeAction("NumberOfPages", false);
+                PropertyChangeAction("NumberOfPages", false);
             }
         }
 
@@ -88,16 +73,16 @@ namespace Conto.Wpf.GridPaging
 
         public void UpdateList()
         {
-            _completeList = new List<T>(_gridDataSource());
-            NumberOfPages = (int)Math.Ceiling((double)_completeList.Count / _numberOfRowsInGrid);
+            CompleteList = new List<T>(_gridDataSource());
+            NumberOfPages = (int)Math.Ceiling((double)CompleteList.Count / NumberOfRowsInGrid);
             SetList();
         }
 
 
-        private void SetList(int pageIndex = 0)
+        internal void SetList(int pageIndex = 0)
         {
             PageIndex = pageIndex + 1;
-            GridSource = _completeList.Skip(pageIndex * _numberOfRowsInGrid).Take(_numberOfRowsInGrid).ToList();
+            GridSource = CompleteList.Skip(pageIndex * NumberOfRowsInGrid).Take(NumberOfRowsInGrid).ToList();
         }
 
 
@@ -149,5 +134,30 @@ namespace Conto.Wpf.GridPaging
             SetList(NumberOfPages - 1);
         }
 
+    }
+
+    public class GridPaging<T, TIn1, TIn2> : GridPaging<T> where T : class
+    {
+        private Func<TIn1, TIn2, List<T>> _gridDataSource;
+
+        public GridPaging(int numberOfRowsInGrid)
+            :base (numberOfRowsInGrid)
+        {
+        }
+
+        internal void Initialize(Action<string, bool> propertyChangeAction, Func<TIn1, TIn2, List<T>> gridDataSource, TIn1 gridDataSourceInputParameter1, TIn2 gridDataSourceInputParameter2)
+        {
+            PropertyChangeAction = propertyChangeAction;
+            _gridDataSource = gridDataSource;
+
+            UpdateList(gridDataSourceInputParameter1, gridDataSourceInputParameter2);
+        }
+
+        public void UpdateList(TIn1 gridDataSourceInputParameter1, TIn2 gridDataSourceInputParameter2)
+        {
+            CompleteList = new List<T>(_gridDataSource(gridDataSourceInputParameter1, gridDataSourceInputParameter2));
+            NumberOfPages = (int)Math.Ceiling((double)CompleteList.Count / NumberOfRowsInGrid);
+            SetList();
+        }
     }
 }
