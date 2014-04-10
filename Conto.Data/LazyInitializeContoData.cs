@@ -462,6 +462,61 @@ namespace Conto.Data
                     }
 
                     #endregion
+
+                    #region INVOICES
+
+                    var invoices = conn.Query<Invoice>("SELECT * FROM Invoices");
+                    if (!invoices.Any())
+                    {
+                        conn.Execute(
+                            "INSERT INTO Invoices (ClientId, InvoiceDate, InvoiceYear, MeasureId) VALUES (@ClientId, @InvoiceDate, @InvoiceYear, @MeasureId)",
+                            new[]
+                            {
+                                new{ ClientId = 1, InvoiceDate = DateTime.Now, InvoiceYear = DateTime.Now.Year, MeasureId = 1 },
+                                new{ ClientId = 2, InvoiceDate = DateTime.Now, InvoiceYear = DateTime.Now.Year, MeasureId = 1 },
+                                new{ ClientId = 3, InvoiceDate = DateTime.Now, InvoiceYear = DateTime.Now.Year, MeasureId = 1 },
+                                new{ ClientId = 4, InvoiceDate = DateTime.Now, InvoiceYear = DateTime.Now.Year, MeasureId = 1 }
+                            });
+
+                        conn.Execute(
+                            "INSERT INTO InvoiceContent (Description, InvoiceId) VALUES (@Description, @InvoiceId)",
+                            new[]
+                            {
+                                new { Description = "Form. PRZ844829/13 del 16,01,14", InvoiceId = 1 },
+                                new { Description = "Form. PRZ844831/13 del 17,01,14", InvoiceId = 1 },
+                                new { Description = "Form. PRZ844832/13 del 17,01,14", InvoiceId = 1 },
+                                new { Description = "Form. PRZ844835/13 del 21,01,14", InvoiceId = 2 },
+                                new { Description = "Form. PRZ844833/13 del 20,01,14", InvoiceId = 2 },
+                                new { Description = "Form. PRZ844833/13 del 20,01,14", InvoiceId = 3 },
+                                new { Description = "Form. PRZ844840/13 del 27,01,14", InvoiceId = 4 },
+                                new { Description = "Form. PRZ844840/13 del 27,01,14", InvoiceId = 4 },
+                            });
+
+                        conn.Execute(
+                            "INSERT INTO InvoiceMaterialRow (Description, MaterialQuantity, MaterialPrice, MaterialCost, InvoiceContentId) VALUES (@Description, @MaterialQuantity, @MaterialPrice, @MaterialCost, @InvoiceContentId)",
+                            new[]
+                            {
+                                new {Description = "Rottame di ferro carrozzeria", MaterialQuantity = 2.75M, MaterialPrice = 190.0M, MaterialCost = 522.5M, InvoiceContentId = 1},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 1},
+                                new {Description = "Rottame di ferro carrozzeria", MaterialQuantity = 2.75M, MaterialPrice = 190.0M, MaterialCost = 522.5M, InvoiceContentId = 2},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 2},
+                                new {Description = "Rottame di ferro carrozzeria", MaterialQuantity = 2.75M, MaterialPrice = 190.0M, MaterialCost = 522.5M, InvoiceContentId = 2},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 2},
+                                new {Description = "Rottame di ferro carrozzeria", MaterialQuantity = 2.75M, MaterialPrice = 190.0M, MaterialCost = 522.5M, InvoiceContentId = 3},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 4},
+                                new {Description = "Rottame di ferro carrozzeria", MaterialQuantity = 2.75M, MaterialPrice = 190.0M, MaterialCost = 522.5M, InvoiceContentId = 4},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 4},
+                                new {Description = "Rottame di ferro carrozzeria", MaterialQuantity = 2.75M, MaterialPrice = 190.0M, MaterialCost = 522.5M, InvoiceContentId = 5},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 5},
+                                new {Description = "Rottame di ferro carrozzeria", MaterialQuantity = 2.75M, MaterialPrice = 190.0M, MaterialCost = 522.5M, InvoiceContentId = 6},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 7},
+                                new {Description = "Rottame di ferro carrozzeria", MaterialQuantity = 2.75M, MaterialPrice = 190.0M, MaterialCost = 522.5M, InvoiceContentId = 7},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 7},
+                                new {Description = "Rottame di ferro carrozzeria B", MaterialQuantity = 24.79M, MaterialPrice = 180.0M, MaterialCost = 4462.2M, InvoiceContentId = 8}
+                            });
+                    }
+
+                    #endregion
                 }
 
             }

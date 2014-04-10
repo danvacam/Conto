@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using Conto.Data;
 using Conto.Data.PdfHelpers;
+using Conto.Wpf.GridPaging;
 using Conto.Wpf.Resources;
 
 namespace Conto.Wpf.ViewModels
@@ -34,12 +35,13 @@ namespace Conto.Wpf.ViewModels
         public Visibility AddToPdfButtonVisibility;
     }
 
-    public class CashFlowViewModel : INotifyPropertyChanged
+    public class CashFlowViewModel : GridPaging<Material>, INotifyPropertyChanged
     {
         private const int NumberOfRowsInCashFlowsGrid = 10;
         private readonly ContoData _contoData;
 
         public CashFlowViewModel()
+            : base(NumberOfRowsInCashFlowsGrid)
         {
             _contoData = new ContoData();
 
@@ -351,13 +353,48 @@ namespace Conto.Wpf.ViewModels
         public ICommand DepositCommand { get; set; }
         public void DepositCommand_Executed(object sender)
         {
-            
+            if (!Deposit.HasValue)
+            {
+                MessageBox.Show("Manca l'importo del prelievo");
+                return;
+            }
+
+            _contoData.CashFlowAdd(new CashFlow
+            {
+                Cash = Math.Abs(Deposit.Value),
+                FlowDate = DepositDate,
+                Description = "Prelievo per cassa",
+                CashFlowType = "Deposit"
+            });
+
+            Deposit = null;
+            DepositDate = DateTime.Today;
+
+            AppProperties.FormHaveModifications = false;
         }
 
         public ICommand CostCommand { get; set; }
         public void CostCommand_Executed(object sender)
         {
+            if (!Cost.HasValue)
+            {
+                MessageBox.Show("Manca l'importo del costo");
+                return;
+            }
 
+            _contoData.CashFlowAdd(new CashFlow
+            {
+                Cash = Math.Abs(Cost.Value) * -1,
+                FlowDate = CostDate,
+                Description = CostJustification,
+                CashFlowType = "Cost"
+            });
+
+            Cost = null;
+            CostDate = DateTime.Today;
+            CostJustification = null;
+
+            AppProperties.FormHaveModifications = false;
         }
 
         public ICommand FilterGridCommand { get; set; }

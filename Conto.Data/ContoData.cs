@@ -172,23 +172,52 @@ namespace Conto.Data
 
         public List<InvoiceMaster> InvoicesMasterGet()
         {
-            return new List<InvoiceMaster>
+            using (var conn = Connection)
             {
-                new InvoiceMaster
+                conn.Open();
+
+                return conn.Query<InvoiceMaster>(
+                    "SELECT Invoices.Id, Invoices.InvoiceDate, Clients.Name as ClientName, SUM(InvoiceMaterialRow.MaterialCost) as Amount FROM Invoices JOIN Clients ON Clients.Id = Invoices.ClientId JOIN InvoiceContent ON InvoiceContent.InvoiceId = Invoices.Id JOIN InvoiceMaterialRow ON InvoiceMaterialRow.InvoiceContentId = InvoiceContent.Id WHERE Invoices.CashFlowId IS NULL GROUP BY Invoices.Id, Invoices.InvoiceDate, Clients.Name ORDER BY Invoices.Id, Invoices.InvoiceDate, Clients.Name").ToList();
+            }
+        }
+
+        public void InvoiceAdd(Invoice invoice)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                
+                conn.Execute(
+                        "INSERT INTO Invoices (ClientId, InvoiceDate, InvoiceYear, MeasureId) VALUES (@ClientId, @InvoiceDate, @InvoiceYear, @MeasureId)",
+                            new { invoice.ClientId, invoice.InvoiceDate, invoice.InvoiceYear, invoice.MeasureId });
+
+                var identity = conn.Query("SELECT @@IDENTITY AS id").SingleOrDefault();
+
+                if (identity != null)
                 {
-                    Id = 1,
-                    ClientName = "Rottami metalli Italia S.p.A",
-                    Amount = 4500.0M,
-                    InvoiceDate = DateTime.Now
-                },
-                new InvoiceMaster
-                {
-                    Id = 2,
-                    ClientName = "Amico Joe Rottami",
-                    Amount = 3780.0M,
-                    InvoiceDate = DateTime.Now
+                    long invoiceId = (long)identity.id;
+
+                    foreach (var rows in invoice.InvoiceContentRows)
+                    {
+                        conn.Execute(
+                            "INSERT INTO InvoiceContent (Description, InvoiceId) VALUES (@Description, @InvoiceId)",
+                            new { rows.Description, InvoiceId = invoiceId });
+
+                        identity = conn.Query("SELECT @@IDENTITY AS id").SingleOrDefault();
+
+                        if (identity != null)
+                        {
+                            long invoiceContentId = (long)identity.id;
+                            foreach (var materialRow in rows.Rows)
+                            {
+                                conn.Execute(
+                                    "INSERT INTO InvoiceMaterialRow (Description, MaterialQuantity, MaterialPrice, MaterialCost, InvoiceContentId) VALUES (@Description, @MaterialQuantity, @MaterialPrice, @MaterialCost, @InvoiceContentId)",
+                                    new { materialRow.Description, materialRow.MaterialQuantity, materialRow.MaterialPrice, materialRow.MaterialCost, InvoiceContentId = invoiceContentId });
+                            }
+                        }
+                    }
                 }
-            };
+            }
         }
 
         #endregion
@@ -494,8 +523,8 @@ namespace Conto.Data
             {
                 conn.Open();
                 conn.Execute(
-                    "INSERT INTO CashFlow (Cash, Description, FlowDate) VALUES (@Cash, @Description, @FlowDate)",
-                    new { cashFlow.Cash, cashFlow.Description, cashFlow.FlowDate });
+                    "INSERT INTO CashFlow (Cash, Description, FlowDate, CashFlowType) VALUES (@Cash, @Description, @FlowDate, @CashFlowType)",
+                    new { cashFlow.Cash, cashFlow.Description, cashFlow.FlowDate, cashFlow.CashFlowType });
             }
         }
 

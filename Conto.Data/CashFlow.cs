@@ -12,5 +12,6 @@ namespace Conto.Data
         public decimal Cash { get; set; }
         public string Description { get; set; }
         public DateTime FlowDate { get; set; }
+        public string CashFlowType { get; set; }
     }
 }

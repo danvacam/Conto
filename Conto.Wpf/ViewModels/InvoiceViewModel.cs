@@ -54,13 +54,15 @@ namespace Conto.Wpf.ViewModels
             _contoData = new ContoData();
 
             Clients = new List<Client>(_contoData.ClientsGet());
-            InvoiceDate = DateTime.Now;
+            InvoiceDate = DateTime.Today;
             Measures = new List<Measures>(_contoData.MeasuresGet());
 
             var invoiceRowId = Guid.NewGuid();
             InvoiceRows = new List<NewInvoiceContent> { new NewInvoiceContent(invoiceRowId) { Rows = new List<NewInvoiceMaterialRow> { new NewInvoiceMaterialRow{ MasterId = invoiceRowId } } } };
 
             Initialize(OnPropertyChanged, _contoData.InvoicesMasterGet);
+
+            AppProperties.FormHaveModifications = false;
         }
 
         #region NEW INVOICE
@@ -235,12 +237,32 @@ namespace Conto.Wpf.ViewModels
         {
             if (AppProperties.FormHaveModifications)
             {
-                //_contoData.InvoiceAdd(new Invoice
-                //{
-                //});
 
-                MessageBox.Show(SelectedClient.HasValue ? SelectedClient.Value.ToString() : "ops");
-                
+                if (!SelectedClient.HasValue)
+                {
+                    MessageBox.Show("Selezionare un cliente");
+                    return;
+                }
+                if (!SelectedMeasure.HasValue)
+                {
+                    MessageBox.Show("Selezionare una misura");
+                    return;
+                }
+                if (InvoiceRows == null || InvoiceRows.Count == 0)
+                {
+                    MessageBox.Show("Aggiungere materiali");
+                    return;
+                }
+
+                _contoData.InvoiceAdd(new Invoice
+                {
+                    ClientId = SelectedClient.Value,
+                    MeasureId = SelectedMeasure.Value,
+                    InvoiceDate = InvoiceDate,
+                    InvoiceYear = InvoiceDate.Year,
+                    InvoiceContentRows = InvoiceRows.ToInvoiceContentCollection()
+                });
+               
                 AppProperties.FormHaveModifications = false;
             }
         }
@@ -255,6 +277,39 @@ namespace Conto.Wpf.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                 AppProperties.FormHaveModifications = formHaveModifications;
             }
+        }
+    }
+
+    public static class CollectionExtensions
+    {
+        public static IEnumerable<InvoiceContent> ToInvoiceContentCollection(this List<NewInvoiceContent> list)
+        {
+            var invoiceContent = new List<InvoiceContent>();
+
+            foreach (var newInvoiceContent in list)
+            {
+                var invoiceMaterialRowCollection = new List<InvoiceMaterialRow>();
+
+                foreach (var newInvoiceMaterialRow in newInvoiceContent.Rows)
+                {
+                    invoiceMaterialRowCollection.Add(new InvoiceMaterialRow
+                    {
+                        Description = newInvoiceMaterialRow.Description,
+                        MaterialCost = newInvoiceMaterialRow.MaterialPrice.HasValue && newInvoiceMaterialRow.MaterialQuantity.HasValue ? newInvoiceMaterialRow.MaterialPrice.Value * newInvoiceMaterialRow.MaterialQuantity.Value : 0M,
+                        MaterialPrice = newInvoiceMaterialRow.MaterialPrice,
+                        MaterialQuantity = newInvoiceMaterialRow.MaterialQuantity
+                    });
+                }
+
+                invoiceContent.Add(new InvoiceContent
+                {
+                    Description = newInvoiceContent.Description,
+                    Rows = invoiceMaterialRowCollection
+                });
+                
+            }
+
+            return invoiceContent;
         }
     }
 }

@@ -6,7 +6,7 @@
              xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
              xmlns:wpf="clr-namespace:Conto.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="685">
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="UserControl.Loaded">
             <BeginStoryboard>
@@ -151,11 +151,11 @@
                                                             <Label Content="Materiale" />
                                                             <TextBox Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
 
-                                                            <Label Content="Quantita" />
-                                                            <TextBox Text="{Binding Path=MaterialQuantity, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
-
                                                             <Label Content="Prezzo" />
                                                             <TextBox Text="{Binding Path=MaterialPrice, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                                                            
+                                                            <Label Content="Quantita" />
+                                                            <TextBox Text="{Binding Path=MaterialQuantity, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
 
                                                             <Label>
                                                                 <Label.Content>
@@ -215,10 +215,10 @@
                           RowStyle="{StaticResource DataGridRowStyle}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Id" Binding="{Binding Id}" Visibility="Hidden" />
-                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Data" Binding="{Binding InvoiceDate}" />
-                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Cliente" Binding="{Binding ClientName}" />
-                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Header="Importo" Binding="{Binding Amount}" />
-                        <DataGridTemplateColumn>
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Width="60" Header="Data" Binding="{Binding InvoiceDate}" />
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Width="445" Header="Cliente" Binding="{Binding ClientName}" />
+                        <DataGridTextColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Width="80" Header="Importo" Binding="{Binding Amount}" />
+                        <DataGridTemplateColumn HeaderStyle="{StaticResource DataGridHeaderStyle}" Width="80" Header="Azioni">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="5,3,5,0">
