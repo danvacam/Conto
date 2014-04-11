@@ -8,20 +8,13 @@ namespace Conto.Wpf
     /// <summary>
     /// Logica di interazione per ContoWindow.xaml
     /// </summary>
-    public partial class ContoWindow : Window
+    public partial class ContoWindow
     {
         public ContoWindow()
         {
             SettingsConfirmCommand = new RelayCommand(SettingsConfirmCommand_Executed);
 
             InitializeComponent();
-
-            
-        }
-
-        private void SettingsButtonOnMouseUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
-        {
-            SettingsGrid.Visibility = SettingsGrid.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public static ICommand SettingsConfirmCommand { get; set; }
@@ -54,23 +47,6 @@ namespace Conto.Wpf
         }
 
         
-
-        /// <summary>
-        /// TitleBar_MouseDown - Drag if single-click, resize if double-click
-        /// </summary>
-        private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                if (e.ClickCount == 2)
-                {
-                    AdjustWindowSize();
-                }
-                else
-                {
-                    Application.Current.MainWindow.DragMove();
-                }
-        }
-
         /// <summary>
         /// CloseButton_Clicked
         /// </summary>
@@ -100,17 +76,7 @@ namespace Conto.Wpf
         /// </summary>
         private void AdjustWindowSize()
         {
-            if (Application.Current.MainWindow.WindowState == WindowState.Maximized)
-            {
-                Application.Current.MainWindow.WindowState = WindowState.Normal;
-                //MaximizeButton.Content = "1";
-            }
-            else
-            {
-                Application.Current.MainWindow.WindowState = WindowState.Maximized;
-                //MaximizeButton.Content = "2";
-            }
-
+            Application.Current.MainWindow.WindowState = Application.Current.MainWindow.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
         }
     }
 }

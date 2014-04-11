@@ -3,8 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModels="clr-namespace:Conto.Wpf.ViewModels"
         xmlns:wpf="clr-namespace:Conto.Wpf"
+        xmlns:views="clr-namespace:Conto.Wpf.Views"
+        Name="MainWindow"
         Title="ContoWindow" MinHeight="800"  Height="800" MinWidth="1010" Width="1010" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
-
+    <Window.DataContext>
+        <viewModels:MainViewModel/>
+    </Window.DataContext>
+    
     <Grid
         x:Name="LayoutRoot"
         Background="White" Margin="4">
@@ -92,10 +97,6 @@
         </Grid>
 
         <Grid Margin="0,30,0,0" Background="White" VerticalAlignment="Top">
-            <Grid.DataContext>
-                <viewModels:MainViewModel/>
-            </Grid.DataContext>
-
             <Grid Background="White" MouseDown="Window_OnMouseDown" MinHeight="770">
                 <Grid Grid.ZIndex="0">
                     <Grid.RowDefinitions>
@@ -203,61 +204,7 @@
 
                     <Rectangle Opacity=".5" Fill="White" />
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="200" />
-                            <ColumnDefinition Width="10" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="6" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="280" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <Polygon Grid.Row="0" Grid.Column="1" 
-                             Points="98,10 105,0 105,0 112,10" Fill="LightBlue"></Polygon>
-
-                        <Border CornerRadius="10" Grid.Column="1" Grid.RowSpan="3" Grid.Row="1" BorderBrush="LightBlue" Background="LightBlue" />
-                        <Grid Grid.Column="1" Grid.Row="2" >
-                            <StackPanel>
-                                <Label Content="Titolare :" />
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Label Content="Nome :" Grid.Column="0" Grid.Row="0" />
-                                    <Label Content="Indirizzo :" Grid.Column="0" Grid.Row="1" />
-                                    <Label Content="Citta :" Grid.Column="0" Grid.Row="2" />
-                                    <Label Content="Cap :" Grid.Column="0" Grid.Row="3" />
-                                    <Label Content="Codice Fiscale :" Grid.Column="0" Grid.Row="4" />
-                                    <Label Content="Partita Iva :" Grid.Column="0" Grid.Row="5" />
-
-                                    <TextBox Text="{Binding InvoiceOwnerName}" Grid.Column="1" Grid.Row="0" Margin="0,0,10,0" />
-                                    <TextBox Text="{Binding InvoiceOwnerAddress}" Grid.Column="1" Grid.Row="1" Margin="0,0,10,0" />
-                                    <TextBox Text="{Binding InvoiceOwnerCity}" Grid.Column="1" Grid.Row="2" Margin="0,0,10,0" />
-                                    <TextBox Text="{Binding InvoiceOwnerPostalCode}" Grid.Column="1" Grid.Row="3" Margin="0,0,10,0" />
-                                    <TextBox Text="{Binding InvoiceOwnerFiscalCode}" Grid.Column="1" Grid.Row="4" Margin="0,0,10,0" />
-                                    <TextBox Text="{Binding InvoiceOwnerVatCode}" Grid.Column="1" Grid.Row="5" Margin="0,0,10,0" />
-                                </Grid>
-                                <Label Content="Importo massimo autofattura :"/>
-                                <TextBox Text="{Binding InvoiceMaxCost}" Margin="10,0" />
-                                <Button Content="Conferma" Style="{StaticResource ActionButtonStyle}" Width="80" Height="30" Margin="10" HorizontalAlignment="Right"
-                                    Command="{x:Static wpf:ContoWindow.SettingsConfirmCommand}" CommandParameter="{Binding}"/>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
+                    <views:SettingsView ConfirmSettingsCommand="{x:Static wpf:ContoWindow.SettingsConfirmCommand }"/>
                 </Grid>
 
             </Grid>
