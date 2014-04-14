@@ -5,7 +5,7 @@
         xmlns:wpf="clr-namespace:Conto.Wpf"
         xmlns:views="clr-namespace:Conto.Wpf.Views"
         Name="MainWindow"
-        Title="ContoWindow" MinHeight="800"  Height="800" MinWidth="1010" Width="1010" WindowStyle="None" AllowsTransparency="True" Background="Transparent">
+        Title="Conto" MinHeight="800"  Height="800" MinWidth="1010" Width="1010" WindowStyle="None" AllowsTransparency="True" Background="Transparent" Icon="img/1397477048_54223.ico">
     <Window.DataContext>
         <viewModels:MainViewModel/>
     </Window.DataContext>
