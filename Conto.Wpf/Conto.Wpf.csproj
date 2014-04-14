@@ -68,8 +68,8 @@
     <Compile Include="ClientsUserControl.xaml.cs">
       <DependentUpon>ClientsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ContoWindow.xaml.cs">
-      <DependentUpon>ContoWindow.xaml</DependentUpon>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GridPaging\GridPaging.cs" />
     <Compile Include="InvoiceUserControl.xaml.cs">
@@ -107,7 +107,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ContoWindow.xaml">
+    <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

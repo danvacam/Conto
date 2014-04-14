@@ -8,9 +8,9 @@ namespace Conto.Wpf
     /// <summary>
     /// Logica di interazione per ContoWindow.xaml
     /// </summary>
-    public partial class ContoWindow
+    public partial class MainWindow
     {
-        public ContoWindow()
+        public MainWindow()
         {
             SettingsConfirmCommand = new RelayCommand(SettingsConfirmCommand_Executed);
 

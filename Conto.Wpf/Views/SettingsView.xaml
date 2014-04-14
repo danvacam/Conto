@@ -65,7 +65,7 @@
                     <TextBox Text="{Binding InvoiceMaxCost}" Width="50" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="6" Margin="10,3,0,16" />
                 </Grid>
                 <Button Content="Conferma" Style="{StaticResource ActionButtonStyle}" Width="80" Height="30" Margin="10" HorizontalAlignment="Right"
-                                    Command="{x:Static wpf:ContoWindow.SettingsConfirmCommand}" CommandParameter="{Binding}"/>
+                                    Command="{x:Static wpf:MainWindow.SettingsConfirmCommand}" CommandParameter="{Binding}"/>
             </StackPanel>
         </Grid>
     </Grid>
